@@ -9,7 +9,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     
-    int MESH_X, MESH_Y, MESH_Z, NUMPHASES, NUMCOMPONENTS, VOIGT;
+    int DIMENSION, MESH_X, MESH_Y, MESH_Z, NUMPHASES, NUMCOMPONENTS, VOIGT, Function_anisotropy;
     double DELTA_X, DELTA_t, NTIMESTEPS, SAVET, STARTTIME, DIFFUSIVITY00, DIFFUSIVITY01;
     double GAMMA, V, DIFFUSIVITY[4], EIGEN_STRAIN[7], VOIGT0[6], VOIGT1[6], T, epsilon;
     double DIFFUSIVITY10, DIFFUSIVITY11, dab, Amp_Noise_Phase, Equilibrium_temperature, Filling_temperature;
@@ -60,7 +60,12 @@ int main(int argc, char *argv[])
     getline(ss1, line_value2, ';');
     
     //reading input variables
-    if (line_value1 == "MESH_X")
+    if (line_value1 == "DIMENSION")
+    {
+    DIMENSION = stoi(line_value2);
+    }
+    
+    else if (line_value1 == "MESH_X")
     {
     MESH_X = stoi(line_value2);
     }
@@ -247,6 +252,11 @@ int main(int argc, char *argv[])
     epsilon = stod(line_value2);
     }
     
+    else if (line_value1 == "Function_anisotropy")
+    {
+    Function_anisotropy = stoi(line_value2);
+    }
+    
     else if (line_value1 == "dab")
     {
     istringstream ss2(line_value2);
@@ -254,6 +264,9 @@ int main(int argc, char *argv[])
     getline(ss2, line_value2, '}');
     
     dab = stod(line_value2);
+    
+    if (Function_anisotropy == 0)
+    {dab = 0;}
     }
 
     else if (line_value1 == "Rotation_matrix")
@@ -310,6 +323,9 @@ int main(int argc, char *argv[])
     //outpfp << "NUMPHASES " << NUMPHASES << ";" << endl;
     //outpfp << "NUMCOMPONENTS " << NUMCOMPONENTS << ";" << endl;
     
+    outpf << "DIMENSION " << DIMENSION << ";" << endl;
+    outpf << "NUMPHASES " << NUMPHASES << ";" << endl;
+    outpf << "NUMCOMPONENTS " << NUMCOMPONENTS << ";" << endl;
     outpf << "MESH_X " << MESH_X << ";" << endl;
     outpf << "MESH_Y " << MESH_Y << ";" << endl;
     outpf << "MESH_Z " << MESH_Z << ";" << endl;

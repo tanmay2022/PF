@@ -20,7 +20,7 @@ if ((swcool == 1)&&(swch == 1))
     //Info << "Probability of nucleation: " << prob.value() << endl;
     
 //for(int i=0; i<numSeeds; i++){
-    /*Info<< "creating a new seed" << endl;
+    Info<< "creating a new seed" << endl;
     xCenter = randNumber.globalScalar01()*xMax;
     yCenter = randNumber.globalScalar01()*yMax;
     //xCenter = 0.5*xMax;
@@ -34,7 +34,7 @@ if ((swcool == 1)&&(swch == 1))
 
     //if (prob.value() > randNumber.globalScalar01()){
     theta = theta + randTheta*gaussianSeed;
-    phi = phi + gaussianSeed;*/
+    phi = phi + gaussianSeed;
     //}
 //}
 }

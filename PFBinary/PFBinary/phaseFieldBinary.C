@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
     #include "createTol.H"
 
     int iter_num = 0;
-    int nucleation_event =0;
+    int nucleation_event =1;
 
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

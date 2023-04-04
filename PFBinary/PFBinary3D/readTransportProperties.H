@@ -29,6 +29,12 @@
         dimensionedScalar dimt(transportProperties.lookup("dimt"));
         //!Dimension of position
         dimensionedScalar dimx(transportProperties.lookup("dimx"));
+	    //!Number of dimensions
+        dimensionedScalar dimensions(transportProperties.lookup("dimensions"));
+        //!Number of phases
+        dimensionedScalar phases(transportProperties.lookup("phases"));
+        //!Number of components
+        dimensionedScalar components(transportProperties.lookup("components"));
         //!Slope liquidus
         //dimensionedScalar m_1(transportProperties.lookup("m_1"));
         //!Slope solidus

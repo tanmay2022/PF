@@ -1,3 +1,6 @@
+ // The input properties are imported
+ #include "readTransportProperties.H"
+
   //! Creating phase-field with the option to write
    volScalarField phi
     (
@@ -40,8 +43,6 @@
         mesh
     );
     
- // The input properties are imported
- #include "readTransportProperties.H"
  #include "readTDB.H"
 
 //! Creating elastic strain fields with the option to write

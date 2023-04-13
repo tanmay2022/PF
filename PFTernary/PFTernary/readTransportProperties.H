@@ -101,6 +101,10 @@
         scalar M_Scale(readScalar(transportProperties.lookup("M_Scale")));
  
         scalar seedRadius(readScalar(transportProperties.lookup("seedRadius")));
+
+        scalar centerX(readScalar(transportProperties.lookup("centerX")));
+        scalar centerY(readScalar(transportProperties.lookup("centerY")));
+        scalar centerZ(readScalar(transportProperties.lookup("centerZ")));
         
         //! Maximum number depending on probability of nucleation
         scalar numSeeds(readScalar(transportProperties.lookup("numSeeds")));

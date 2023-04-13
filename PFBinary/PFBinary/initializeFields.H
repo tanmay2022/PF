@@ -96,8 +96,8 @@ for(int i=0; i<numSeeds; i++){
 }
 
 if (numSeeds == 1){
-xCenter = 0.5*xMax;
-yCenter = 0.5*yMax;
+xCenter = centerX;
+yCenter = centerY;
 phi = phi + (1-phi)*0.5*(1 - sign((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) - seedRadius*seedRadius));//(1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius*seedRadius));
 }
 }
@@ -105,8 +105,8 @@ phi = phi + (1-phi)*0.5*(1 - sign((mesh.C().component(vector::X)/dimx-xCenter)*(
 //! Initial conditions for single dendrite solidification simulation
 if (swch == 0)
 {
-xCenter = 0.0;
-yCenter = 0.0;
+xCenter = centerX;
+yCenter = centerY;
 phi = phi + (1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius*seedRadius));
 theta = theta_val.value();
 }

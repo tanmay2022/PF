@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     double DELTA_X, DELTA_t, NTIMESTEPS, SAVET, STARTTIME, DIFFUSIVITY00, DIFFUSIVITY01;
     double GAMMA, V, DIFFUSIVITY[4], EIGEN_STRAIN[7], VOIGT0[6], VOIGT1[6], T, epsilon;
     double DIFFUSIVITY10, DIFFUSIVITY11, dab, Amp_Noise_Phase, Equilibrium_temperature, Filling_temperature;
-    double theta_x, theta_y, theta_z;
+    double theta_x, theta_y, theta_z, center_x, center_y, center_z, seed_radius;
     
     //ifstream inpf("Input_tdb_new.in");
     ifstream inpf(argv[1]);
@@ -310,6 +310,70 @@ int main(int argc, char *argv[])
 
     inpf.close();
 
+    while (getline(fill, line))
+    {
+    if (line[0] != '#')
+    {
+
+    string line_value1, line_value2, line_value;
+    istringstream ss1(line);
+    getline(ss1, line_value1, ' ');
+    getline(ss1, line_value, ' ');
+    getline(ss1, line_value2, ';');
+
+    //reading input variables
+    if (line_value1 == "FILLCYLINDER")
+    {
+    istringstream ss2(line_value2);
+    getline(ss2, line_value2, '{');
+    getline(ss2, line_value2, ',');
+    getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    center_x = stod(line_value2);
+
+    getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    center_y = stod(line_value2);
+
+    getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    center_z = stod(line_value2);
+
+    getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+
+    getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, '}');
+    seed_radius = stod(line_value2);
+    }
+
+    else if (line_value1 == "FILLSPHERE")
+    {
+    istringstream ss2(line_value2);
+    getline(ss2, line_value2, '{');
+    getline(ss2, line_value2, ',');
+    getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    center_x = stod(line_value2);
+
+    getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    center_y = stod(line_value2);
+
+    getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    center_z = stod(line_value2);
+
+    getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, '}');
+    seed_radius = stod(line_value2);
+    }
+
+    }
+    }
+
+    fill.close();
+
     //cout << MESH_X << endl;
 
 	NTIMESTEPS = NTIMESTEPS*DELTA_t;
@@ -317,7 +381,11 @@ int main(int argc, char *argv[])
     theta_x = theta_x*3.14159/180;
     theta_y = theta_y*3.14159/180;
     theta_z = theta_z*3.14159/180;
-	
+    center_x = center_x*DELTA_X;
+    center_y = center_y*DELTA_X;
+    center_z = center_z*DELTA_X;
+	seed_radius = seed_radius*DELTA_X;
+
 	//writing to include in openfoam dictionaries
     outpf.precision(15);
     //outpfp << "NUMPHASES " << NUMPHASES << ";" << endl;
@@ -379,6 +447,10 @@ int main(int argc, char *argv[])
     outpf << "lambda2 " << lambda2 << ";" << endl;
     outpf << "mu2_elast_ " << mu2_elast_ << ";" << endl;
     
+    outpf << "center_x " << center_x << ";" << endl;
+    outpf << "center_y " << center_y << ";" << endl;
+    outpf << "center_z " << center_z << ";" << endl;
+    outpf << "seed_radius " << seed_radius << ";" << endl;
 
 	outpf.close();
     

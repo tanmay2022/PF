@@ -57,7 +57,12 @@ swch 0;
 
 M_Scale 0.4;
 
-seedRadius 10.0e-9;
+seedRadius $seed_radius;
+
+//center coordinate only for single seed
+centerX $center_x;
+centerY $center_y;
+centerZ $center_z;
 
 numSeeds 4; //Maximum number depending on probability of nucleation
 

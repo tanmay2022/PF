@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     double DELTA_X, DELTA_t, NTIMESTEPS, SAVET, STARTTIME, DIFFUSIVITY00, DIFFUSIVITY01;
     double GAMMA, V, DIFFUSIVITY[4], EIGEN_STRAIN[7], VOIGT0[6], VOIGT1[6], T, epsilon;
     double DIFFUSIVITY10, DIFFUSIVITY11, dab, Amp_Noise_Phase, Equilibrium_temperature, Filling_temperature;
-    double theta_x, theta_y, theta_z, center_x, center_y, center_z, seed_radius;
+    double theta_x, theta_y, theta_z, center_x, center_y, center_z, seed_radius, volume_fraction;
     
     //ifstream inpf("Input_tdb_new.in");
     ifstream inpf(argv[1]);
@@ -321,7 +321,7 @@ int main(int argc, char *argv[])
     getline(ss1, line_value, ' ');
     getline(ss1, line_value2, ';');
 
-    //reading input variables
+    //reading fill in variables
     if (line_value1 == "FILLCYLINDER")
     {
     istringstream ss2(line_value2);
@@ -345,6 +345,28 @@ int main(int argc, char *argv[])
     getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, '}');
     seed_radius = stod(line_value2);
+    volume_fraction = 0;
+    }
+
+    else if (line_value1 == "FILLCYLINDERRANDOM")
+    {
+    istringstream ss2(line_value2);
+    getline(ss2, line_value2, '{');
+    getline(ss2, line_value2, ',');
+    getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    seed_radius = stod(line_value2);
+
+    getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    volume_fraction = stod(line_value2);
+
+    center_x = 0;
+    center_y = 0;
+    center_z = 0;
+
+    getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, '}');
     }
 
     else if (line_value1 == "FILLSPHERE")
@@ -367,6 +389,7 @@ int main(int argc, char *argv[])
     getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, '}');
     seed_radius = stod(line_value2);
+    volume_fraction = 0;
     }
 
     }
@@ -451,6 +474,7 @@ int main(int argc, char *argv[])
     outpf << "center_y " << center_y << ";" << endl;
     outpf << "center_z " << center_z << ";" << endl;
     outpf << "seed_radius " << seed_radius << ";" << endl;
+    outpf << "volume_fraction " << volume_fraction << ";" << endl;
 
 	outpf.close();
     

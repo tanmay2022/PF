@@ -101,6 +101,8 @@
         scalar M_Scale(readScalar(transportProperties.lookup("M_Scale")));
  
         scalar seedRadius(readScalar(transportProperties.lookup("seedRadius")));
+        
+        scalar volume_fraction(readScalar(transportProperties.lookup("volume_fraction")));
 
         scalar centerX(readScalar(transportProperties.lookup("centerX")));
         scalar centerY(readScalar(transportProperties.lookup("centerY")));

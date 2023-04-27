@@ -6,7 +6,7 @@ Random randNumber(clock::getTime());
 Info<< "Initialising fields... " << endl;
 double xMax = max(mesh.C().component(vector::X)).value();
 double yMax = max(mesh.C().component(vector::Y)).value();
-double xCenter, yCenter, randTheta, randRadius;
+double xCenter, yCenter, randTheta, randRadius, maxvol, curvol;
 //int NS;
 
 //! Initial conditions for cooling simulation
@@ -71,8 +71,11 @@ if (swch == 2)
     
     dimensionedScalar prob = Foam::exp(-0.5*(log(T0-initial)/0.5)*(log(T0-initial)/0.5))/(0.5*Foam::sqrt(2*pi)*(T0-initial));
     Info << "Probability of nucleation: " << prob.value() << endl;*/
+maxvol = volume_fraction*xMax*yMax;
+curvol = 0;
+
 if (numSeeds > 1){
-for(int i=0; i<numSeeds; i++){
+while(curvol <= maxvol){
     Info<< "creating a new seed" << endl;
     xCenter = randNumber.globalScalar01()*xMax;
     yCenter = randNumber.globalScalar01()*yMax;
@@ -84,6 +87,7 @@ for(int i=0; i<numSeeds; i++){
 
     Info<< "Filling phi field in seeds" << endl;
     randRadius = (1 + randNumber.globalScalar01())*seedRadius;
+    curvol = curvol + pi.value()*randRadius*randRadius;
     //volScalarField gaussianSeed = (1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(randRadius*randRadius));
     
     volScalarField gaussianSeed = (1-phi)*0.5*(1 - sign((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) - randRadius*randRadius));

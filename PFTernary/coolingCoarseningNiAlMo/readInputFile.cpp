@@ -182,6 +182,8 @@ int main(int argc, char *argv[])
     getline(ss2, line_value2, ',');
     EIGEN_STRAIN[0] = stod(line_value2);
     
+    if (EIGEN_STRAIN[0] == 0)
+    {
     getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     EIGEN_STRAIN[1] = stod(line_value2);
@@ -205,6 +207,7 @@ int main(int argc, char *argv[])
     getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, '}');
     EIGEN_STRAIN[6] = stod(line_value2);
+    }
     }
     
     else if (line_value1 == "VOIGT_ISOTROPIC")

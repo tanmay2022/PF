@@ -54,7 +54,9 @@ g++ muInitial.o -lgsl -lgslcblas -o muInitial
 
 #runApplication setFields -dict system/setFieldsDict
 
-runApplication decomposePar -cellDist
+runApplication decomposePar
+
+#runApplication decomposePar -fileHandler collated
 
 runParallel `getApplication`
 #runApplication `getApplication`

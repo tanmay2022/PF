@@ -47,6 +47,8 @@ g++ muInitial.o -lgsl -lgslcblas -o muInitial
 
 runApplication decomposePar
 
+#runApplication decomposePar -fileHandler collated
+
 runParallel `getApplication`
 
 #runApplication reconstructPar

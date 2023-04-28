@@ -143,12 +143,12 @@ stressAnalysis
 
 Tol_is_defined_here
 {
-    Tol 1e-6; //get_tol_from_this
+    Tol 1e-5; //get_tol_from_this
 }
 
 deltaTFactor
 {
-    dtf 1; //get_dtf_from_this
+    dtf 0.1; //get_dtf_from_this
 }
 
 // ************************************************************************* //

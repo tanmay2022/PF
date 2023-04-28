@@ -74,7 +74,7 @@ if (swch == 2)
 maxvol = volume_fraction*xMax*yMax;
 curvol = 0;
 
-if (numSeeds > 1){
+if (numSeeds != 1){
 while(curvol <= maxvol){
     Info<< "creating a new seed" << endl;
     xCenter = randNumber.globalScalar01()*xMax;
@@ -86,7 +86,7 @@ while(curvol <= maxvol){
     //Info<< "random theta: " << randTheta << endl;
 
     Info<< "Filling phi field in seeds" << endl;
-    randRadius = (1 + randNumber.globalScalar01())*seedRadius;
+    randRadius = (1 + spread*(2*randNumber.globalScalar01() - 1))*seedRadius;
     curvol = curvol + pi.value()*randRadius*randRadius;
     volScalarField gaussianSeed = (1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(randRadius*randRadius));
     

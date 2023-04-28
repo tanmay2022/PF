@@ -68,6 +68,8 @@ seedRadius $seed_radius;
 
 volume_fraction $volume_fraction;
 
+spread $spread;
+
 //center coordinate only for single seed
 centerX $center_x;
 centerY $center_y;

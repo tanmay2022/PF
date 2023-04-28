@@ -4,10 +4,10 @@ MESH_X = 200;
 MESH_Y = 200;
 MESH_Z = 1;
 ##Discretization, space and time
-DELTA_X = 8e-11;
-DELTA_Y = 8e-11;
-DELTA_Z = 8e-11;
-DELTA_t = 10e-9;
+DELTA_X = 4e-11;
+DELTA_Y = 4e-11;
+DELTA_Z = 4e-11;
+DELTA_t = 7.5e-9;
 ##Number of phases and composition
 NUMPHASES = 2;
 NUMCOMPONENTS = 3;

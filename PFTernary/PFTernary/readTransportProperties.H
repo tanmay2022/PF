@@ -104,6 +104,8 @@
         
         scalar volume_fraction(readScalar(transportProperties.lookup("volume_fraction")));
 
+        scalar spread(readScalar(transportProperties.lookup("spread")));
+
         scalar centerX(readScalar(transportProperties.lookup("centerX")));
         scalar centerY(readScalar(transportProperties.lookup("centerY")));
         scalar centerZ(readScalar(transportProperties.lookup("centerZ")));

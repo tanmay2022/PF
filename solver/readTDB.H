@@ -10,17 +10,17 @@
     string line;
     getline(inpfph, line);
     int n_compo = stoi(line);
-    if (n_compo != 2)
+    if ((n_compo != 2)&&(n_compo != 3))
     {
-        cout << "This solver is only for binary alloys" << endl;
+        cout << "This solver is only for binary and ternary alloys" << endl;
 	return 0;
     }
 
     getline(inpfph, line);
     int n_phase = stoi(line);
-    if ((n_compo != 2)&&(n_compo != 3))
+    if (n_phase != 2)
     {
-        cout << "This solver is only for binary and ternary alloys" << endl;
+        cout << "This solver is only for two phase systems" << endl;
 	return 0;
     }
 

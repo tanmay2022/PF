@@ -8,7 +8,7 @@ Random randNum(clock::getTime());
 //
 //
 //! For 2D simulations
-if (int(dimensions.value()) == 2)
+if (dimensions == 2)
 {
 qt0 = theta.component(2);
 
@@ -18,7 +18,7 @@ volScalarField grad_qt_sqr = magSqr(grad_qt0);
 }
 
 //! For 3D simulations
-if (int(dimensions.value()) == 3)
+if (dimensions == 3)
 {
 qt0 = (Foam::cos(0.5*theta.component(0))*Foam::cos(0.5*theta.component(1))*Foam::cos(0.5*theta.component(2)) + Foam::sin(0.5*theta.component(0))*Foam::sin(0.5*theta.component(1))*Foam::sin(0.5*theta.component(2)));
 qt1 = (Foam::sin(0.5*theta.component(0))*Foam::cos(0.5*theta.component(1))*Foam::cos(0.5*theta.component(2)) - Foam::cos(0.5*theta.component(0))*Foam::sin(0.5*theta.component(1))*Foam::sin(0.5*theta.component(2)));
@@ -126,13 +126,13 @@ fvScalarMatrix qt0Eqn
 InitialResidual_20 = qt0Eqn.solve().max().initialResidual();
 
 //! For 2D simulations
-if (int(dimensions.value()) == 2)
+if (dimensions == 2)
 {
 theta.component(2) = qt0;
 }
 
 //! For 3D simulations
-if (int(dimensions.value()) == 3)
+if (dimensions == 3)
 {
 fvScalarMatrix qt1Eqn
 (
@@ -184,7 +184,7 @@ theta.component(2) = Foam::atan2(2*(qt1*qt2 + qt0*qt3), (qt0*qt0 + qt1*qt1 - qt2
 
     // Writing into the log file
     //! For 3D simulations
-if (int(dimensions.value()) == 3)
+if (dimensions == 3)
 {
 Info<< "Min/max thetax:" << min(theta.component(0)).value() << ' ' << max(theta.component(0)).value() << endl;
 Info<< "Min/max thetay:" << min(theta.component(1)).value() << ' ' << max(theta.component(1)).value() << endl;

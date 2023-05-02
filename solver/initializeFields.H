@@ -11,7 +11,7 @@ double xCenter, yCenter, zCenter, randTheta[3], randRadius, maxvol, curvol;
 //int NS;
 
 //! For 2D simulations
-if (int(dimensions.value()) == 2)
+if (dimensions == 2)
 {
 //! Initial conditions for cooling simulation
 if ((swcool == 1)&&(swch == 1))
@@ -127,7 +127,7 @@ Info<< "Min/max theta:" << min(theta).value() << ' ' << max(theta).value() << en
 }
 
 //! For 3D simulations
-if (int(dimensions.value()) == 3)
+if (dimensions == 3)
 {
 
 //! Initial conditions for cooling simulation

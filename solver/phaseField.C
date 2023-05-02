@@ -456,7 +456,7 @@ if ((swcool == 1)&&(swch == 1))
             yCenter = randNumber.globalScalar01()*yMax;
             //xCenter = 0.5*xMax;
             //yCenter = 0.5*yMax;
-            if (int(dimensions.value()) == 2)
+            if (dimensions == 2)
             {
             Info<< "xCenter, yCenter: " << xCenter << ", " << yCenter << endl;
             randTheta[2] = randNumber.globalScalar01()*(pi.value()/2);
@@ -469,7 +469,7 @@ if ((swcool == 1)&&(swch == 1))
             phi = phi + gaussianSeed;
             }
 
-            if (int(dimensions.value()) == 3)
+            if (dimensions == 3)
             {
             zCenter = randNumber.globalScalar01()*zMax;
             //xCenter = 0.5*xMax;

@@ -9,7 +9,7 @@
      //scalar theta1 = theta*pi/180.0;
 
     //! For 2D simulations
-    if (int(dimensions.value()) == 2)
+    if (dimensions== 2)
     {
      //! Rotated field   
      q = (q.component(0)*Foam::cos(theta.component(2))-q.component(1)*Foam::sin(theta.component(2)))*vector(1,0,0) + (q.component(0)*Foam::sin(theta.component(2))+q.component(1)*Foam::cos(theta.component(2)))*vector(0,1,0);
@@ -34,7 +34,7 @@
 }
 
 //! For 3D simulations
-if (int(dimensions.value()) == 3)
+if (dimensions == 3)
 {
      //! Rotated field
      q = (q.component(0)*(Foam::cos(theta.component(1))*Foam::cos(theta.component(2))) + q.component(1)*(Foam::sin(theta.component(0))*Foam::sin(theta.component(1))*Foam::cos(theta.component(2)) - Foam::cos(theta.component(0))*Foam::sin(theta.component(2))) + q.component(2)*(Foam::cos(theta.component(0))*Foam::sin(theta.component(1))*Foam::cos(theta.component(2)) + Foam::sin(theta.component(0))*Foam::sin(theta.component(2))))*vector(1,0,0)

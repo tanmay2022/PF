@@ -16,7 +16,7 @@ FoamFile
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 #include "../generatedInput"
 
-application     phaseFieldBinary;
+application     phaseField;
 
 startFrom       startTime;
 

@@ -54,14 +54,9 @@
         //!Anti-trapping coefficient
         dimensionedScalar anti_trap(transportProperties.lookup("anti_trap"));
         //!Diffusivity in solid
-        dimensionedScalar diff_Sol = 0.0;
-        //!Diffusivity in liquid
-        dimensionedScalar diff_Liq = 0.0;
-        if (components == 2)
-    	{
         dimensionedScalar diff_Sol(transportProperties.lookup("diff_Sol"));
+        //!Diffusivity in liquid
         dimensionedScalar diff_Liq(transportProperties.lookup("diff_Liq"));
-        }
         //!Thermal gradient
         dimensionedScalar G(transportProperties.lookup("G"));
         //!Velocity

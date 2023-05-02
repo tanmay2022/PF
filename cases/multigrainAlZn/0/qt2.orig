@@ -71,11 +71,11 @@ boundaryField
     }
     posZBound
     {
-        type            cyclic;
+        type            empty;
     }
     negZBound
     {
-        type            cyclic;
+        type            empty;
     }
 }
 

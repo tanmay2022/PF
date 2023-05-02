@@ -583,7 +583,6 @@ int main(int argc, char *argv[])
         c_SoldT = gsl_spline_eval_deriv (spline3, T.value(), acc3);
         c_LiqdT = gsl_spline_eval_deriv (spline4, T.value(), acc4);
         
-        
         dcdmu_Liq = 0.5/A_Liq;
             
         omega = epsilon*0.18*DeltaC*DeltaC/(dcdmu_Liq*diff_Liq*Vm);

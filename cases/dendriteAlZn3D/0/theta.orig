@@ -20,65 +20,65 @@ dimensions      [0 0 0 0 0 0 0];
 internalField   uniform (0 0 0);
 
 //============== NO-FLUX BOUNDARY CONDITIONS ====================//
+
+boundaryField
+{
+    posXBound
+    {
+        type            zeroGradient;
+    }
+    negXBound
+    {
+        type            zeroGradient;
+    }
+    posYBound
+    {
+        type            zeroGradient;
+    }
+    negYBound
+    {
+        type            zeroGradient;
+    }
+    posZBound
+    {
+        type            zeroGradient;
+    }
+    negZBound
+    {
+        type            zeroGradient;
+    }
+}
+
+//============== CYCLIC BOUNDARY CONDITIONS ====================//
 /*
 boundaryField
 {
     posXBound
     {
-        type            zeroGradient;
+        type            cyclic;
     }
     negXBound
     {
-        type            zeroGradient;
+        type            cyclic;
     }
     posYBound
     {
-        type            zeroGradient;
+        type            cyclic;
     }
     negYBound
     {
-        type            zeroGradient;
+        type            cyclic;
     }
     posZBound
     {
-        type            empty;
+        type            cyclic;
     }
     negZBound
     {
-        type            empty;
+        type            cyclic;
     }
 }
 */
-//============== CYCLIC BOUNDARY CONDITIONS ====================//
-
-boundaryField
-{
-    posXBound
-    {
-        type            cyclic;
-    }
-    negXBound
-    {
-        type            cyclic;
-    }
-    posYBound
-    {
-        type            cyclic;
-    }
-    negYBound
-    {
-        type            cyclic;
-    }
-    posZBound
-    {
-        type            cyclic;
-    }
-    negZBound
-    {
-        type            cyclic;
-    }
-}
-
 
 
 // ************************************************************************* //

@@ -18,9 +18,9 @@ int main()
     string line;
     getline(inpfph, line);
     int n_compo = stoi(line);
-    if (n_compo != 3)
+    if ((n_compo != 2)&&(n_compo != 3))
     {
-        cout << "This solver is only for ternary alloys" << endl;
+        cout << "This solver is only for binary and ternary alloys" << endl;
 	return 0;
     }
 
@@ -82,7 +82,7 @@ int main()
     //string line;
     getline(inpfl, line);
     double T1[buffer]; 
-    double HLiq11[buffer], HLiq12[buffer], HLiq22[buffer];
+    double ALiq[buffer], HLiq11[buffer], HLiq12[buffer], HLiq22[buffer];
     int np = 0;
 
     while (getline(inpfl, line))
@@ -91,12 +91,20 @@ int main()
         istringstream ss(line);
         getline(ss, line_value, ',');
         T1[np] = stod(line_value);
+        if (n_compo == 2)
+        {
+        getline(ss, line_value);
+        ALiq[np] = 0.5*stod(line_value);
+        }
+        else if (n_compo == 3)
+        {
         getline(ss, line_value, ',');
         HLiq11[np] = stod(line_value);
         getline(ss, line_value, ',');
         HLiq22[np] = stod(line_value);
         getline(ss, line_value);
         HLiq12[np] = stod(line_value);
+        }
     
     //Info << T1[np] << " " << ALiq[np] << endl;
     //cout << T1[np] << " " << ALiq[np] << endl;
@@ -113,8 +121,8 @@ int main()
         cout << "No composition data found" << endl;
     }
     getline(inpfc, line);
-    double cSol1[buffer], cSol2[buffer]; 
-    double cLiq1[buffer], cLiq2[buffer];
+    double cSol[buffer], cSol1[buffer], cSol2[buffer];
+    double cLiq[buffer], cLiq1[buffer], cLiq2[buffer];
     np = 0;
     
     while (getline(inpfc, line))
@@ -124,6 +132,14 @@ int main()
         getline(ss, line_value, ',');
         T1[np] = stod(line_value);
         getline(ss, line_value, ',');
+        if (n_compo == 2)
+        {
+        cSol[np] = stod(line_value);
+        getline(ss, line_value);
+        cLiq[np] = stod(line_value);
+        }
+        else if (n_compo == 3)
+        {
         cSol1[np] = stod(line_value);
         getline(ss, line_value, ',');
         cSol2[np] = stod(line_value);
@@ -131,6 +147,7 @@ int main()
         cLiq1[np] = stod(line_value);
         getline(ss, line_value);
         cLiq2[np] = stod(line_value);
+        }
     
     //Info << T1[np] << " " << cSol[np] << " " << cLiq[np] << endl;
     //cout << T1[np] << " " << cLiq[np] << endl;
@@ -173,7 +190,48 @@ int main()
 		cout << "Initial mu was not printed" << endl;
 	}
     
+    if (n_compo == 2)
+    {
+    gsl_spline *spline1 = gsl_spline_alloc (gsl_interp_cspline, np);
+    gsl_interp_accel *acc1 = gsl_interp_accel_alloc ();
     
+    gsl_spline *spline2 = gsl_spline_alloc (gsl_interp_cspline, np);
+    gsl_interp_accel *acc2 = gsl_interp_accel_alloc ();
+   
+    gsl_spline *spline3 = gsl_spline_alloc (gsl_interp_cspline, np);
+    gsl_interp_accel *acc3 = gsl_interp_accel_alloc ();
+
+    gsl_spline_init (spline1, T1, ALiq, np);
+    double ALiqin = gsl_spline_eval (spline1, Tinit, acc1);
+    //cout << ALiqin << endl;
+    
+    gsl_spline_init (spline2, T1, cLiq, np);
+    double cLiq0 = gsl_spline_eval (spline2, T0, acc2);
+    //cout << cLiq0 << endl;
+    
+    gsl_spline_init (spline3, T1, cSol, np);
+    //double cSol0 = gsl_spline_eval (spline3, T0, acc3);
+    //double m0 = gsl_spline_eval_deriv (spline3, T0, acc3);
+    //cout << cSol0 << endl;
+    //cout << "slope solidus, m = " << 1/m0 << endl;
+
+    gsl_spline_free (spline1);
+    gsl_spline_free (spline2);
+    gsl_spline_free (spline3);
+    gsl_interp_accel_free (acc1);
+    gsl_interp_accel_free (acc2);
+    gsl_interp_accel_free (acc3);
+	
+	double mu = 2.0*ALiqin*cLiq0;
+    //ALiq at undercooling and cLiq at equilibrium
+
+    outpf.precision(15);
+    outpf << "muInit " << mu << ";" << endl;
+    //cout << "muInit " << mu << ";" << endl;
+    }
+    
+    else if (n_compo == 3)
+    {
     gsl_spline *spline4 = gsl_spline_alloc (gsl_interp_cspline, np);
     gsl_interp_accel *acc4 = gsl_interp_accel_alloc ();
     gsl_spline_init (spline4, T1, HLiq11, np);
@@ -233,6 +291,7 @@ int main()
     outpf << "mu1Init " << mu1 << ";" << endl;
     outpf << "mu2Init " << mu2 << ";" << endl;
     //cout << "muInit " << mu << ";" << endl;
+    }
 
 	outpf.close();
     

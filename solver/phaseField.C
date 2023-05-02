@@ -760,7 +760,7 @@ if ((swcool == 1)&&(swch == 1))
             Info<< "Filling phi and theta fields in seeds" << endl;
             volScalarField gaussianSeed = (1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius*seedRadius));
 
-            theta.component(2) = theta.component(2) + randTheta[2]*gaussianSeed;
+            theta = theta + randTheta[2]*gaussianSeed*vector(0,0,1);
             phi = phi + gaussianSeed;
             }
 
@@ -781,9 +781,7 @@ if ((swcool == 1)&&(swch == 1))
             volScalarField gaussianSeed = (1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius*seedRadius));
 
 
-            theta.component(0) = theta.component(0) + randTheta[0]*gaussianSeed;
-            theta.component(1) = theta.component(1) + randTheta[1]*gaussianSeed;
-            theta.component(2) = theta.component(2) + randTheta[2]*gaussianSeed;
+            theta = theta + gaussianSeed*(randTheta[0]*vector(1,0,0) + randTheta[1]*vector(0,1,0) + randTheta[2]*vector(0,0,1));
             phi = phi + gaussianSeed;
             }
 

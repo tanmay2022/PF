@@ -196,7 +196,8 @@ int main(int argc, char *argv[])
     }
     
    scalar InitialResidual_0 = 0.0;
-   scalar InitialResidual_1 = 0.0;
+   scalar InitialResidual_10 = 0.0;
+   scalar InitialResidual_11 = 0.0;
    scalar InitialResidual_20 = 0.0;
    scalar InitialResidual_21 = 0.0;
    scalar InitialResidual_22 = 0.0;
@@ -238,7 +239,7 @@ int main(int argc, char *argv[])
 	{
 	iter_num += 1;
 
-	if (iter_num > 100 && max(max(InitialResidual_0,InitialResidual_1),max(max(max(InitialResidual_20,InitialResidual_21),max(InitialResidual_22,InitialResidual_23)),InitialResidual_3)) < Tol) //.value() && runTime.value() < 1000*InitialDeltaT
+	if (iter_num > 100 && max(max(InitialResidual_0,max(InitialResidual_10,InitialResidual_11)),max(max(max(InitialResidual_20,InitialResidual_21),max(InitialResidual_22,InitialResidual_23)),InitialResidual_3)) < Tol) //.value() && runTime.value() < 1000*InitialDeltaT
 	{   
     	runTime.setDeltaT
         	(
@@ -249,7 +250,7 @@ int main(int argc, char *argv[])
     	Info<< "deltaT increased to " <<  runTime.deltaTValue() << endl;
     	
     
-	} else if (iter_num > 100 && max(max(InitialResidual_0,InitialResidual_1),max(max(max(InitialResidual_20,InitialResidual_21),max(InitialResidual_22,InitialResidual_23)),InitialResidual_3)) > Tol)
+	} else if (iter_num > 100 && max(max(InitialResidual_0,max(InitialResidual_10,InitialResidual_11)),max(max(max(InitialResidual_20,InitialResidual_21),max(InitialResidual_22,InitialResidual_23)),InitialResidual_3)) > Tol)
 	{
     
 	runTime.setDeltaT
@@ -364,64 +365,14 @@ int main(int argc, char *argv[])
                 //! Solving the phase-field and chemical potential equations after
                 //! updating the mesh
                 #include "alphaEqn.H"
+                #include "muEqn.H"
+                #include "thetaEqn.H"
 
 
 
 	}
     
-    //! Elastic stress, strain, displacement fields only for precipitate growth
-    iCorr=0;
-    
-    if (swch == 2)
-    {
-        //nCorr = 0;
-    
-    do {
-      fvVectorMatrix DEqn (
-          dimt*dimt*fvm::d2dt2(D)
-        ==
-            dimx*dimx*fvm::laplacian(2*(mu1_elast*phi*phi*(3-2*phi) + mu2_elast*(1-phi)*(1-phi)*(1+2*phi)) 
-          + lambda1*phi*phi*(3-2*phi) + lambda2*(1-phi)*(1-phi)*(1+2*phi), D, "laplacian(DD,D)")
-          + dimx*dimx*divSigmaExp
-          - dimx*dimx*fvc::div((2*mu1_elast*phi*phi*(3-2*phi) + 2*mu2_elast*(1-phi)*(1-phi)*(1+2*phi))*phi*phi*(3-2*phi)*cEigenStrain
-          + (lambda1*phi*phi*(3-2*phi) + (1-phi)*(1-phi)*(1+2*phi)*lambda2)*I*tr(phi*phi*(3-2*phi)*cEigenStrain))
-      );
-
-      InitialResidual_3 = DEqn.solve().max().initialResidual();
-    
-      gradD  = fvc::grad(D);
-      
-      strain =((gradD-phi*phi*(3-2*phi)*cEigenStrain)&&symmTensor(1,0,0,0,0,0))*symmTensor(1,0,0,0,0,0)
-             +((gradD-phi*phi*(3-2*phi)*cEigenStrain)&&symmTensor(0,0,0,1,0,0))*symmTensor(0,0,0,1,0,0)
-             +((gradD-phi*phi*(3-2*phi)*cEigenStrain)&&symmTensor(0,0,0,0,0,1))*symmTensor(0,0,0,0,0,1);
-
-      sigmaD = (mu1_elast*phi*phi*(3-2*phi)  + mu2_elast*(1-phi)*(1-phi)*(1+2*phi))*twoSymm(gradD) 
-             + (lambda1*phi*phi*(3-2*phi)    + lambda2*(1-phi)*(1-phi)*(1+2*phi))*(I*tr(gradD))
-             + (mu1_elast_*phi*phi*(3-2*phi) + mu2_elast_*(1-phi)*(1-phi)*(1+2*phi))*strain;
-      
-             
-      divSigmaExp = fvc::div
-                    (
-                        sigmaD - (2*mu1_elast*phi*phi*(3-2*phi) + 2*mu2_elast*(1-phi)*(1-phi)*(1+2*phi)
-			       + lambda1*phi*phi*(3-2*phi)      + (1-phi)*(1-phi)*(1+2*phi)*lambda2)*gradD,
-                        "div(sigmaD)"
-                    );
-      
-    }while(InitialResidual_3 > convergenceTolerance && ++iCorr < nCorr);
-    
-    Sigma = (2*(mu1_elast*phi*phi*(3-2*phi) + mu2_elast*(1-phi)*(1-phi)*(1+2*phi))*(symm(fvc::grad(D)) - phi*phi*(3-2*phi)*cEigenStrain) 
-      + (lambda1*phi*phi*(3-2*phi)      + lambda2*(1-phi)*(1-phi)*(1+2*phi))*(I*tr(fvc::grad(D) - phi*phi*(3-2*phi)*cEigenStrain)))
-      + (mu1_elast_*phi*phi*(3-2*phi)   + mu2_elast_*(1-phi)*(1-phi)*(1+2*phi))*strain;
-
-
-    deltaSigmaD = ((mu1_elast-mu2_elast)*twoSymm(fvc::grad(D))           + (lambda1-lambda2)*(I*tr(fvc::grad(D))) 
-            - 2*(mu1_elast-mu2_elast)*phi*phi*(3-2*phi)*cEigenStrain - (lambda1-lambda2)*(I*tr(phi*phi*(3-2*phi)*cEigenStrain)))
-            + (mu1_elast_-mu2_elast_)*strain;
-    
-    deltaF = (0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi*phi*(3-2*phi)*cEigenStrain))-(Sigma && cEigenStrain));
-    
-    sigmaEq = sqrt((3.0/2.0)*magSqr(dev(Sigma)));
-    }
+	#include "DEqn.H"
 
     //#include "nucleateFields.H"
     

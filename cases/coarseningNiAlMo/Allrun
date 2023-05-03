@@ -3,7 +3,6 @@ g++ readInputFile.cpp -o readInputFile
 
 ./readInputFile Input_tdb_new_NiAlMo.in Filling.in
 
-
 cd ${0%/*} || exit 1    # Run from this directory
 
 # Source tutorial run functions
@@ -21,6 +20,14 @@ cp 0/mu_2.orig 0/mu_2
 
 cp 0/theta.orig 0/theta
 
+cp 0/qt0.orig 0/qt0
+
+cp 0/qt1.orig 0/qt1
+
+cp 0/qt2.orig 0/qt2
+
+cp 0/qt3.orig 0/qt3
+
 cp 0/D.orig 0/D
 
 cp 0/gradD.orig 0/gradD
@@ -31,7 +38,7 @@ cp 0/sigma.orig 0/sigma
 
 cp 0/deltaF.orig 0/deltaF
 
-touch ternary.foam
+touch phaseField.foam
 
 #g++ -I/apps/gsl/include -c muInitial.cpp
 g++ -c muInitial.cpp

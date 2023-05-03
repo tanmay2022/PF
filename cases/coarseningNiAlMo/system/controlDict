@@ -16,7 +16,7 @@ FoamFile
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
 #include "../generatedInput"
 
-application     phaseFieldTernary;
+application     phaseField;
 
 startFrom       startTime; //latestTime;
 

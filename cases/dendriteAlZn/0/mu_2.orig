@@ -11,7 +11,7 @@ FoamFile
     format      ascii;
     class       volScalarField;
     location    "0";
-    object      mu;
+    object      mu_2;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 #include "muInitial"
@@ -21,7 +21,7 @@ dimensions      [0 0 0 0 0 0 0];
 internalField   uniform $muInit; 
 
 //============== NO-FLUX BOUNDARY CONDITIONS ====================//
-/*
+
 boundaryField
 {
     posXBound
@@ -39,6 +39,36 @@ boundaryField
     negYBound
     {
         type            zeroGradient;
+    }
+    posZBound
+    {
+        type            empty;
+    }
+    negZBound
+    {
+        type            empty;
+    }
+}
+
+//============== CYCLIC BOUNDARY CONDITIONS ====================//
+/*
+boundaryField
+{
+    posXBound
+    {
+        type            cyclic;
+    }
+    negXBound
+    {
+        type            cyclic;
+    }
+    posYBound
+    {
+        type            cyclic;
+    }
+    negYBound
+    {
+        type            cyclic;
     }
     posZBound
     {
@@ -50,36 +80,6 @@ boundaryField
     }
 }
 */
-//============== CYCLIC BOUNDARY CONDITIONS ====================//
-
-boundaryField
-{
-    posXBound
-    {
-        type            cyclic;
-    }
-    negXBound
-    {
-        type            cyclic;
-    }
-    posYBound
-    {
-        type            cyclic;
-    }
-    negYBound
-    {
-        type            cyclic;
-    }
-    posZBound
-    {
-        type            cyclic;
-    }
-    negZBound
-    {
-        type            cyclic;
-    }
-}
-
 
 
 // ************************************************************************* //

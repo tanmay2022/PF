@@ -456,6 +456,12 @@ int main(int argc, char *argv[])
    scalarRectangularMatrix dcdmu_ldT(2,2,0);
    scalarRectangularMatrix ceq_adT(2,1,0);
    scalarRectangularMatrix ceq_ldT(2,1,0);
+   
+   dimensionedScalar B_a1 = 0.0;
+   dimensionedScalar dB_a1dT = 0.0;
+   dimensionedScalar B_a2 = 0.0;
+   dimensionedScalar dB_a2dT = 0.0;
+   dimensionedScalar DD_a = 0.0;
     
     if (components == 3)
     {
@@ -664,15 +670,15 @@ int main(int argc, char *argv[])
    
    Info<< "omega= " << omega.value() << nl << endl;
       
-   dimensionedScalar B_a1 = (dmudc_l[0][0]*ceq_l[0][0] - dmudc_a[0][0]*ceq_a[0][0]) + (dmudc_l[0][1]*ceq_l[1][0] - dmudc_a[0][1]*ceq_a[1][0]);
+   B_a1 = (dmudc_l[0][0]*ceq_l[0][0] - dmudc_a[0][0]*ceq_a[0][0]) + (dmudc_l[0][1]*ceq_l[1][0] - dmudc_a[0][1]*ceq_a[1][0]);
    
-   dimensionedScalar dB_a1dT = (dmudc_ldT[0][0]*ceq_l[0][0] + dmudc_l[0][0]*ceq_ldT[0][0] - dmudc_adT[0][0]*ceq_a[0][0] - dmudc_a[0][0]*ceq_adT[0][0]) + (dmudc_ldT[0][1]*ceq_l[1][0] + dmudc_l[0][1]*ceq_ldT[1][0] - dmudc_adT[0][1]*ceq_a[1][0] - dmudc_a[0][1]*ceq_adT[1][0]);
+   dB_a1dT = (dmudc_ldT[0][0]*ceq_l[0][0] + dmudc_l[0][0]*ceq_ldT[0][0] - dmudc_adT[0][0]*ceq_a[0][0] - dmudc_a[0][0]*ceq_adT[0][0]) + (dmudc_ldT[0][1]*ceq_l[1][0] + dmudc_l[0][1]*ceq_ldT[1][0] - dmudc_adT[0][1]*ceq_a[1][0] - dmudc_a[0][1]*ceq_adT[1][0]);
    
-   dimensionedScalar B_a2 = (dmudc_l[1][1]*ceq_l[1][0] - dmudc_a[1][1]*ceq_a[1][0]) + (dmudc_l[0][1]*ceq_l[0][0] - dmudc_a[0][1]*ceq_a[0][0]);
+   B_a2 = (dmudc_l[1][1]*ceq_l[1][0] - dmudc_a[1][1]*ceq_a[1][0]) + (dmudc_l[0][1]*ceq_l[0][0] - dmudc_a[0][1]*ceq_a[0][0]);
    
-   dimensionedScalar dB_a2dT = (dmudc_ldT[1][1]*ceq_l[1][0] + dmudc_l[1][1]*ceq_ldT[1][0] - dmudc_adT[1][1]*ceq_a[1][0] - dmudc_a[1][1]*ceq_adT[1][0]) + (dmudc_ldT[0][1]*ceq_l[0][0] + dmudc_l[0][1]*ceq_ldT[0][0] - dmudc_adT[0][1]*ceq_a[0][0] - dmudc_a[0][1]*ceq_adT[0][0]);
+   dB_a2dT = (dmudc_ldT[1][1]*ceq_l[1][0] + dmudc_l[1][1]*ceq_ldT[1][0] - dmudc_adT[1][1]*ceq_a[1][0] - dmudc_a[1][1]*ceq_adT[1][0]) + (dmudc_ldT[0][1]*ceq_l[0][0] + dmudc_l[0][1]*ceq_ldT[0][0] - dmudc_adT[0][1]*ceq_a[0][0] - dmudc_a[0][1]*ceq_adT[0][0]);
    
-   dimensionedScalar DD_a = -(0.5*dmudc_l[0][0]*ceq_l[0][0]*ceq_l[0][0] + 0.5*dmudc_l[1][1]*ceq_l[1][0]*ceq_l[1][0] + dmudc_l[0][1]*ceq_l[0][0]*ceq_l[1][0]) + (0.5*dmudc_a[0][0]*ceq_a[0][0]*ceq_a[0][0] + 0.5*dmudc_a[1][1]*ceq_a[1][0]*ceq_a[1][0] + dmudc_a[0][1]*ceq_a[0][0]*ceq_a[1][0]);
+   DD_a = -(0.5*dmudc_l[0][0]*ceq_l[0][0]*ceq_l[0][0] + 0.5*dmudc_l[1][1]*ceq_l[1][0]*ceq_l[1][0] + dmudc_l[0][1]*ceq_l[0][0]*ceq_l[1][0]) + (0.5*dmudc_a[0][0]*ceq_a[0][0]*ceq_a[0][0] + 0.5*dmudc_a[1][1]*ceq_a[1][0]*ceq_a[1][0] + dmudc_a[0][1]*ceq_a[0][0]*ceq_a[1][0]);
     	}
 
           //! For orthogonal correction of the finite volume mesh
@@ -709,7 +715,14 @@ int main(int argc, char *argv[])
     //#include "nucleateFields.H"
     if (components == 2)
     {
-    avg_liq_conc = fvc::domainIntegrate((0.5*(mu-B_Liq)/A_Liq)*(1-phi)).value()/fvc::domainIntegrate((1-phi)).value();
+    avg_liq_conc = fvc::domainIntegrate((0.5*(mu_1-B_Liq)/A_Liq)*(1-phi)).value()/fvc::domainIntegrate((1-phi)).value();
+    }
+    
+    if (components == 3)
+    {
+    avg_liq_conct[0][0] = fvc::domainIntegrate((dcdmu_l[0][0]*(mu_1) + dcdmu_l[0][1]*(mu_2))*(1-phi)).value()/fvc::domainIntegrate((1-phi)).value();
+
+      avg_liq_conct[1][0] = fvc::domainIntegrate((dcdmu_l[1][0]*(mu_1) + dcdmu_l[1][1]*(mu_2))*(1-phi)).value()/fvc::domainIntegrate((1-phi)).value();
     }
     
     //Info << "avg_liq_conc: " << avg_liq_conc.value() << endl;

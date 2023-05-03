@@ -58,6 +58,8 @@ deltaSigmaD = ((mu1_elast-mu2_elast)*twoSymm(fvc::grad(D))           + (lambda1-
 //! Implicit discretization using fvm class for time derivative and laplacian.
 //! Explicit discretization using fvc class for divergence.
 //! Phase-field equation with approximate relation between c, mu and T according to the parabolic approximation for free energy
+if (components == 2)
+{
 fvScalarMatrix alphaEqn
 (
 /*omega*epsilon*dimt*fvm::ddt(alpha)
@@ -72,7 +74,7 @@ fvScalarMatrix alphaEqn
 
 omega*epsilon*dimt*fvm::ddt(phi)     //alpha=1 liquid phase
                 ==
-		2.0*epsilon*gamma*dimx*dimx*fvm::laplacian(ac_01*ac_01,phi) + 2*gamma*epsilon*dimx*fvc::div(dadgradPhi) - 18.0*(gamma/epsilon)*(phi)*(1-phi)*(1-2.0*phi) + ((-1.0/4.0*(mu - B_Liq)*(mu - B_Liq)/A_Liq + D_Liq) - (-1.0/4.0*(mu - B_Sol)*(mu - B_Sol)/A_Sol + D_Sol))*(30.0*phi*phi*(1.0-phi)*(1.0-phi))*(1 + noise_mag*randNum.globalScalar01())/Vm - epsilon*mu_th*mu_th*grad_qt_sqr*((3*(7*phi*phi+8*phi*phi*phi)*(1-phi) + 2*phi*phi*phi*(7-6*phi))/(1+eps-phi)) - 6.0*phi*(1-phi)*(0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi*phi*(3-2*phi)*cEigenStrain))-(Sigma && cEigenStrain))
+		2.0*epsilon*gamma*dimx*dimx*fvm::laplacian(ac_01*ac_01,phi) + 2*gamma*epsilon*dimx*fvc::div(dadgradPhi) - 18.0*(gamma/epsilon)*(phi)*(1-phi)*(1-2.0*phi) + ((-1.0/4.0*(mu_1 - B_Liq)*(mu_1 - B_Liq)/A_Liq + D_Liq) - (-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol))*(30.0*phi*phi*(1.0-phi)*(1.0-phi))*(1 + noise_mag*randNum.globalScalar01())/Vm - epsilon*mu_th*mu_th*grad_qt_sqr*((3*(7*phi*phi+8*phi*phi*phi)*(1-phi) + 2*phi*phi*phi*(7-6*phi))/(1+eps-phi)) - 6.0*phi*(1-phi)*(0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi*phi*(3-2*phi)*cEigenStrain))-(Sigma && cEigenStrain))
 //+ 30.0*noise_mag*phi*(1.0-phi)*phi*(1-phi)*randNum.globalScalar01()
 
 
@@ -81,6 +83,29 @@ omega*epsilon*dimt*fvm::ddt(phi)     //alpha=1 liquid phase
 //alphaEqn.solve();
 
 InitialResidual_0 = alphaEqn.solve().max().initialResidual();
+}
+
+if (components == 3)
+{
+fvScalarMatrix alphaEqn (
+/*omega*epsilon*dimt*fvm::ddt(alpha)
+	-epsilon*gamma*dimx*dimx*fvm::laplacian(alpha)
+	+2.0*alpha*(alpha-1.0)*(2.0*alpha-1.0)/epsilon		*/
+
+omega*epsilon*dimt*fvm::ddt(phi)     //alpha=1 liquid phase
+                ==
+// 		2.0*epsilon*gamma*dimx*dimx*fvm::laplacian(ac_01*ac_01,phi) + 2*gamma*epsilon*dimx*fvc::div(dadgradPhi) - 18.0*(gamma/epsilon)*(phi)*(1-phi)*(1-2.0*phi) 
+//                 + ((ceq_1[0][1] - ceq_2[0][1])*(mu_1 - mu_eq[0][1]) + (ceq_1[1][1] - ceq_2[1][1])*(mu_2 - mu_eq[1][1]))*30.0*phi*phi*(1.0-phi)*(1.0-phi)
+    2.0*epsilon*gamma*dimx*dimx*fvm::laplacian(ac_01*ac_01,phi) + 2*gamma*epsilon*dimx*fvc::div(dadgradPhi) - 18.0*(gamma/epsilon)*(phi)*(1-phi)*(1-2.0*phi) 
+    + ((-0.5*dmudc_l[0][0]*(dcdmu_l[0][0]*mu_1 + dcdmu_l[0][1]*mu_2)*(dcdmu_l[0][0]*mu_1 + dcdmu_l[0][1]*mu_2) - dmudc_l[0][1]*(dcdmu_l[0][0]*mu_1 + dcdmu_l[0][1]*mu_2)*(dcdmu_l[1][0]*mu_1 + dcdmu_l[1][1]*mu_2) - 0.5*dmudc_l[1][1]*(dcdmu_l[1][0]*mu_1 + dcdmu_l[1][1]*mu_2)*(dcdmu_l[1][0]*mu_1 + dcdmu_l[1][1]*mu_2)) - (-0.5*dmudc_a[0][0]*(dcdmu_a[0][0]*(mu_1 - B_a1) + dcdmu_a[0][1]*(mu_2 - B_a2))*(dcdmu_a[0][0]*(mu_1 - B_a1) + dcdmu_a[0][1]*(mu_2 - B_a2)) - dmudc_a[0][1]*(dcdmu_a[0][0]*(mu_1 - B_a1) + dcdmu_a[0][1]*(mu_2 - B_a2))*(dcdmu_a[1][0]*(mu_1 - B_a1) + dcdmu_a[1][1]*(mu_2 - B_a2)) - 0.5*dmudc_a[1][1]*(dcdmu_a[1][0]*(mu_1 - B_a1) + dcdmu_a[1][1]*(mu_2 - B_a2))*(dcdmu_a[1][0]*(mu_1 - B_a1) + dcdmu_a[1][1]*(mu_2 - B_a2)) + DD_a))*30.0*phi*phi*(1.0-phi)*(1.0-phi)*(1 + noise_mag*randNum.globalScalar01())/Vm - epsilon*mu_th*mu_th*grad_qt_sqr*((3*(7*phi*phi+8*phi*phi*phi)*(1-phi) + 2*phi*phi*phi*(7-6*phi))/(1+eps-phi))
+    - 6.0*phi*(1-phi)*(0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi*phi*(3-2*phi)*cEigenStrain))-(Sigma && cEigenStrain))
+);
+
+//alphaEqn.solve();
+
+InitialResidual_0 = alphaEqn.solve().max().initialResidual();
+}
+
 
     // Writing into the log file
     Info<< "Min/max phi:" << min(phi).value() << ' ' << max(phi).value() << endl;

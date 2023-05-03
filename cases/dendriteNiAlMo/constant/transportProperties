@@ -47,7 +47,7 @@ T0         	 T0 [0 0 0 0 0 0 0] $T0; //Melting temperature
 delta_01         delta_01 [0 0 0 0 0 0 0] $dab; //0.01; //Strength of anisotropy
 theta_x         theta_x [0 0 0 0 0 0 0] $theta_x; //0.785; //Constant orientation in radian about x
 theta_y         theta_y [0 0 0 0 0 0 0] $theta_y; //0.785; //Constant orientation in radian about y
-theta_val         theta_val [0 0 0 0 0 0 0] $theta_z; //0.785; //Constant orientation in radian about z
+theta_z         theta_z [0 0 0 0 0 0 0] $theta_z; //0.785; //Constant orientation in radian about z
 eps         eps [0 0 0 0 0 0 0] 1e-3; // value added to denominator of g_phi
 mu_th          mu_th [0 0 0 0 0 0 0] 0.5; // mu^2 is the strength of the coupling in alpha equation
 Vm              Vm [0 0 0 0 0 0 0] $Vm; //1.0e-5; // Molar volume

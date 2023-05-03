@@ -68,7 +68,7 @@
         //!Constant orientation in radian about y
         dimensionedScalar theta_y(transportProperties.lookup("theta_y"));
         //!Constant orientation in radian about z
-        dimensionedScalar theta_val(transportProperties.lookup("theta_val"));
+        dimensionedScalar theta_z(transportProperties.lookup("theta_z"));
         //!mu^2 is the strength of the coupling in f_ori equation
         dimensionedScalar mu_th(transportProperties.lookup("mu_th"));             
         //!Small value to avoid singularity

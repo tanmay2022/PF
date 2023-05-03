@@ -1,9 +1,9 @@
 /*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  4.x                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
@@ -11,14 +11,13 @@ FoamFile
     format      ascii;
     class       volScalarField;
     location    "0";
-    object      mu;
+    object      qt1;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-#include "muInitial"
 
 dimensions      [0 0 0 0 0 0 0];
 
-internalField   uniform $muInit; 
+internalField   uniform 0.0;
 
 //============== NO-FLUX BOUNDARY CONDITIONS ====================//
 /*
@@ -72,11 +71,11 @@ boundaryField
     }
     posZBound
     {
-        type            cyclic;
+        type            empty;
     }
     negZBound
     {
-        type            cyclic;
+        type            empty;
     }
 }
 

@@ -51,6 +51,12 @@ gsl_spline *spline3;
 gsl_spline *spline4;
 gsl_spline *spline5;
 gsl_spline *spline6;
+gsl_spline *spline7;
+gsl_spline *spline8;
+gsl_spline *spline9;
+gsl_spline *spline10;
+gsl_spline *spline_L;
+gsl_spline *spline_C;
 
 gsl_interp_accel *acc1;
 gsl_interp_accel *acc2;
@@ -58,6 +64,12 @@ gsl_interp_accel *acc3;
 gsl_interp_accel *acc4;
 gsl_interp_accel *acc5;
 gsl_interp_accel *acc6;
+gsl_interp_accel *acc7;
+gsl_interp_accel *acc8;
+gsl_interp_accel *acc9;
+gsl_interp_accel *acc10;
+gsl_interp_accel *acc_L;
+gsl_interp_accel *acc_C;
 
 double calculate_melting_point(double cl, double T_guess, double T_high, double T_low) {
   //int iter=0;
@@ -112,6 +124,135 @@ double calculate_melting_point(double cl, double T_guess, double T_high, double 
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+// Overloading function calculate_melting_point for ternary
+
+double calculate_melting_point(scalarRectangularMatrix cl, double T_guess, double T_high, double T_low) {
+  //int iter=0;
+  double tol=1e-6;
+  dimensionedScalar T = T_guess;
+  dimensionedScalar fval, dfdT;
+
+   scalarRectangularMatrix dmudc_a(2,2,0);
+   scalarRectangularMatrix dmudc_l(2,2,0);
+   scalarRectangularMatrix dmudc_adT(2,2,0);
+   scalarRectangularMatrix dmudc_ldT(2,2,0);
+   scalarRectangularMatrix dcdmu_a(2,2,0);
+   scalarRectangularMatrix dcdmu_l(2,2,0);
+   scalarRectangularMatrix dcdmu_adT(2,2,0);
+   scalarRectangularMatrix dcdmu_ldT(2,2,0);
+   scalarRectangularMatrix ceq_a(2,1,0);
+   scalarRectangularMatrix ceq_l(2,1,0);
+   scalarRectangularMatrix ceq_adT(2,1,0);
+   scalarRectangularMatrix ceq_ldT(2,1,0);
+  
+  do {
+    dmudc_a[0][0] = gsl_spline_eval (spline1, T.value(), acc1);
+    dmudc_a[0][1] = gsl_spline_eval (spline2, T.value(), acc2);
+    dmudc_a[1][1] = gsl_spline_eval (spline3, T.value(), acc3);
+
+    dmudc_adT[0][0] = gsl_spline_eval_deriv (spline1, T.value(), acc1);
+    dmudc_adT[0][1] = gsl_spline_eval_deriv (spline2, T.value(), acc2);
+    dmudc_adT[1][1] = gsl_spline_eval_deriv (spline3, T.value(), acc3);
+    
+    dmudc_l[0][0] = gsl_spline_eval (spline4, T.value(), acc4);
+    dmudc_l[0][1] = gsl_spline_eval (spline5, T.value(), acc5);
+    dmudc_l[1][1] = gsl_spline_eval (spline6, T.value(), acc6);
+
+    dmudc_ldT[0][0] = gsl_spline_eval_deriv (spline4, T.value(), acc4);
+    dmudc_ldT[0][1] = gsl_spline_eval_deriv (spline5, T.value(), acc5);
+    dmudc_ldT[1][1] = gsl_spline_eval_deriv (spline6, T.value(), acc6);
+    
+    ceq_a[0][0] = gsl_spline_eval (spline7, T.value(), acc7);
+    ceq_a[1][0] = gsl_spline_eval (spline8, T.value(), acc8);
+
+    ceq_adT[0][0] = gsl_spline_eval_deriv (spline7, T.value(), acc7);
+    ceq_adT[1][0] = gsl_spline_eval_deriv (spline8, T.value(), acc8);
+    
+    ceq_l[0][0] = gsl_spline_eval (spline9, T.value(), acc9);
+    ceq_l[1][0] = gsl_spline_eval (spline10, T.value(), acc10);
+
+    ceq_ldT[0][0] = gsl_spline_eval_deriv (spline9, T.value(), acc9);
+    ceq_ldT[1][0] = gsl_spline_eval_deriv (spline10, T.value(), acc10);
+
+    dmudc_a[1][0] = dmudc_a[0][1];
+    dmudc_l[1][0] = dmudc_l[0][1];
+
+    dmudc_adT[1][0] = dmudc_adT[0][1];
+    dmudc_ldT[1][0] = dmudc_ldT[0][1];
+
+    //Info << T.value() << " " << ceq_l[0][0] << " " << ceq_l[1][0] << " " << Cp << endl;
+
+    scalar detdmudc_a = (dmudc_a[0][0]*dmudc_a[1][1]-dmudc_a[0][1]*dmudc_a[0][1]);
+
+    dcdmu_adT[0][0] = -dmudc_a[1][1]*(dmudc_adT[0][0]*dmudc_a[1][1] + dmudc_a[0][0]*dmudc_adT[1][1] - 2*dmudc_adT[0][1]*dmudc_a[0][1])/(detdmudc_a*detdmudc_a) + dmudc_adT[1][1]/detdmudc_a;
+    dcdmu_adT[0][1] = dmudc_a[0][1]*(dmudc_adT[0][0]*dmudc_a[1][1] + dmudc_a[0][0]*dmudc_adT[1][1] - 2*dmudc_adT[0][1]*dmudc_a[0][1])/(detdmudc_a*detdmudc_a) - dmudc_adT[0][1]/detdmudc_a;
+    dcdmu_adT[1][1] = -dmudc_a[0][0]*(dmudc_adT[0][0]*dmudc_a[1][1] + dmudc_a[0][0]*dmudc_adT[1][1] - 2*dmudc_adT[0][1]*dmudc_a[0][1])/(detdmudc_a*detdmudc_a) + dmudc_adT[0][0]/detdmudc_a;
+
+    scalar detdmudc_l = (dmudc_l[0][0]*dmudc_l[1][1]-dmudc_l[0][1]*dmudc_l[0][1]);
+
+    dcdmu_ldT[0][0] = -dmudc_l[1][1]*(dmudc_ldT[0][0]*dmudc_l[1][1] + dmudc_l[0][0]*dmudc_ldT[1][1] - 2*dmudc_ldT[0][1]*dmudc_l[0][1])/(detdmudc_l*detdmudc_l) + dmudc_ldT[1][1]/detdmudc_l;
+    dcdmu_ldT[0][1] = dmudc_l[0][1]*(dmudc_ldT[0][0]*dmudc_l[1][1] + dmudc_l[0][0]*dmudc_ldT[1][1] - 2*dmudc_ldT[0][1]*dmudc_l[0][1])/(detdmudc_l*detdmudc_l) - dmudc_ldT[0][1]/detdmudc_l;
+    dcdmu_ldT[1][1] = -dmudc_l[0][0]*(dmudc_ldT[0][0]*dmudc_l[1][1] + dmudc_l[0][0]*dmudc_ldT[1][1] - 2*dmudc_ldT[0][1]*dmudc_l[0][1])/(detdmudc_l*detdmudc_l) + dmudc_ldT[0][0]/detdmudc_l;
+
+    dcdmu_a = SVDinv(dmudc_a);
+    dcdmu_l = SVDinv(dmudc_l);
+    
+    
+    dimensionedScalar B_a1 = (dmudc_l[0][0]*ceq_l[0][0] - dmudc_a[0][0]*ceq_a[0][0]) + (dmudc_l[0][1]*ceq_l[1][0] - dmudc_a[0][1]*ceq_a[1][0]);
+   
+   dimensionedScalar dB_a1dT = (dmudc_ldT[0][0]*ceq_l[0][0] + dmudc_l[0][0]*ceq_ldT[0][0] - dmudc_adT[0][0]*ceq_a[0][0] - dmudc_a[0][0]*ceq_adT[0][0]) + (dmudc_ldT[0][1]*ceq_l[1][0] + dmudc_l[0][1]*ceq_ldT[1][0] - dmudc_adT[0][1]*ceq_a[1][0] - dmudc_a[0][1]*ceq_adT[1][0]);
+   
+   dimensionedScalar B_a2 = (dmudc_l[1][1]*ceq_l[1][0] - dmudc_a[1][1]*ceq_a[1][0]) + (dmudc_l[0][1]*ceq_l[0][0] - dmudc_a[0][1]*ceq_a[0][0]);
+   
+   dimensionedScalar dB_a2dT = (dmudc_ldT[1][1]*ceq_l[1][0] + dmudc_l[1][1]*ceq_ldT[1][0] - dmudc_adT[1][1]*ceq_a[1][0] - dmudc_a[1][1]*ceq_adT[1][0]) + (dmudc_ldT[0][1]*ceq_l[0][0] + dmudc_l[0][1]*ceq_ldT[0][0] - dmudc_adT[0][1]*ceq_a[0][0] - dmudc_a[0][1]*ceq_adT[0][0]);
+   
+   //dimensionedScalar B_Liq = 0.0; //("B_Liq", 0.*mu);
+   
+   dimensionedScalar DD_a = -(0.5*dmudc_l[0][0]*ceq_l[0][0]*ceq_l[0][0] + 0.5*dmudc_l[1][1]*ceq_l[1][0]*ceq_l[1][0] + dmudc_l[0][1]*ceq_l[0][0]*ceq_l[1][0]) + (0.5*dmudc_a[0][0]*ceq_a[0][0]*ceq_a[0][0] + 0.5*dmudc_a[1][1]*ceq_a[1][0]*ceq_a[1][0] + dmudc_a[0][1]*ceq_a[0][0]*ceq_a[1][0]);
+   
+   //dimensionedScalar D_Liq = 0.0; //("D_Liq", 0.*mu);
+   
+   dimensionedScalar DD_a_dT = -((0.5*dmudc_ldT[0][0]*ceq_l[0][0]*ceq_l[0][0] + dmudc_l[0][0]*ceq_ldT[0][0]*ceq_l[0][0]) + (0.5*dmudc_ldT[1][1]*ceq_l[1][0]*ceq_l[1][0] + dmudc_l[1][1]*ceq_ldT[1][0]*ceq_l[1][0]) + (dmudc_ldT[0][1]*ceq_l[0][0]*ceq_l[1][0] + dmudc_l[0][1]*ceq_ldT[0][0]*ceq_l[1][0] + dmudc_l[0][1]*ceq_l[0][0]*ceq_ldT[1][0])) + ((0.5*dmudc_adT[0][0]*ceq_a[0][0]*ceq_a[0][0] + dmudc_a[0][0]*ceq_adT[0][0]*ceq_a[0][0]) + (0.5*dmudc_adT[1][1]*ceq_a[1][0]*ceq_a[1][0] + 0.5*dmudc_a[1][1]*ceq_adT[1][0]*ceq_a[1][0]) + (dmudc_adT[0][1]*ceq_a[0][0]*ceq_a[1][0] + dmudc_a[0][1]*ceq_adT[0][0]*ceq_a[1][0] + dmudc_a[0][1]*ceq_a[0][0]*ceq_adT[1][0]));
+    
+    dimensionedScalar mu1_trial = (dmudc_l[0][0]*cl[0][0] + dmudc_l[0][1]*cl[1][0] - B_a1);
+    dimensionedScalar mu2_trial = (dmudc_l[0][1]*cl[0][0] + dmudc_l[1][1]*cl[1][0] - B_a2);
+
+    dimensionedScalar mu1_trialdT = (dmudc_ldT[0][0]*cl[0][0] + dmudc_ldT[0][1]*cl[1][0] - dB_a1dT);
+    dimensionedScalar mu2_trialdT = (dmudc_ldT[0][1]*cl[0][0] + dmudc_ldT[1][1]*cl[1][0] - dB_a2dT);
+
+   fval  = -(0.5*dmudc_a[0][0]*(dcdmu_a[0][0]*mu1_trial + dcdmu_a[0][1]*mu2_trial)*(dcdmu_a[0][0]*mu1_trial + dcdmu_a[0][1]*mu2_trial)
+    + 0.5*dmudc_a[1][1]*(dcdmu_a[0][1]*mu1_trial + dcdmu_a[1][1]*mu2_trial)*(dcdmu_a[0][1]*mu1_trial + dcdmu_a[1][1]*mu2_trial)
+    + dmudc_a[0][1]*(dcdmu_a[0][0]*mu1_trial + dcdmu_a[0][1]*mu2_trial)*(dcdmu_a[0][1]*mu1_trial + dcdmu_a[1][1]*mu2_trial))
+    + (0.5*dmudc_l[0][0]*cl[0][0]*cl[0][0] + 0.5*dmudc_l[1][1]*cl[1][0]*cl[1][0] + dmudc_l[0][1]*cl[0][0]*cl[1][0]) + DD_a;
+
+    dfdT  = -(0.5*dmudc_adT[0][0]*(dcdmu_a[0][0]*mu1_trial + dcdmu_a[0][1]*mu2_trial)*(dcdmu_a[0][0]*mu1_trial + dcdmu_a[0][1]*mu2_trial)
+    + 0.5*dmudc_adT[1][1]*(dcdmu_a[0][1]*mu1_trial + dcdmu_a[1][1]*mu2_trial)*(dcdmu_a[0][1]*mu1_trial + dcdmu_a[1][1]*mu2_trial)
+    + dmudc_adT[0][1]*(dcdmu_a[0][0]*mu1_trial + dcdmu_a[0][1]*mu2_trial)*(dcdmu_a[0][1]*mu1_trial + dcdmu_a[1][1]*mu2_trial)
+    + dmudc_a[0][0]*(dcdmu_a[0][0]*mu1_trial + dcdmu_a[0][1]*mu2_trial)*(dcdmu_adT[0][0]*mu1_trial + dcdmu_adT[0][1]*mu2_trial + dcdmu_a[0][0]*mu1_trialdT + dcdmu_a[0][1]*mu2_trialdT)
+    + dmudc_a[1][1]*(dcdmu_a[0][1]*mu1_trial + dcdmu_a[1][1]*mu2_trial)*(dcdmu_adT[0][1]*mu1_trial + dcdmu_adT[1][1]*mu2_trial + dcdmu_a[0][1]*mu1_trialdT + dcdmu_a[1][1]*mu2_trialdT)
+    + dmudc_a[0][1]*((dcdmu_adT[0][0]*mu1_trial + dcdmu_adT[0][1]*mu2_trial + dcdmu_a[0][0]*mu1_trialdT + dcdmu_a[0][1]*mu2_trialdT)*(dcdmu_a[0][1]*mu1_trial + dcdmu_a[1][1]*mu2_trial) + (dcdmu_a[0][0]*mu1_trial + dcdmu_a[0][1]*mu2_trial)*(dcdmu_adT[0][1]*mu1_trial + dcdmu_adT[1][1]*mu2_trial + dcdmu_a[0][1]*mu1_trialdT + dcdmu_a[1][1]*mu2_trialdT))
+    );
+
+    dfdT += DD_a_dT + (0.5*dmudc_ldT[0][0]*cl[0][0]*cl[0][0] + 0.5*dmudc_ldT[1][1]*cl[1][0]*cl[1][0] + dmudc_ldT[0][1]*cl[0][0]*cl[1][0]);
+
+    /*if ((T.value() > 870) || (T.value() < 793)) {
+      T.value() = 870;
+      break;
+    }*/
+    
+    T.value() = T.value() - fval.value()/dfdT.value();
+
+    if ((T.value() > T_high) || (T.value() < T_low)) {
+      T.value() = T_high;
+      break;
+    }
+
+  } while(fabs(fval.value()) > tol);
+  return T.value();
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
 
 int main(int argc, char *argv[])
 {
@@ -159,6 +300,8 @@ int main(int argc, char *argv[])
     
     //! Allocation for GSL acceleration and interpolation
     
+    if (components == 2)
+    {
     spline1 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc1 = gsl_interp_accel_alloc ();
     gsl_spline_init (spline1, T1, ASol, np);
@@ -175,13 +318,64 @@ int main(int argc, char *argv[])
     acc4 = gsl_interp_accel_alloc ();
     gsl_spline_init (spline4, T1, cLiq, np);
 
-    spline5 = gsl_spline_alloc (gsl_interp_cspline, np1);
-    acc5 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline5, T2, Lf_arr, np1);
+    spline_L = gsl_spline_alloc (gsl_interp_cspline, np1);
+    acc_L = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline_L, T2, Lf_arr, np1);
 
-    spline6 = gsl_spline_alloc (gsl_interp_cspline, np1);
+    spline_C = gsl_spline_alloc (gsl_interp_cspline, np1);
+    acc_C = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline_C, T2, Cp_arr, np1);
+    }
+    else if (components == 3)
+    {
+    spline1 = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc1 = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline1, T1, HSol11, np);
+
+    spline2 = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc2 = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline2, T1, HSol12, np);
+
+    spline3 = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc3 = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline3, T1, HSol22, np);
+    
+    spline4 = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc4 = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline4, T1, HLiq11, np);
+    
+    spline5 = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc5 = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline5, T1, HLiq12, np);
+    
+    spline6 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc6 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline6, T2, Cp_arr, np1);
+    gsl_spline_init (spline6, T1, HLiq22, np);
+    
+    spline7 = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc7 = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline7, T1, cSol1, np);
+    
+    spline8 = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc8 = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline8, T1, cSol2, np);
+    
+    spline9 = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc9 = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline9, T1, cLiq1, np);
+
+    spline10 = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc10 = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline10, T1, cLiq2, np);
+    
+    spline_L = gsl_spline_alloc (gsl_interp_cspline, np1);
+    acc_L = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline_L, T2, Lf_arr, np1);
+
+    spline_C = gsl_spline_alloc (gsl_interp_cspline, np1);
+    acc_C = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline_C, T2, Cp_arr, np1);
+    }
     
     //! Current temperature
     dimensionedScalar T = initial;
@@ -207,13 +401,78 @@ int main(int argc, char *argv[])
    scalar InitialDeltaT = runTime.deltaTValue();
    
    int iCorr = 0;
+   
+   //! For binary
+   dimensionedScalar DeltaC = 0.0;
+
+   dimensionedScalar A_Sol = 0.0;
+   dimensionedScalar A_Liq = 0.0;
+        dimensionedScalar A_SoldT = 0.0;
+        dimensionedScalar A_LiqdT = 0.0;
+        
+        dimensionedScalar c_Sol = 0.0;
+        dimensionedScalar c_Liq = 0.0;
+
+        dimensionedScalar c_SoldT = 0.0;
+        dimensionedScalar c_LiqdT = 0.0;
+        
+        
+        dimensionedScalar dcdmu_Liq = 0.0;
+            
+   dimensionedScalar omega = 0.0;
     
+        dimensionedScalar B_Sol = 0.0;
+        dimensionedScalar dBdT = 0.0;
+        
+        dimensionedScalar B_Liq = 0.0; //("B_Liq", 0.*mu);
+
+        dimensionedScalar D_Sol = 0.0;
+        dimensionedScalar D_Liq = 0.0;
+        
+        dimensionedScalar avg_liq_conc = 0.0;
+   
+    
+    if (components == 2)
+    {
     dimensionedScalar c_a = gsl_spline_eval (spline3, Tm.value(), acc3);
     dimensionedScalar c_l = gsl_spline_eval (spline4, Tm.value(), acc4);
     
     //Info << T << "AS " << A_Sol << "AL " << A_Liq << "cS " << c_Sol << "cL " << c_Liq << endl;
     
-    dimensionedScalar DeltaC = c_l-c_a;
+    DeltaC = c_l-c_a;
+    }
+    
+    //! For ternary
+   scalarRectangularMatrix c_at(2,1,0);
+   scalarRectangularMatrix c_lt(2,1,0);
+   scalarRectangularMatrix DeltaCt(2,1,0);
+   scalarRectangularMatrix avg_liq_conct(2,1,0);
+   scalarRectangularMatrix testMatrix(2,2,0);
+   scalarRectangularMatrix testMatrix_1(2,2,0);
+
+   scalarRectangularMatrix dmudc_adT(2,2,0);
+   scalarRectangularMatrix dmudc_ldT(2,2,0);
+   scalarRectangularMatrix dcdmu_adT(2,2,0);
+   scalarRectangularMatrix dcdmu_ldT(2,2,0);
+   scalarRectangularMatrix ceq_adT(2,1,0);
+   scalarRectangularMatrix ceq_ldT(2,1,0);
+   
+   dimensionedScalar B_a1 = 0.0;
+   dimensionedScalar dB_a1dT = 0.0;
+   dimensionedScalar B_a2 = 0.0;
+   dimensionedScalar dB_a2dT = 0.0;
+   dimensionedScalar DD_a = 0.0;
+    
+    if (components == 3)
+    {
+    c_at[0][0] = gsl_spline_eval (spline7, Tm.value(), acc7);
+    c_at[1][0] = gsl_spline_eval (spline8, Tm.value(), acc8);
+    
+    c_lt[0][0] = gsl_spline_eval (spline9, Tm.value(), acc9);
+    c_lt[1][0] = gsl_spline_eval (spline10, Tm.value(), acc10);
+   
+   DeltaCt = c_lt-c_at;
+   }
 
     dimensionedScalar totalVol = fvc::domainIntegrate(1-0.0*phi);
    
@@ -294,8 +553,8 @@ int main(int argc, char *argv[])
     
         if (swcool == 1)
         {
-            dimensionedScalar Lf = gsl_spline_eval (spline5, T.value(), acc5);
-            dimensionedScalar Cp = gsl_spline_eval (spline6, T.value(), acc6);
+            dimensionedScalar Lf = gsl_spline_eval (spline_L, T.value(), acc_L);
+            dimensionedScalar Cp = gsl_spline_eval (spline_C, T.value(), acc_C);
             T = T + (Lf/Cp)*dsolidVolFrac - (qdot/Cp)*runTime.deltaTValue();
         
         }
@@ -316,32 +575,111 @@ int main(int argc, char *argv[])
         dimensionedScalar Tdot = (T-T_old)/runTime.deltaTValue();
 
         //! Computing the thermodynamic parameters in phase diagram
-        dimensionedScalar A_Sol = gsl_spline_eval (spline1, T.value(), acc1);
-        dimensionedScalar A_Liq = gsl_spline_eval (spline2, T.value(), acc2);
+        if (components == 2)
+    	{
+        A_Sol = gsl_spline_eval (spline1, T.value(), acc1);
+        A_Liq = gsl_spline_eval (spline2, T.value(), acc2);
         
-        dimensionedScalar A_SoldT = gsl_spline_eval_deriv (spline1, T.value(), acc1);
-        dimensionedScalar A_LiqdT = gsl_spline_eval_deriv (spline2, T.value(), acc2);
+        A_SoldT = gsl_spline_eval_deriv (spline1, T.value(), acc1);
+        A_LiqdT = gsl_spline_eval_deriv (spline2, T.value(), acc2);
         
-        dimensionedScalar c_Sol = gsl_spline_eval (spline3, T.value(), acc3);
-        dimensionedScalar c_Liq = gsl_spline_eval (spline4, T.value(), acc4);
+        c_Sol = gsl_spline_eval (spline3, T.value(), acc3);
+        c_Liq = gsl_spline_eval (spline4, T.value(), acc4);
 
-        dimensionedScalar c_SoldT = gsl_spline_eval_deriv (spline3, T.value(), acc3);
-        dimensionedScalar c_LiqdT = gsl_spline_eval_deriv (spline4, T.value(), acc4);
+        c_SoldT = gsl_spline_eval_deriv (spline3, T.value(), acc3);
+        c_LiqdT = gsl_spline_eval_deriv (spline4, T.value(), acc4);
         
-        
-        dimensionedScalar dcdmu_Liq = 0.5/A_Liq;
+        dcdmu_Liq = 0.5/A_Liq;
             
-        dimensionedScalar omega = epsilon*0.18*DeltaC*DeltaC/(dcdmu_Liq*diff_Liq*Vm);
+        omega = epsilon*0.18*DeltaC*DeltaC/(dcdmu_Liq*diff_Liq*Vm);
     
-        dimensionedScalar B_Sol = 2.0*(A_Liq*c_Liq - A_Sol*c_Sol);
-        dimensionedScalar dBdT = 2.0*(A_LiqdT*c_Liq + A_Liq*c_LiqdT - A_SoldT*c_Sol - A_Sol*c_SoldT);
+        B_Sol = 2.0*(A_Liq*c_Liq - A_Sol*c_Sol);
+        dBdT = 2.0*(A_LiqdT*c_Liq + A_Liq*c_LiqdT - A_SoldT*c_Sol - A_Sol*c_SoldT);
         
-        dimensionedScalar B_Liq = 0.0; //("B_Liq", 0.*mu);
+        B_Liq = 0.0; //("B_Liq", 0.*mu);
 
-        dimensionedScalar D_Sol = -A_Liq*c_Liq*c_Liq + A_Sol*c_Sol*c_Sol;
-        dimensionedScalar D_Liq = 0.0; //("D_Liq", 0.*mu);
-
+        D_Sol = -A_Liq*c_Liq*c_Liq + A_Sol*c_Sol*c_Sol;
+        D_Liq = 0.0; //("D_Liq", 0.*mu);
+	}
         
+        if (components == 3)
+    	{
+    dmudc_a[0][0] = gsl_spline_eval (spline1, T.value(), acc1);
+    dmudc_a[0][1] = gsl_spline_eval (spline2, T.value(), acc2);
+    dmudc_a[1][1] = gsl_spline_eval (spline3, T.value(), acc3);
+
+    dmudc_adT[0][0] = gsl_spline_eval_deriv (spline1, T.value(), acc1);
+    dmudc_adT[0][1] = gsl_spline_eval_deriv (spline2, T.value(), acc2);
+    dmudc_adT[1][1] = gsl_spline_eval_deriv (spline3, T.value(), acc3);
+    
+    dmudc_l[0][0] = gsl_spline_eval (spline4, T.value(), acc4);
+    dmudc_l[0][1] = gsl_spline_eval (spline5, T.value(), acc5);
+    dmudc_l[1][1] = gsl_spline_eval (spline6, T.value(), acc6);
+
+    dmudc_ldT[0][0] = gsl_spline_eval_deriv (spline4, T.value(), acc4);
+    dmudc_ldT[0][1] = gsl_spline_eval_deriv (spline5, T.value(), acc5);
+    dmudc_ldT[1][1] = gsl_spline_eval_deriv (spline6, T.value(), acc6);
+    
+    ceq_a[0][0] = gsl_spline_eval (spline7, T.value(), acc7);
+    ceq_a[1][0] = gsl_spline_eval (spline8, T.value(), acc8);
+
+    ceq_adT[0][0] = gsl_spline_eval_deriv (spline7, T.value(), acc7);
+    ceq_adT[1][0] = gsl_spline_eval_deriv (spline8, T.value(), acc8);
+    
+    ceq_l[0][0] = gsl_spline_eval (spline9, T.value(), acc9);
+    ceq_l[1][0] = gsl_spline_eval (spline10, T.value(), acc10);
+
+    ceq_ldT[0][0] = gsl_spline_eval_deriv (spline9, T.value(), acc9);
+    ceq_ldT[1][0] = gsl_spline_eval_deriv (spline10, T.value(), acc10);
+    
+    dmudc_a[1][0] = dmudc_a[0][1];
+    dmudc_l[1][0] = dmudc_l[0][1];
+
+    dmudc_adT[1][0] = dmudc_adT[0][1];
+    dmudc_ldT[1][0] = dmudc_ldT[0][1];    
+    
+    //Info << T.value() << " " << ceq_l[0][0] << " " << ceq_l[1][0] << " " << Cp << endl;
+    
+    scalar detdmudc_a = (dmudc_a[0][0]*dmudc_a[1][1]-dmudc_a[0][1]*dmudc_a[0][1]);
+    
+    dcdmu_adT[0][0] = -dmudc_a[1][1]*(dmudc_adT[0][0]*dmudc_a[1][1] + dmudc_a[0][0]*dmudc_adT[1][1] - 2*dmudc_adT[0][1]*dmudc_a[0][1])/(detdmudc_a*detdmudc_a) + dmudc_adT[1][1]/detdmudc_a;
+    dcdmu_adT[0][1] = dmudc_a[0][1]*(dmudc_adT[0][0]*dmudc_a[1][1] + dmudc_a[0][0]*dmudc_adT[1][1] - 2*dmudc_adT[0][1]*dmudc_a[0][1])/(detdmudc_a*detdmudc_a) - dmudc_adT[0][1]/detdmudc_a;
+    dcdmu_adT[1][1] = -dmudc_a[0][0]*(dmudc_adT[0][0]*dmudc_a[1][1] + dmudc_a[0][0]*dmudc_adT[1][1] - 2*dmudc_adT[0][1]*dmudc_a[0][1])/(detdmudc_a*detdmudc_a) + dmudc_adT[0][0]/detdmudc_a;
+
+    scalar detdmudc_l = (dmudc_l[0][0]*dmudc_l[1][1]-dmudc_l[0][1]*dmudc_l[0][1]);
+    
+    dcdmu_ldT[0][0] = -dmudc_l[1][1]*(dmudc_ldT[0][0]*dmudc_l[1][1] + dmudc_l[0][0]*dmudc_ldT[1][1] - 2*dmudc_ldT[0][1]*dmudc_l[0][1])/(detdmudc_l*detdmudc_l) + dmudc_ldT[1][1]/detdmudc_l;
+    dcdmu_ldT[0][1] = dmudc_l[0][1]*(dmudc_ldT[0][0]*dmudc_l[1][1] + dmudc_l[0][0]*dmudc_ldT[1][1] - 2*dmudc_ldT[0][1]*dmudc_l[0][1])/(detdmudc_l*detdmudc_l) - dmudc_ldT[0][1]/detdmudc_l;
+    dcdmu_ldT[1][1] = -dmudc_l[0][0]*(dmudc_ldT[0][0]*dmudc_l[1][1] + dmudc_l[0][0]*dmudc_ldT[1][1] - 2*dmudc_ldT[0][1]*dmudc_l[0][1])/(detdmudc_l*detdmudc_l) + dmudc_ldT[0][0]/detdmudc_l;
+    
+    dcdmu_a = SVDinv(dmudc_a);
+    dcdmu_l = SVDinv(dmudc_l);
+    
+   multiply(M_a, D_a, dcdmu_a);
+   multiply(M_l, D_l, dcdmu_l);
+   
+      testMatrix = SVDinv(M_l);
+   
+   multiply(testMatrix_1,DeltaCt.T(), testMatrix);
+   
+   multiply(testMatrix, testMatrix_1, DeltaCt);
+   
+//    transportProperties.set("omega",epsilon*0.18*testMatrix[0][0]);
+   
+   omega = epsilon*0.18*testMatrix[0][0]/Vm;
+   
+   Info<< "omega= " << omega.value() << nl << endl;
+      
+   B_a1 = (dmudc_l[0][0]*ceq_l[0][0] - dmudc_a[0][0]*ceq_a[0][0]) + (dmudc_l[0][1]*ceq_l[1][0] - dmudc_a[0][1]*ceq_a[1][0]);
+   
+   dB_a1dT = (dmudc_ldT[0][0]*ceq_l[0][0] + dmudc_l[0][0]*ceq_ldT[0][0] - dmudc_adT[0][0]*ceq_a[0][0] - dmudc_a[0][0]*ceq_adT[0][0]) + (dmudc_ldT[0][1]*ceq_l[1][0] + dmudc_l[0][1]*ceq_ldT[1][0] - dmudc_adT[0][1]*ceq_a[1][0] - dmudc_a[0][1]*ceq_adT[1][0]);
+   
+   B_a2 = (dmudc_l[1][1]*ceq_l[1][0] - dmudc_a[1][1]*ceq_a[1][0]) + (dmudc_l[0][1]*ceq_l[0][0] - dmudc_a[0][1]*ceq_a[0][0]);
+   
+   dB_a2dT = (dmudc_ldT[1][1]*ceq_l[1][0] + dmudc_l[1][1]*ceq_ldT[1][0] - dmudc_adT[1][1]*ceq_a[1][0] - dmudc_a[1][1]*ceq_adT[1][0]) + (dmudc_ldT[0][1]*ceq_l[0][0] + dmudc_l[0][1]*ceq_ldT[0][0] - dmudc_adT[0][1]*ceq_a[0][0] - dmudc_a[0][1]*ceq_adT[0][0]);
+   
+   DD_a = -(0.5*dmudc_l[0][0]*ceq_l[0][0]*ceq_l[0][0] + 0.5*dmudc_l[1][1]*ceq_l[1][0]*ceq_l[1][0] + dmudc_l[0][1]*ceq_l[0][0]*ceq_l[1][0]) + (0.5*dmudc_a[0][0]*ceq_a[0][0]*ceq_a[0][0] + 0.5*dmudc_a[1][1]*ceq_a[1][0]*ceq_a[1][0] + dmudc_a[0][1]*ceq_a[0][0]*ceq_a[1][0]);
+    	}
 
           //! For orthogonal correction of the finite volume mesh
           while (simple.correctNonOrthogonal())
@@ -375,17 +713,36 @@ int main(int argc, char *argv[])
 	#include "DEqn.H"
 
     //#include "nucleateFields.H"
+    if (components == 2)
+    {
+    avg_liq_conc = fvc::domainIntegrate((0.5*(mu_1-B_Liq)/A_Liq)*(1-phi)).value()/fvc::domainIntegrate((1-phi)).value();
+    }
     
-    dimensionedScalar avg_liq_conc = fvc::domainIntegrate((0.5*(mu-B_Liq)/A_Liq)*(1-phi)).value()/fvc::domainIntegrate((1-phi)).value();
+    if (components == 3)
+    {
+    avg_liq_conct[0][0] = fvc::domainIntegrate((dcdmu_l[0][0]*(mu_1) + dcdmu_l[0][1]*(mu_2))*(1-phi)).value()/fvc::domainIntegrate((1-phi)).value();
+
+      avg_liq_conct[1][0] = fvc::domainIntegrate((dcdmu_l[1][0]*(mu_1) + dcdmu_l[1][1]*(mu_2))*(1-phi)).value()/fvc::domainIntegrate((1-phi)).value();
+    }
     
     //Info << "avg_liq_conc: " << avg_liq_conc.value() << endl;
     
     //! Initial conditions for cooling simulation
 if ((swcool == 1)&&(swch == 1))
 {
+    if (components == 2)
+    {
     Tm.value() = calculate_melting_point(avg_liq_conc.value(), Tm.value(), T1[np-1], T1[0]);
       
        Info << "Melting_point: "  << Tm.value() << " " << avg_liq_conc.value() << endl;
+    }
+    
+    if (components == 3)
+    {
+      Tm.value() = calculate_melting_point(avg_liq_conct, Tm.value(), T1[np-1], T1[0]);
+      
+       Info << "Melting_point: "  << Tm.value() << " " << avg_liq_conct[0][0] << " " << avg_liq_conct[1][0] << endl;
+    }
        
     if ((T.value() < Tm.value())&&(nucleation_event < numSeeds)) {
         scalar deltaTemp = Tm.value() - T.value();
@@ -416,7 +773,7 @@ if ((swcool == 1)&&(swch == 1))
             Info<< "Filling phi and theta fields in seeds" << endl;
             volScalarField gaussianSeed = (1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius*seedRadius));
 
-            theta.component(2) = theta.component(2) + randTheta[2]*gaussianSeed;
+            theta = theta + randTheta[2]*gaussianSeed*vector(0,0,1);
             phi = phi + gaussianSeed;
             }
 
@@ -437,9 +794,7 @@ if ((swcool == 1)&&(swch == 1))
             volScalarField gaussianSeed = (1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius*seedRadius));
 
 
-            theta.component(0) = theta.component(0) + randTheta[0]*gaussianSeed;
-            theta.component(1) = theta.component(1) + randTheta[1]*gaussianSeed;
-            theta.component(2) = theta.component(2) + randTheta[2]*gaussianSeed;
+            theta = theta + gaussianSeed*(randTheta[0]*vector(1,0,0) + randTheta[1]*vector(0,1,0) + randTheta[2]*vector(0,0,1));
             phi = phi + gaussianSeed;
             }
 
@@ -470,13 +825,29 @@ if ((swcool == 1)&&(swch == 1))
     gsl_spline_free (spline4);
     gsl_spline_free (spline5);
     gsl_spline_free (spline6);
+    gsl_spline_free (spline7);
+    gsl_spline_free (spline8);
+    gsl_spline_free (spline9);
+    gsl_spline_free (spline10);
+    gsl_spline_free (spline_L);
+    gsl_spline_free (spline_C);
+
     
     gsl_interp_accel_free (acc1);
     gsl_interp_accel_free (acc2);
     gsl_interp_accel_free (acc3);
-    gsl_interp_accel_free (acc4);
+    gsl_interp_accel_free (acc4);    
     gsl_interp_accel_free (acc5);
     gsl_interp_accel_free (acc6);
+    gsl_interp_accel_free (acc7);
+    gsl_interp_accel_free (acc8);    
+    gsl_interp_accel_free (acc9);
+    gsl_interp_accel_free (acc10);
+    gsl_interp_accel_free (acc_L);
+    gsl_interp_accel_free (acc_C);
+
+
+    outpft.close();
     
     return 0;
 }

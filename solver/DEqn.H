@@ -50,5 +50,12 @@
     deltaF = (0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi*phi*(3-2*phi)*cEigenStrain))-(Sigma && cEigenStrain));
     
     sigmaEq = sqrt((3.0/2.0)*magSqr(dev(Sigma)));
+    
+    	Info<< "Min/max Dx:" << min(D.component(0)).value() << ' ' << max(D.component(0)).value() << endl;
+	Info<< "Min/max Dy:" << min(D.component(1)).value() << ' ' << max(D.component(1)).value() << endl;
+	if (dimensions == 3)
+	{
+	Info<< "Min/max Dz:" << min(D.component(2)).value() << ' ' << max(D.component(2)).value() << endl;
+	}
     }
     

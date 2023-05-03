@@ -10,9 +10,9 @@
     string line;
     getline(inpfph, line);
     int n_compo = stoi(line);
-    if (n_compo != 2)
+    if ((n_compo != 2)&&(n_compo != 3))
     {
-        cout << "This solver is only for binary alloys" << endl;
+        cout << "This solver is only for binary and ternary alloys" << endl;
 	return 0;
     }
 
@@ -44,7 +44,7 @@
     }
     //string line;
     getline(inpfs, line);
-    double T1[buffer], ASol[buffer];
+    double T1[buffer], ASol[buffer], HSol11[buffer], HSol12[buffer], HSol22[buffer];
     int np = 0;
 
     while (getline(inpfs, line))
@@ -53,8 +53,20 @@
         std::istringstream ss(line);
         getline(ss, line_value, ',');
         T1[np] = stod(line_value);
+        if (n_compo == 2)
+        {
         getline(ss, line_value);
         ASol[np] = 0.5*stod(line_value);
+        }
+        else if (n_compo == 3)
+        {
+        getline(ss, line_value, ',');
+        HSol11[np] = stod(line_value);
+        getline(ss, line_value, ',');
+        HSol22[np] = stod(line_value);
+        getline(ss, line_value);
+        HSol12[np] = stod(line_value);
+        }
     
     //Info << T1[np] << " " << ASol[np] << endl;
     //cout << T1[np] << " " << ASol[np] << endl;
@@ -71,7 +83,7 @@
         Info << "No liquid data found" << endl;
     }
     getline(inpfl, line);
-    double ALiq[buffer];
+    double ALiq[buffer], HLiq11[buffer], HLiq12[buffer], HLiq22[buffer];
     np = 0;
 
     while (getline(inpfl, line))
@@ -80,8 +92,20 @@
         std::istringstream ss(line);
         getline(ss, line_value, ',');
         T1[np] = stod(line_value);
+        if (n_compo == 2)
+        {
         getline(ss, line_value);
         ALiq[np] = 0.5*stod(line_value);
+        }
+        else if (n_compo == 3)
+        {
+        getline(ss, line_value, ',');
+        HLiq11[np] = stod(line_value);
+        getline(ss, line_value, ',');
+        HLiq22[np] = stod(line_value);
+        getline(ss, line_value);
+        HLiq12[np] = stod(line_value);
+        }
     
     //Info << T1[np] << " " << ALiq[np] << endl;
     //cout << T1[np] << " " << ALiq[np] << endl;
@@ -98,7 +122,8 @@
         Info << "No composition data found" << endl;
     }
     getline(inpfc, line);
-    double cSol[buffer], cLiq[buffer];
+    double cSol[buffer], cSol1[buffer], cSol2[buffer];
+    double cLiq[buffer], cLiq1[buffer], cLiq2[buffer];
     np = 0;
     
     while (getline(inpfc, line))
@@ -108,9 +133,22 @@
         getline(ss, line_value, ',');
         T1[np] = stod(line_value);
         getline(ss, line_value, ',');
+        if (n_compo == 2)
+        {
         cSol[np] = stod(line_value);
         getline(ss, line_value);
         cLiq[np] = stod(line_value);
+        }
+        else if (n_compo == 3)
+        {
+        cSol1[np] = stod(line_value);
+        getline(ss, line_value, ',');
+        cSol2[np] = stod(line_value);
+        getline(ss, line_value, ',');
+        cLiq1[np] = stod(line_value);
+        getline(ss, line_value);
+        cLiq2[np] = stod(line_value);
+        }
     
     //Info << T1[np] << " " << cSol[np] << " " << cLiq[np] << endl;
     //cout << T1[np] << " " << cSol[np] << " " << cLiq[np] << endl;
@@ -149,3 +187,4 @@
     }
     
     inpft.close();
+    

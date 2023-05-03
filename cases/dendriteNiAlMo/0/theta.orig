@@ -9,7 +9,7 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volScalarField;
+    class       volVectorField;
     location    "0";
     object      theta;
 }
@@ -17,7 +17,7 @@ FoamFile
 
 dimensions      [0 0 0 0 0 0 0];
 
-internalField   uniform 0.0;
+internalField   uniform (0 0 0);
 
 //============== NO-FLUX BOUNDARY CONDITIONS ====================//
 

@@ -37,7 +37,7 @@ if ((swcool == 1)&&(swch == 1))
     volScalarField gaussianSeed = (1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius*seedRadius));
 
     //if (prob.value() > randNumber.globalScalar01()){
-    theta.component(2) = theta.component(2) + randTheta[2]*gaussianSeed;
+    theta = theta + randTheta[2]*gaussianSeed*vector(0,0,1);
     phi = phi + gaussianSeed;
     //}
 //}
@@ -62,7 +62,7 @@ for(int i=0; i<numSeeds; i++){
     Info<< "Filling phi and theta fields in seeds" << endl;
     volScalarField gaussianSeed = (1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius*seedRadius));
 
-    theta.component(2) = theta.component(2) + randTheta[2]*gaussianSeed;
+    theta = theta + randTheta[2]*gaussianSeed*vector(0,0,1);
     phi = phi + gaussianSeed;
 }
 }
@@ -157,10 +157,7 @@ for(int i=0; i<numSeeds; i++){*/
     volScalarField gaussianSeed = (1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius*seedRadius));
 
             //if (prob.value() > randNumber.globalScalar01()){
-    for (int i = 0; i < 3; i++)
-    {
-    theta.component(i) = theta.component(i) + randTheta[i]*gaussianSeed;
-    }
+     theta = theta + gaussianSeed*(randTheta[0]*vector(1,0,0) + randTheta[1]*vector(0,1,0) + randTheta[2]*vector(0,0,1));
      phi = phi + gaussianSeed;
 
 }
@@ -189,10 +186,7 @@ for(int i=0; i<numSeeds; i++){
     Info<< "Filling phi and theta fields in seeds" << endl;
     volScalarField gaussianSeed = (1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius*seedRadius));
 
-    for (int i = 0; i < 3; i++)
-    {
-    theta.component(i) = theta.component(i) + randTheta[i]*gaussianSeed;
-    }
+    theta = theta + gaussianSeed*(randTheta[0]*vector(1,0,0) + randTheta[1]*vector(0,1,0) + randTheta[2]*vector(0,0,1));
     phi = phi + gaussianSeed;
 }
 }

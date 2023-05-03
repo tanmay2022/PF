@@ -22,9 +22,9 @@ FoamFile
 
 dimx        dimx [0 1 0 0 0 0 0] 1; //Dimension of position
 dimt        dimt [0 0 1 0 0 0 0] 1; //Dimension of time
-dimensions    dimensions [0 0 0 0 0 0 0] $DIMENSION; //Number of dimensions
-phases      phases [0 0 0 0 0 0 0] $NUMPHASES; //Number of phases
-components    components [0 0 0 0 0 0 0] $NUMCOMPONENTS; //Number of components
+dimensions $DIMENSION; //Number of dimensions
+phases $NUMPHASES; //Number of phases
+components $NUMCOMPONENTS; //Number of components
 //m_0         m_0 [0 0 0 0 0 0 0] 1e9; //Slope solidus
 //m_1         m_1 [0 0 0 0 0 0 0] 0.45; //Slope liquidus
 //omega       omega [0 0 0 0 0 0 0] 1.687331;
@@ -35,8 +35,8 @@ epsilon     epsilon [0 0 0 0 0 0 0] $epsilon; //32.0e-11; //Interface Width
 //c_Sol       c_Sol [0 0 0 0 0 0 0] 0.7815; //Composition of solid in equilibrium with liquid
 //c_Liq       c_Liq [0 0 0 0 0 0 0] 0.5; //Composition of liquid in equilibrium with solid
 //c_eq        c_eq [0 0 0 0 0 0 0] 0.5; //Equilibrium composition or average composition of alloy
-//diff_Sol    diff_Sol [0 0 0 0 0 0 0] 1; //Diffusivity in solid
-//diff_Liq    diff_Liq [0 0 0 0 0 0 0] 1; //Diffusivity in liquid
+diff_Sol    diff_Sol [0 0 0 0 0 0 0] $DIFFUSIVITY00; //0; //Diffusivity in solid
+diff_Liq    diff_Liq [0 0 0 0 0 0 0] $DIFFUSIVITY10; //1.0e-9; //Diffusivity in liquid
 anti_trap   anti_trap [0 0 0 0 0 0 0] 0.35355; //Antitrapping coefficient
 G           G [0 0 0 0 0 0 0] 0.0; //Thermal gradient
 v           v [0 0 0 0 0 0 0] 0.0; //Velocity

@@ -17,11 +17,24 @@
     );
       
   //! Creating chemical potential field with the option to write
-    volScalarField mu
+    volScalarField mu_1
     (
         IOobject
         (
-            "mu",
+            "mu_1",
+            runTime.timeName(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh
+    );
+
+    volScalarField mu_2
+    (
+        IOobject
+        (
+            "mu_2",
             runTime.timeName(),
             mesh,
             IOobject::MUST_READ,

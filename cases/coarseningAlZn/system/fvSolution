@@ -18,7 +18,19 @@ FoamFile
 
 solvers
 {
-	mu
+    mu_1
+    {
+        solver                    GAMG;
+        preconditioner            FDIC;
+        smoother                symGaussSeidel;//DICGaussSeidel;
+        mergeLevels                1;
+        agglomerator            faceAreaPair;
+        nCellsInCoarsestLevel    50;
+        tolerance                1e-8;
+        relTol                    0.1;
+    }
+    
+    mu_2
     {
         solver                    GAMG;
         preconditioner            FDIC;
@@ -146,7 +158,7 @@ stressAnalysis
 
 Tol_is_defined_here
 {
-    Tol 1e-4; //get_tol_from_this
+    Tol 1e-6; //get_tol_from_this
 }
 
 deltaTFactor

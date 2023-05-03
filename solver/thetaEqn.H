@@ -25,7 +25,7 @@ InitialResidual_20 = qt0Eqn.solve().max().initialResidual();
 //! For 2D simulations
 if (dimensions == 2)
 {
-theta.component(2) = qt0;
+theta = qt0*vector(0,0,1);
 }
 
 //! For 3D simulations
@@ -72,9 +72,9 @@ volScalarField lambda = qt0*dimt*fvc::ddt(qt0) + qt1*dimt*fvc::ddt(qt1) + qt2*di
     Info<< "Min/max qt2:" << min(qt2).value() << ' ' << max(qt2).value() << endl;
     Info<< "Min/max qt3:" << min(qt3).value() << ' ' << max(qt3).value() << endl;
 
-theta.component(0) = Foam::atan2(2*(qt2*qt3 + qt0*qt1), (qt0*qt0 - qt1*qt1 - qt2*qt2 + qt3*qt3));
-theta.component(1) = Foam::asin(2*(qt0*qt2 - qt1*qt3));
-theta.component(2) = Foam::atan2(2*(qt1*qt2 + qt0*qt3), (qt0*qt0 + qt1*qt1 - qt2*qt2 - qt3*qt3));
+theta = Foam::atan2(2*(qt2*qt3 + qt0*qt1), (qt0*qt0 - qt1*qt1 - qt2*qt2 + qt3*qt3))*vector(1,0,0)
+ + Foam::asin(2*(qt0*qt2 - qt1*qt3))*vector(0,1,0)
+  + Foam::atan2(2*(qt1*qt2 + qt0*qt3), (qt0*qt0 + qt1*qt1 - qt2*qt2 - qt3*qt3))*vector(0,0,1);
 }
 
 }

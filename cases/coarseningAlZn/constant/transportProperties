@@ -22,9 +22,9 @@ FoamFile
 
 dimx        dimx [0 1 0 0 0 0 0] 1; //Dimension of position
 dimt        dimt [0 0 1 0 0 0 0] 1; //Dimension of time
-dimensions    dimensions [0 0 0 0 0 0 0] $DIMENSION; //Number of dimensions
-phases      phases [0 0 0 0 0 0 0] $NUMPHASES; //Number of phases
-components    components [0 0 0 0 0 0 0] $NUMCOMPONENTS; //Number of components
+dimensions $DIMENSION; //Number of dimensions
+phases $NUMPHASES; //Number of phases
+components $NUMCOMPONENTS; //Number of components
 gamma       gamma [0 0 0 0 0 0 0] $GAMMA; //0.01; //Surface Energy
 epsilon     epsilon [0 0 0 0 0 0 0] $epsilon; //2.0e-9; //Interface Width
 diff_Sol    diff_Sol [0 0 0 0 0 0 0] $DIFFUSIVITY00; //1.0e-13; //Diffusivity in solid

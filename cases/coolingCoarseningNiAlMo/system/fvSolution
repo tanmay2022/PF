@@ -55,7 +55,43 @@ solvers
         relTol                    0.1;
     }
 
-    theta
+    qt0
+    {
+        solver                    GAMG;
+        preconditioner            FDIC;
+        smoother                symGaussSeidel;//DICGaussSeidel;
+        mergeLevels                1;
+        agglomerator            faceAreaPair;
+        nCellsInCoarsestLevel    50;
+        tolerance                1e-8;
+        relTol                    0.1;
+    }
+
+    qt1
+    {
+        solver                    GAMG;
+        preconditioner            FDIC;
+        smoother                symGaussSeidel;//DICGaussSeidel;
+        mergeLevels                1;
+        agglomerator            faceAreaPair;
+        nCellsInCoarsestLevel    50;
+        tolerance                1e-8;
+        relTol                    0.1;
+    }
+
+    qt2
+    {
+        solver                    GAMG;
+        preconditioner            FDIC;
+        smoother                symGaussSeidel;//DICGaussSeidel;
+        mergeLevels                1;
+        agglomerator            faceAreaPair;
+        nCellsInCoarsestLevel    50;
+        tolerance                1e-8;
+        relTol                    0.1;
+    }
+
+    qt3
     {
         solver                    GAMG;
         preconditioner            FDIC;
@@ -143,7 +179,7 @@ stressAnalysis
 
 Tol_is_defined_here
 {
-    Tol 1e-5; //get_tol_from_this
+    Tol 1e-6; //get_tol_from_this
 }
 
 deltaTFactor

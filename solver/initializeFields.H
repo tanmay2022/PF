@@ -117,7 +117,7 @@ xCenter = centerX;
 yCenter = centerY;
 phi = phi + (1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius*seedRadius));
 
-theta = theta_val.value()*vector(0,0,1);
+theta = theta_z.value()*vector(0,0,1);
 }
 
 Info<< "Initialised fields." << endl;
@@ -244,7 +244,7 @@ yCenter = centerY;
 zCenter = centerZ;
 phi = phi + (1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius*seedRadius));
 
-theta = theta_x.value()*vector(1,0,0) + theta_y.value()*vector(0,1,0) + theta_val.value()*vector(0,0,1);
+theta = theta_x.value()*vector(1,0,0) + theta_y.value()*vector(0,1,0) + theta_z.value()*vector(0,0,1);
 }
 
 Info<< "Initialised fields." << endl;

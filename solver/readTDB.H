@@ -1,6 +1,6 @@
     //! Reading thermodynamic database
     
-    int buffer = 1024;
+    int buffer = 2048;
     ifstream inpfph("constant/phases");
     if (!inpfph.is_open())
     {

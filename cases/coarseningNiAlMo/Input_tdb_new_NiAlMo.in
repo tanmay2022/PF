@@ -66,7 +66,7 @@ WRITEHDF5 = 1;
 TRACK_PROGRESS = 10;
 ##Model-specific parameters: Grand-potential model
 ##Phase-field parameters; epsilon:interface width; it is not the gradient energy coefficient
-epsilon = 32e-11;
+epsilon = 16e-11;
 tau = 1.31;
 Tau = {0.28};
 ##Anisotropy functions

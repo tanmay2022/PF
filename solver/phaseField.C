@@ -278,16 +278,16 @@ int main(int argc, char *argv[])
     Info<< "\nCalculating phase-field and chemical potential distributions\n" << endl;
 
    //! The scalar and vector fields initialized below
-   volVectorField q=dimx*fvc::grad(phi);
-   volScalarField magq = 0.0*phi;
+   volVectorField q=dimx*fvc::grad(phi_1);
+   volScalarField magq = 0.0*phi_1;
    //volScalarField T = 0.0*phi + initial;
    //volScalarField sumLHS = 0.0*phi;
    //volVectorField q_4 = 0.0*q;
    //volVectorField q_6 = 0.0*q;
-   volScalarField ac_01 =0.0*phi;
-   volVectorField dAdq01= phi*vector(0,0,0);
+   volScalarField ac_01 =0.0*phi_1;
+   volVectorField dAdq01= phi_1*vector(0,0,0);
    volVectorField dadgradPhi=q*0.0;
-   volScalarField grad_qt_sqr = 0.0*phi;
+   volScalarField grad_qt_sqr = 0.0*phi_1;
     //volScalarField A_Sol = 0.0*phi;
     //volScalarField A_Liq = 0.0*phi;
     //volScalarField c_Sol = 0.0*phi;
@@ -474,11 +474,11 @@ int main(int argc, char *argv[])
    DeltaCt = c_lt-c_at;
    }
 
-    dimensionedScalar totalVol = fvc::domainIntegrate(1-0.0*phi);
+    dimensionedScalar totalVol = fvc::domainIntegrate(1-0.0*phi_1);
    
     //! Total volume of solidus
-   dimensionedScalar solidVolFracOld = fvc::domainIntegrate(phi)/totalVol;
-   dimensionedScalar solidVolFrac = fvc::domainIntegrate(phi)/totalVol;
+   dimensionedScalar solidVolFracOld = fvc::domainIntegrate(phi_1)/totalVol;
+   dimensionedScalar solidVolFrac = fvc::domainIntegrate(phi_1)/totalVol;
    
    dimensionedScalar dsolidVolFrac = (solidVolFrac - solidVolFracOld);
    dimensionedScalar dsolidVolFracOld = dsolidVolFrac;
@@ -546,7 +546,7 @@ int main(int argc, char *argv[])
     
         dimensionedScalar T_old = T;
         
-    solidVolFrac = fvc::domainIntegrate(phi)/totalVol;
+    solidVolFrac = fvc::domainIntegrate(phi_1)/totalVol;
     
     dsolidVolFracOld = dsolidVolFrac;
     dsolidVolFrac = (solidVolFrac - solidVolFracOld);
@@ -715,14 +715,14 @@ int main(int argc, char *argv[])
     //#include "nucleateFields.H"
     if (components == 2)
     {
-    avg_liq_conc = fvc::domainIntegrate((0.5*(mu_1-B_Liq)/A_Liq)*(1-phi)).value()/fvc::domainIntegrate((1-phi)).value();
+    avg_liq_conc = fvc::domainIntegrate((0.5*(mu_1-B_Liq)/A_Liq)*(1-phi_1)).value()/fvc::domainIntegrate((1-phi_1)).value();
     }
     
     if (components == 3)
     {
-    avg_liq_conct[0][0] = fvc::domainIntegrate((dcdmu_l[0][0]*(mu_1) + dcdmu_l[0][1]*(mu_2))*(1-phi)).value()/fvc::domainIntegrate((1-phi)).value();
+    avg_liq_conct[0][0] = fvc::domainIntegrate((dcdmu_l[0][0]*(mu_1) + dcdmu_l[0][1]*(mu_2))*(1-phi_1)).value()/fvc::domainIntegrate((1-phi_1)).value();
 
-      avg_liq_conct[1][0] = fvc::domainIntegrate((dcdmu_l[1][0]*(mu_1) + dcdmu_l[1][1]*(mu_2))*(1-phi)).value()/fvc::domainIntegrate((1-phi)).value();
+      avg_liq_conct[1][0] = fvc::domainIntegrate((dcdmu_l[1][0]*(mu_1) + dcdmu_l[1][1]*(mu_2))*(1-phi_1)).value()/fvc::domainIntegrate((1-phi_1)).value();
     }
     
     //Info << "avg_liq_conc: " << avg_liq_conc.value() << endl;
@@ -771,10 +771,10 @@ if ((swcool == 1)&&(swch == 1))
             Info<< "random theta: " << randTheta[2] << endl;
 
             Info<< "Filling phi and theta fields in seeds" << endl;
-            volScalarField gaussianSeed = (1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius*seedRadius));
+            volScalarField gaussianSeed = (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius*seedRadius));
 
             theta = theta + randTheta[2]*gaussianSeed*vector(0,0,1);
-            phi = phi + gaussianSeed;
+            phi_1 = phi_1 + gaussianSeed;
             }
 
             if (dimensions == 3)
@@ -791,11 +791,11 @@ if ((swcool == 1)&&(swch == 1))
             Info<< "random thetay: " << randTheta[1] << endl;
 
             Info<< "Filling phi and theta fields in seeds" << endl;
-            volScalarField gaussianSeed = (1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius*seedRadius));
+            volScalarField gaussianSeed = (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius*seedRadius));
 
 
             theta = theta + gaussianSeed*(randTheta[0]*vector(1,0,0) + randTheta[1]*vector(0,1,0) + randTheta[2]*vector(0,0,1));
-            phi = phi + gaussianSeed;
+            phi_1 = phi_1 + gaussianSeed;
             }
 
               nucleation_event++;

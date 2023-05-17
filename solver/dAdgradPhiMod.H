@@ -1,6 +1,6 @@
 // Header file to obtain a specific terms in the phase-field equation (check userGuide for the equations)
     //! Normal vector to the interface, q
-     volVectorField q=dimx*fvc::grad(phi);
+     volVectorField q=dimx*fvc::grad(phi_1);
      
      // Writing into the log file
      Info<< "Min/max magq:" << min(mag(q)).value() << ' '

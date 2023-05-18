@@ -42,7 +42,12 @@
         //Relaxation coefficient for phi (order parameter)
         //dimensionedScalar omega(transportProperties.lookup("omega"));
         //!Surface Energy
-        dimensionedScalar gamma(transportProperties.lookup("gamma"));
+        dimensionedScalar gamma_1(transportProperties.lookup("gamma_1"));
+        dimensionedScalar gamma_2(transportProperties.lookup("gamma_2"));
+        dimensionedScalar gamma_3(transportProperties.lookup("gamma_3"));
+        dimensionedScalar gamma_4(transportProperties.lookup("gamma_4"));
+        
+        dimensionedScalar DTs(transportProperties.lookup("DTs"));
         //!Interface Width
         dimensionedScalar epsilon(transportProperties.lookup("epsilon"));
         //!Composition of solid in equilibrium with liquid
@@ -152,7 +157,10 @@
         
         //!Properties for incorporating elasticity
         
-        dimensionedSymmTensor cEigenStrain(MechProperties.lookup("cEigenStrain"));
+        dimensionedSymmTensor cEigenStrain1(MechProperties.lookup("cEigenStrain1"));
+        dimensionedSymmTensor cEigenStrain2(MechProperties.lookup("cEigenStrain2"));
+        dimensionedSymmTensor cEigenStrain3(MechProperties.lookup("cEigenStrain3"));
+
         dimensionedScalar     mu1_elast(MechProperties.lookup("mu1_elast"));
         dimensionedScalar     mu2_elast(MechProperties.lookup("mu2_elast"));
         dimensionedScalar     mu1_elast_(MechProperties.lookup("mu1_elast_")); 

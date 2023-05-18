@@ -187,9 +187,9 @@ volSymmTensorField strain
         IOobject::NO_WRITE
     ),
 //    mesh
-   ((gradD-phi_1*phi_1*(3-2*phi_1)*cEigenStrain)&&symmTensor(1,0,0,0,0,0))*symmTensor(1,0,0,0,0,0)
-  +((gradD-phi_1*phi_1*(3-2*phi_1)*cEigenStrain)&&symmTensor(0,0,0,1,0,0))*symmTensor(0,0,0,1,0,0)
-  +((gradD-phi_1*phi_1*(3-2*phi_1)*cEigenStrain)&&symmTensor(0,0,0,0,0,1))*symmTensor(0,0,0,0,0,1)
+   ((gradD-phi_1*phi_1*(3-2*phi_1)*cEigenStrain1)&&symmTensor(1,0,0,0,0,0))*symmTensor(1,0,0,0,0,0)
+  +((gradD-phi_1*phi_1*(3-2*phi_1)*cEigenStrain1)&&symmTensor(0,0,0,1,0,0))*symmTensor(0,0,0,1,0,0)
+  +((gradD-phi_1*phi_1*(3-2*phi_1)*cEigenStrain1)&&symmTensor(0,0,0,0,0,1))*symmTensor(0,0,0,0,0,1)
     //volSymmTensorField("strain", dimensionSet(0,0,0,0,0,0,0), Foam::symmTensor(0,0,0,0,0,0))
    // Foam::symmTensor(0,0,0,0,0,0)
 );
@@ -219,8 +219,8 @@ volSymmTensorField deltaSigmaD
         IOobject::NO_WRITE
     ),
 //      ((mu1-mu2)*twoSymm(fvc::grad(D)) + (lambda1-lambda2)*(I*tr(fvc::grad(D))) - 2*(mu1-mu2)*T*cEigenStrain - (lambda1-lambda2)*(I*tr(T*cEigenStrain)))
-     ((mu1_elast-mu2_elast)*twoSymm(fvc::grad(D)) + (lambda1-lambda2)*(I*tr(fvc::grad(D))) - 2*(mu1_elast-mu2_elast)*phi_1*phi_1*(3-2*phi_1)*cEigenStrain 
-     - (lambda1-lambda2)*(I*tr(phi_1*phi_1*(3-2*phi_1)*cEigenStrain)))
+     ((mu1_elast-mu2_elast)*twoSymm(fvc::grad(D)) + (lambda1-lambda2)*(I*tr(fvc::grad(D))) - 2*(mu1_elast-mu2_elast)*phi_1*phi_1*(3-2*phi_1)*cEigenStrain1 
+     - (lambda1-lambda2)*(I*tr(phi_1*phi_1*(3-2*phi_1)*cEigenStrain1)))
      + (mu1_elast_-mu2_elast_)*strain
 );
 
@@ -236,7 +236,7 @@ volSymmTensorField Sigma
         IOobject::NO_WRITE
     ),
 //     (2*(mu1*T+mu2*(1-T))*(0.5*twoSymm(fvc::grad(D)) - T*cEigenStrain) + (lambda1*T+lambda2*(1-T))*(I*tr(fvc::grad(D) - T*cEigenStrain)))
-    (2*(mu1_elast*phi_1*phi_1*(3-2*phi_1) + mu2_elast*(1-phi_1)*(1-phi_1)*(1+2*phi_1))*(symm(fvc::grad(D)) - phi_1*phi_1*(3-2*phi_1)*cEigenStrain) + (lambda1*phi_1*phi_1*(3-2*phi_1) + lambda2*(1-phi_1)*(1-phi_1)*(1+2*phi_1))*(I*tr(fvc::grad(D) - phi_1*phi_1*(3-2*phi_1)*cEigenStrain))) + (mu1_elast_*phi_1*phi_1*(3-2*phi_1) + mu2_elast_*(1-phi_1)*(1-phi_1)*(1+2*phi_1))*strain
+    (2*(mu1_elast*phi_1*phi_1*(3-2*phi_1) + mu2_elast*(1-phi_1)*(1-phi_1)*(1+2*phi_1))*(symm(fvc::grad(D)) - phi_1*phi_1*(3-2*phi_1)*cEigenStrain1) + (lambda1*phi_1*phi_1*(3-2*phi_1) + lambda2*(1-phi_1)*(1-phi_1)*(1+2*phi_1))*(I*tr(fvc::grad(D) - phi_1*phi_1*(3-2*phi_1)*cEigenStrain1))) + (mu1_elast_*phi_1*phi_1*(3-2*phi_1) + mu2_elast_*(1-phi_1)*(1-phi_1)*(1+2*phi_1))*strain
 );
 
  volScalarField deltaF
@@ -250,7 +250,7 @@ volSymmTensorField Sigma
             IOobject::NO_WRITE
         ),
 //         mesh
-        6.0*phi_1*(1-phi_1)*(0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi_1*phi_1*(3-2*phi_1)*cEigenStrain))-(Sigma && cEigenStrain))
+        6.0*phi_1*(1-phi_1)*(0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi_1*phi_1*(3-2*phi_1)*cEigenStrain1))-(Sigma && cEigenStrain1))
     );
 
 

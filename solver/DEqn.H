@@ -3,6 +3,8 @@
     
     if (swch == 2)
     {
+    if (phases == 2)
+    {
         //nCorr = 0;
     
     do {
@@ -57,5 +59,6 @@
 	{
 	Info<< "Min/max Dz:" << min(D.component(2)).value() << ' ' << max(D.component(2)).value() << endl;
 	}
+    }
     }
     

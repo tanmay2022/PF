@@ -1,6 +1,6 @@
 
 //! Orientation field equation is solved only for multigrain problems
-if (swch == 1)
+if (swch == 1 && phases == 2)
 {
     
 volScalarField g_phi = phi_1*phi_1*phi_1*(7-6*phi_1)/((1+eps-phi_1)*(1+eps-phi_1));

@@ -9,7 +9,8 @@ double yMax = max(mesh.C().component(vector::Y)).value();
 double zMax = max(mesh.C().component(vector::Z)).value();
 double xCenter, yCenter, zCenter, randTheta[3], randRadius, maxvol, curvol;
 //int NS;
-
+if (phases == 2)
+{
 //! For 2D simulations
 if (dimensions == 2)
 {
@@ -254,3 +255,5 @@ Info<< "Min/max thetaz:" << min(theta.component(2)).value() << ' ' << max(theta.
 Info<< "Min/max thetax:" << min(theta.component(0)).value() << ' ' << max(theta.component(0)).value() << endl;
 Info<< "Min/max thetay:" << min(theta.component(1)).value() << ' ' << max(theta.component(1)).value() << endl;
 }
+}
+

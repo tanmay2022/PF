@@ -7,6 +7,8 @@ Random randNum(clock::getTime());
 // Header file to obtain some specific terms in the phase-field equation
 //
 //
+if (phases == 2)
+{
 //! For 2D simulations
 if (dimensions == 2)
 {
@@ -32,6 +34,7 @@ volVectorField grad_qt3 = dimx*fvc::grad(qt3);
 
 volScalarField grad_qt_sqr = magSqr(grad_qt0) + magSqr(grad_qt1) + magSqr(grad_qt2) + magSqr(grad_qt3);
 }
+}
 
 #include "dAdgradPhiMod.H"
 
@@ -39,6 +42,8 @@ volScalarField grad_qt_sqr = magSqr(grad_qt0) + magSqr(grad_qt1) + magSqr(grad_q
 //volScalarField grad_theta_sqr = magSqr(grad_theta);
 
 if (swch == 2)
+    {
+    if (phases == 2)
     {
 strain = ((gradD-phi_1*phi_1*(3-2*phi_1)*cEigenStrain)&&symmTensor(1,0,0,0,0,0))*symmTensor(1,0,0,0,0,0)
        + ((gradD-phi_1*phi_1*(3-2*phi_1)*cEigenStrain)&&symmTensor(0,0,0,1,0,0))*symmTensor(0,0,0,1,0,0)
@@ -53,11 +58,14 @@ Sigma = (2*(mu1_elast*phi_1*phi_1*(3-2*phi_1) + mu2_elast*(1-phi_1)*(1-phi_1)*(1
 deltaSigmaD = ((mu1_elast-mu2_elast)*twoSymm(fvc::grad(D))           + (lambda1-lambda2)*(I*tr(fvc::grad(D))) 
             - 2*(mu1_elast-mu2_elast)*phi_1*phi_1*(3-2*phi_1)*cEigenStrain - (lambda1-lambda2)*(I*tr(phi_1*phi_1*(3-2*phi_1)*cEigenStrain)))
             + (mu1_elast_-mu2_elast_)*strain;
-}            
+}
+}
 
 //! Implicit discretization using fvm class for time derivative and laplacian.
 //! Explicit discretization using fvc class for divergence.
 //! Phase-field equation with approximate relation between c, mu and T according to the parabolic approximation for free energy
+if (phases == 2)
+{
 if (components == 2)
 {
 fvScalarMatrix alphaEqn
@@ -104,6 +112,7 @@ omega*epsilon*dimt*fvm::ddt(phi_1)     //alpha=1 liquid phase
 //alphaEqn.solve();
 
 InitialResidual_0 = alphaEqn.solve().max().initialResidual();
+}
 }
 
 

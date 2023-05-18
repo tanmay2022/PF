@@ -713,6 +713,8 @@ int main(int argc, char *argv[])
 	#include "DEqn.H"
 
     //#include "nucleateFields.H"
+    if (phases == 2)
+    {
     if (components == 2)
     {
     avg_liq_conc = fvc::domainIntegrate((0.5*(mu_1-B_Liq)/A_Liq)*(1-phi_1)).value()/fvc::domainIntegrate((1-phi_1)).value();
@@ -724,12 +726,15 @@ int main(int argc, char *argv[])
 
       avg_liq_conct[1][0] = fvc::domainIntegrate((dcdmu_l[1][0]*(mu_1) + dcdmu_l[1][1]*(mu_2))*(1-phi_1)).value()/fvc::domainIntegrate((1-phi_1)).value();
     }
+    }
     
     //Info << "avg_liq_conc: " << avg_liq_conc.value() << endl;
     
     //! Initial conditions for cooling simulation
 if ((swcool == 1)&&(swch == 1))
 {
+    if (phases == 2)
+    {
     if (components == 2)
     {
     Tm.value() = calculate_melting_point(avg_liq_conc.value(), Tm.value(), T1[np-1], T1[0]);
@@ -742,6 +747,7 @@ if ((swcool == 1)&&(swch == 1))
       Tm.value() = calculate_melting_point(avg_liq_conct, Tm.value(), T1[np-1], T1[0]);
       
        Info << "Melting_point: "  << Tm.value() << " " << avg_liq_conct[0][0] << " " << avg_liq_conct[1][0] << endl;
+    }
     }
        
     if ((T.value() < Tm.value())&&(nucleation_event < numSeeds)) {
@@ -764,6 +770,8 @@ if ((swcool == 1)&&(swch == 1))
             yCenter = randNumber.globalScalar01()*yMax;
             //xCenter = 0.5*xMax;
             //yCenter = 0.5*yMax;
+            if (phases == 2)
+            {
             if (dimensions == 2)
             {
             Info<< "xCenter, yCenter: " << xCenter << ", " << yCenter << endl;
@@ -796,6 +804,7 @@ if ((swcool == 1)&&(swch == 1))
 
             theta = theta + gaussianSeed*(randTheta[0]*vector(1,0,0) + randTheta[1]*vector(0,1,0) + randTheta[2]*vector(0,0,1));
             phi_1 = phi_1 + gaussianSeed;
+            }
             }
 
               nucleation_event++;

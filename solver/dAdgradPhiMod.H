@@ -7,7 +7,8 @@
      << max(mag(q)).value() << endl;
      
      //scalar theta1 = theta*pi/180.0;
-
+if (phases == 2)
+{
     //! For 2D simulations
     if (dimensions== 2)
     {
@@ -71,3 +72,4 @@ if (dimensions == 3)
 //! Writing into the log file
 Info<< "Min/max dadgradPhi:" << min(dadgradPhi).value() << ' '
      << max(dadgradPhi).value() << endl;
+     }

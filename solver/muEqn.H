@@ -5,6 +5,8 @@ volVectorField n=dimx*fvc::grad(phi_1)/(1E-20+mag(dimx*fvc::grad(phi_1)));
 volScalarField hphi = phi_1*phi_1*phi_1*(6*phi_1*phi_1 - 15*phi_1 +10); //-phi*phi*phi*(10*phi*phi*phi - 36*phi*phi + 45*phi - 20);
 
 //! Chemical potential equation with approximate slope of c-mu curve according to the parabolic approximation for free energy
+if (phases == 2)
+{
 if (components == 2)
 {
 fvScalarMatrix muEqn
@@ -44,5 +46,5 @@ if (components == 3)
     Info<< "Min/max mu_1:" << min(mu_1).value() << ' ' << max(mu_1).value() << endl;
     Info<< "Min/max mu_2:" << min(mu_2).value() << ' ' << max(mu_2).value() << endl;
 }
-
+}
 

@@ -702,15 +702,19 @@ int main(int argc, char *argv[])
                 //mesh.update();
                 //! Solving the phase-field and chemical potential equations after
                 //! updating the mesh
-                #include "alphaEqn.H"
-                #include "muEqn.H"
+                #include "alphaEqn0.H"
+                #include "alphaEqn1.H"
+                #include "alphaEqn2.H"
+                #include "muEqn0.H"
+                #include "muEqn1.H"
                 #include "thetaEqn.H"
 
 
 
 	}
     
-	#include "DEqn.H"
+	#include "DEqn0.H"
+	#include "DEqn1.H"
 
     //#include "nucleateFields.H"
     if (phases == 2)

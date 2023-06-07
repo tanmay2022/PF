@@ -36,7 +36,7 @@ volScalarField grad_qt_sqr = magSqr(grad_qt0) + magSqr(grad_qt1) + magSqr(grad_q
 }
 }
 
-#include "dAdgradPhiMod.H"
+#include "dAdgradPhiMod0.H"
 
 //volVectorField grad_theta = dimx*fvc::grad(theta);
 //volScalarField grad_theta_sqr = magSqr(grad_theta);

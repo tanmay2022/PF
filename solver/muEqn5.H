@@ -1,6 +1,6 @@
 
 //! Chemical potential equation with approximate slope of c-mu curve according to the parabolic approximation for free energy
-if (phases == 3)
+if (phases == 4)
 {
 
 if (components == 3)

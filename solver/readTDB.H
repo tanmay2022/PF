@@ -18,9 +18,9 @@
 
     getline(inpfph, line);
     int n_phase = stoi(line);
-    if (n_phase != 2)
+    if ((n_phase != 2)&&(n_phase != 3)&&(n_phase != 4))
     {
-        cout << "This solver is only for two phase systems" << endl;
+        cout << "This solver is only for two, three and four phase systems" << endl;
 	return 0;
     }
 
@@ -76,7 +76,7 @@
     
     inpfs.close();
     
-    const fileName pathToFile2 = "constant/HSN_"+phase[1]+".csv";
+    const fileName pathToFile2 = "constant/HSN_"+phase[n_phase-1]+".csv";
     ifstream inpfl(pathToFile2);
     if (!inpfl.is_open())
     {

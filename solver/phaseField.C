@@ -288,6 +288,9 @@ int main(int argc, char *argv[])
    //volVectorField q_4 = 0.0*q;
    //volVectorField q_6 = 0.0*q;
    volScalarField ac_01 =0.0*phi_1;
+   volScalarField ac_02 =0.0*phi_2;
+   volScalarField ac_03 =0.0*phi_3;
+   volScalarField ac_04 =0.0*phi_4;
    volVectorField dAdq01= phi_1*vector(0,0,0);
    volVectorField dadgradPhi=q*0.0;
    volScalarField grad_qt_sqr = 0.0*phi_1;

@@ -1,9 +1,7 @@
-#include "dAdgradPhiMod1.H"
-
 
 if (phases == 3)
 {
-if (components == 2)
+if (components == 3)
 {
 //For phi_1
     
@@ -63,12 +61,13 @@ if (components == 2)
     phi_1Eqn.solve();
     phi_2Eqn.solve();
     phi_3Eqn.solve();
+    phi_4Eqn.solve();
 
   Info<< "Min/max sigmaproduct:" << min((Sigma && cEigenStrain2)()).value() << '\t'<< max((Sigma && cEigenStrain2)()).value() << endl;
  
 //    scalar numphases = 4.0;   
     
-    volScalarField lambda_phase = dimt*((fvc::ddt(phi_1) + fvc::ddt(phi_2) + fvc::ddt(phi_3))/phases);
+    volScalarField lambda_phase = dimt*((fvc::ddt(phi_1) + fvc::ddt(phi_2) + fvc::ddt(phi_3) + fvc::ddt(phi_4))/phases);
     Info<< "Min/max lambda_phase:" << min(lambda_phase()).value() << '\t'<< max(lambda_phase()).value() << endl;
 
 
@@ -78,6 +77,7 @@ if (components == 2)
     phi_1 -=  lambda_phase*runTime.deltaTValue();
     phi_2 -=  lambda_phase*runTime.deltaTValue();
     phi_3 -=  lambda_phase*runTime.deltaTValue();
+    phi_4 -=  lambda_phase*runTime.deltaTValue();
 }
 }
 

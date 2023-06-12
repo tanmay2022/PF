@@ -1,33 +1,32 @@
 
 //! The unit normal vector to the interface with a small number in denominator to prevent solution from diverging
-volVectorField n=dimx*fvc::grad(phi_1)/(1E-20+mag(dimx*fvc::grad(phi_1)));
-volVectorField n2=dimx*fvc::grad(phi_2)/(1E-20+mag(dimx*fvc::grad(phi_2)));
-volVectorField n3=dimx*fvc::grad(phi_3)/(1E-20+mag(dimx*fvc::grad(phi_3)));
-volVectorField n4=dimx*fvc::grad(phi_4)/(1E-20+mag(dimx*fvc::grad(phi_4)));
+//n=dimx*fvc::grad(phi_1)/(1E-20+mag(dimx*fvc::grad(phi_1)));
+volVectorField n2=0;
+volVectorField n3=0;
 
 volScalarField hphi = 0; //-phi*phi*phi*(10*phi*phi*phi - 36*phi*phi + 45*phi - 20);
 volScalarField hphi2 = 0;
 volScalarField hphi3 = 0;
-volScalarField hphi4 = 0;
 
 //! Chemical potential equation with approximate slope of c-mu curve according to the parabolic approximation for free energy
-if (phases == 4)
+if (phases == 3)
 {
+n2=dimx*fvc::grad(phi_2)/(1E-20+mag(dimx*fvc::grad(phi_2)));
+n3=dimx*fvc::grad(phi_3)/(1E-20+mag(dimx*fvc::grad(phi_3)));
+
 hphi = phi_1*phi_1*(3-2*phi_1) + 2*phi_1*(phi_2*phi_3 + phi_2*phi_4 + phi_3*phi_4);
 hphi2 = phi_2*phi_2*(3-2*phi_2) + 2*phi_2*(phi_1*phi_3 + phi_1*phi_4 + phi_3*phi_4);
 hphi3 = phi_3*phi_3*(3-2*phi_3) + 2*phi_3*(phi_1*phi_2 + phi_1*phi_4 + phi_2*phi_4);
-hphi4 = phi_4*phi_4*(3-2*phi_4) + 2*phi_4*(phi_1*phi_2 + phi_1*phi_3 + phi_2*phi_3);
 if (components == 2)
 {
 fvScalarMatrix muEqn
 (
-    (0.5)*((hphi/A_Sol) + (hphi2/A_Sol2) + (hphi3/A_Sol3) + (hphi4/A_Liq))*dimt*fvm::ddt(mu_1) == dimx*dimx*fvm::laplacian(diff_Sol*0.5*(1/A_Sol)*phi_1 + diff_Sol2*0.5*(1/A_Sol2)*phi_2 + diff_Sol3*0.5*(1/A_Sol3)*phi_3 + diff_Liq*0.5*(1/A_Liq)*phi_4, mu_1) 
-    - 0.5*((mu_1 - B_Sol1)*dimt*fvc::ddt(phi_1)*(6.0*phi_1*(1-phi_1) + 2*(phi_2*phi_3 + phi_2*phi_4 + phi_3*phi_4))/A_Sol + (mu_1 - B_Sol2)*dimt*fvc::ddt(phi_2)*(6.0*phi_2*(1-phi_2) + 2*(phi_1*phi_3 + phi_1*phi_4 + phi_3*phi_4))/A_Sol2 + (mu_1 - B_Sol3)*dimt*fvc::ddt(phi_3)*(6.0*phi_3*(1-phi_3) + 2*(phi_1*phi_2 + phi_1*phi_4 + phi_2*phi_4))/A_Sol3 + (mu_1 - B_Liq)*dimt*fvc::ddt(phi_4)*(6.0*phi_4*(1-phi_4) + 2*(phi_1*phi_2 + phi_1*phi_3 + phi_2*phi_3))/A_Liq) 
-    - Tdot*(((-dB1dT)/(2*A_Sol) + (mu_1 - B_Sol)*A_SoldT/(-2*A_Sol*A_Sol))*hphi + ((-dB2dT)/(2*A_Sol2) + (mu_1 - B_Sol2)*A_Sol2dT/(-2*A_Sol2*A_Sol2))*hphi2 + ((-dB3dT)/(2*A_Sol3) + (mu_1 - B_Sol3)*A_Sol3dT/(-2*A_Sol3*A_Sol3))*hphi3 + (mu_1 - B_Liq)*A_LiqdT*hphi4/(-2*A_Liq*A_Liq))
+    (0.5)*((hphi/A_Sol) + (hphi2/A_Sol) + (hphi3/A_Liq))*dimt*fvm::ddt(mu_1) == dimx*dimx*fvm::laplacian(diff_Sol*0.5*(1/A_Sol)*phi_1 + diff_Sol2*0.5*(1/A_Sol)*phi_2 + diff_Liq*0.5*(1/A_Liq)*phi_3, mu_1) 
+    - 0.5*((mu_1 - B_Sol)*dimt*fvc::ddt(phi_1)*(6.0*phi_1*(1-phi_1) + 2*(phi_2*phi_3 + phi_2*phi_4 + phi_3*phi_4))/A_Sol + (mu_1 - B_Sol)*dimt*fvc::ddt(phi_2)*(6.0*phi_2*(1-phi_2) + 2*(phi_1*phi_3 + phi_1*phi_4 + phi_3*phi_4))/A_Sol + (mu_1 - B_Liq)*dimt*fvc::ddt(phi_3)*(6.0*phi_4*(1-phi_4) + 2*(phi_1*phi_2 + phi_1*phi_3 + phi_2*phi_3))/A_Liq) 
+    - Tdot*(((-dBdT)/(2*A_Sol) + (mu_1 - B_Sol)*A_SoldT/(-2*A_Sol*A_Sol))*hphi + ((-dBdT)/(2*A_Sol) + (mu_1 - B_Sol)*A_SoldT/(-2*A_Sol*A_Sol))*hphi2 + (mu_1 - B_Liq)*A_LiqdT*hphi3/(-2*A_Liq*A_Liq))
      //- anti_trap*epsilon*0.5*((mu_1 - B_Sol)/A_Sol - (mu_1 - B_Liq)/A_Liq)*dimx*fvc::div((n*dimt*fvc::ddt(phi_1)))
-     + 0.5*anti_trap*epsilon *((mu_1 - B_Liq)/A_Liq - (mu_1 - B_Sol)/A_Sol)*dimx*fvc::div(n&n4*dimt*fvc::ddt(phi_1)*-1*n) // see this last term
-     + 0.5*anti_trap*epsilon *((mu_1 - B_Liq)/A_Liq - (mu_1 - B_Sol2)/A_Sol2)* dimx*fvc::div(n2&n4* dimt*fvc::ddt(phi_2)* -1*n2)
-     + 0.5*anti_trap*epsilon *((mu_1 - B_Liq)/A_Liq - (mu_1 - B_Sol3)/A_Sol3)* dimx*fvc::div(n3&n4* dimt*fvc::ddt(phi_3)* -1*n3)
+     + 0.5*anti_trap*epsilon *((mu_1 - B_Liq)/A_Liq - (mu_1 - B_Sol)/A_Sol)*dimx*fvc::div(n&n3*dimt*fvc::ddt(phi_1)*-1*n) // see this last term
+     + 0.5*anti_trap*epsilon *((mu_1 - B_Liq)/A_Liq - (mu_1 - B_Sol)/A_Sol)* dimx*fvc::div(n2&n3* dimt*fvc::ddt(phi_2)* -1*n2)
 );
 
 //muEqn.solve();

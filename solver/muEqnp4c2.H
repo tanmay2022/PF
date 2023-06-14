@@ -15,7 +15,7 @@ if (components == 2)
 {
 fvScalarMatrix muEqn
 (
-    (0.5)*((hphi/A_Sol) + (hphi2/A_Sol) + (hphi3/A_Sol) + (hphi4/A_Liq))*dimt*fvm::ddt(mu_1) == dimx*dimx*fvm::laplacian(diff_Sol*0.5*(1/A_Sol)*phi_1 + diff_Sol2*0.5*(1/A_Sol)*phi_2 + diff_Sol3*0.5*(1/A_Sol)*phi_3 + diff_Liq*0.5*(1/A_Liq)*phi_4, mu_1) 
+    (0.5)*((hphi/A_Sol) + (hphi2/A_Sol) + (hphi3/A_Sol) + (hphi4/A_Liq))*dimt*fvm::ddt(mu_1) == dimx*dimx*fvm::laplacian(diff_Sol*0.5*(1/A_Sol)*phi_1 + diff_Sol*0.5*(1/A_Sol)*phi_2 + diff_Sol*0.5*(1/A_Sol)*phi_3 + diff_Liq*0.5*(1/A_Liq)*phi_4, mu_1) 
     - 0.5*((mu_1 - B_Sol)*dimt*fvc::ddt(phi_1)*(6.0*phi_1*(1-phi_1) + 2*(phi_2*phi_3 + phi_2*phi_4 + phi_3*phi_4))/A_Sol
      + (mu_1 - B_Sol)*dimt*fvc::ddt(phi_2)*(6.0*phi_2*(1-phi_2) + 2*(phi_1*phi_3 + phi_1*phi_4 + phi_3*phi_4))/A_Sol
       + (mu_1 - B_Sol)*dimt*fvc::ddt(phi_3)*(6.0*phi_3*(1-phi_3) + 2*(phi_1*phi_2 + phi_1*phi_4 + phi_2*phi_4))/A_Sol

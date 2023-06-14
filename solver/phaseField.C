@@ -303,14 +303,15 @@ int main(int argc, char *argv[])
 
 //! The unit normal vector to the interface with a small number in denominator to prevent solution from diverging
 //n=dimx*fvc::grad(phi_1)/(1E-20+mag(dimx*fvc::grad(phi_1)));
-volVectorField n2=0;
-volVectorField n3=0;
-volVectorField n4=0;
+volVectorField n=dimx*fvc::grad(phi_1);
+volVectorField n2=dimx*fvc::grad(phi_2);
+volVectorField n3=dimx*fvc::grad(phi_3);
+volVectorField n4=dimx*fvc::grad(phi_4);
 
-volScalarField hphi = 0; //-phi*phi*phi*(10*phi*phi*phi - 36*phi*phi + 45*phi - 20);
-volScalarField hphi2 = 0;
-volScalarField hphi3 = 0;
-volScalarField hphi4 = 0;
+volScalarField hphi = 0.0*phi_1; //-phi*phi*phi*(10*phi*phi*phi - 36*phi*phi + 45*phi - 20);
+volScalarField hphi2 = 0.0*phi_2;
+volScalarField hphi3 = 0.0*phi_3;
+volScalarField hphi4 = 0.0*phi_4;
     
     //! Done reading thermodynamic database
     

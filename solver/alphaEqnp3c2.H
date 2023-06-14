@@ -48,7 +48,7 @@ if (components == 2)
         - ((-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*-0.5*15*((phi_1*phi_1 - phi_1*phi_1*phi_1)*(phi_3 - phi_2))
          + (-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*-0.5*15*((phi_2*phi_2 - phi_2*phi_2*phi_2)*(phi_3 - phi_1))
           + (-1.0/4.0*(mu_1 - B_Liq)*(mu_1 - B_Liq)/A_Liq + D_Liq)*0.25*15*(3.0*phi_3*phi_3*phi_3*phi_3 - 4.0*phi_3*phi_3*phi_3 - phi_3*phi_3 + 2.0*phi_3 - (phi_1 - phi_2)*(phi_1 - phi_2)*(2.0*phi_3 - 3.0*phi_3*phi_3)))*(1 + noise_mag*randNum.globalScalar01())/Vm
-			- (6.0*phi_3*(1-phi_3)*(0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi_1*phi_1*(3-2*phi_1)*cEigenStrain1 - phi_2*phi_2*(3-2*phi_2)*cEigenStrain2)))
+			- (6.0*phi_3*(1-phi_3)*(0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi_1*phi_1*(3-2*phi_1)*cEigenStrain1 - phi_2*phi_2*(3-2*phi_2)*cEigenStrain2))))
     );
 //    phi_3Eqn -= 6.0*phi_3*(1-phi_3)*(0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi_1*phi_1*(3-2*phi_1)*cEigenStrain1 - phi_2*phi_2*(3-2*phi_2)*cEigenStrain2 
 //								    - phi_3*phi_3*(3-2*phi_3)*cEigenStrain3))-(Sigma && cEigenStrain3));    

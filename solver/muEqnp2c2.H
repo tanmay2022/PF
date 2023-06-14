@@ -2,8 +2,6 @@
 //! The unit normal vector to the interface with a small number in denominator to prevent solution from diverging
 volVectorField n=dimx*fvc::grad(phi_1)/(1E-20+mag(dimx*fvc::grad(phi_1)));
 
-volScalarField hphi = 0; //-phi*phi*phi*(10*phi*phi*phi - 36*phi*phi + 45*phi - 20);
-
 //! Chemical potential equation with approximate slope of c-mu curve according to the parabolic approximation for free energy
 if (phases == 2)
 {

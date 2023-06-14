@@ -7,7 +7,7 @@
      //<< max(mag(q)).value() << endl;
      
      //scalar theta1 = theta*pi/180.0;
-if (phases == 4)
+if (phases == 5)
 {
 q2=dimx*fvc::grad(phi_2);
 q3=dimx*fvc::grad(phi_3);

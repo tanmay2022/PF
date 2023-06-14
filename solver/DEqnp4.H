@@ -3,11 +3,6 @@
     
     if (swch == 2)
     {
-    
-    /*if (phases == 3)
-    {
-    }*/
-    
     if (phases == 4)
     {
             do

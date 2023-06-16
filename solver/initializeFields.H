@@ -257,11 +257,7 @@ Info<< "Min/max thetay:" << min(theta.component(1)).value() << ' ' << max(theta.
 }
 }
 
-/*if (phases == 3)
-{
-}*/
-
-if (phases == 4)
+if (phases == 3)
 {
 if (dimensions == 2)
 {
@@ -290,13 +286,14 @@ while(curvol <= maxvol){
     Info<< "Filling phi field in seeds" << endl;
     randRadius = (1 + spread*(2*randNumber.globalScalar01() - 1))*seedRadius;
     curvol = curvol + pi.value()*randRadius*randRadius;
-    volScalarField gaussianSeed = (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(randRadius*randRadius));
+    volScalarField gaussianSeed = phi_3*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(randRadius*randRadius));
     
     //volScalarField gaussianSeed = (1-phi)*0.5*(1 - sign((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) - randRadius*randRadius));
 
     //if (prob.value() > randNumber.globalScalar01()){
     //theta = theta + randTheta*gaussianSeed;
     phi_1 = phi_1 + gaussianSeed;
+    phi_2 = phi_2 + gaussianSeed;
     //}
 }
 }
@@ -331,13 +328,102 @@ while(curvol <= maxvol){
     Info<< "Filling phi field in seeds" << endl;
     randRadius = (1 + spread*(2*randNumber.globalScalar01() - 1))*seedRadius;
     curvol = curvol + pi.value()*randRadius*randRadius;
-    volScalarField gaussianSeed = (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(randRadius*randRadius));
+    volScalarField gaussianSeed = phi_3*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(randRadius*randRadius));
 
     //volScalarField gaussianSeed = (1-phi)*0.5*(1 - sign((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter) - randRadius*randRadius));
 
     //if (prob.value() > randNumber.globalScalar01()){
     //theta = theta + randTheta*gaussianSeed;
     phi_1 = phi_1 + gaussianSeed;
+    phi_2 = phi_2 + gaussianSeed;
+    //}
+}
+}
+}
+}
+}
+
+if (phases == 4)
+{
+if (dimensions == 2)
+{
+//! Initial conditions for precipitate growth simulation
+if (swch == 2)
+{
+    /*theta = 0.01;
+    //NS = 1;
+
+    dimensionedScalar prob = Foam::exp(-0.5*(log(T0-initial)/0.5)*(log(T0-initial)/0.5))/(0.5*Foam::sqrt(2*pi)*(T0-initial));
+    Info << "Probability of nucleation: " << prob.value() << endl;*/
+maxvol = volume_fraction*xMax*yMax;
+curvol = 0;
+
+if (numSeeds != 1){
+while(curvol <= maxvol){
+    Info<< "creating a new seed" << endl;
+    xCenter = randNumber.globalScalar01()*xMax;
+    yCenter = randNumber.globalScalar01()*yMax;
+    //xCenter = 0.5*xMax;
+    //yCenter = 0.5*yMax;
+    Info<< "xCenter, yCenter: " << xCenter << ", " << yCenter << endl;
+    //randTheta = randNumber.globalScalar01()*(pi.value()/2);
+    //Info<< "random theta: " << randTheta << endl;
+
+    Info<< "Filling phi field in seeds" << endl;
+    randRadius = (1 + spread*(2*randNumber.globalScalar01() - 1))*seedRadius;
+    curvol = curvol + pi.value()*randRadius*randRadius;
+    volScalarField gaussianSeed = phi_4*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(randRadius*randRadius));
+    
+    //volScalarField gaussianSeed = (1-phi)*0.5*(1 - sign((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) - randRadius*randRadius));
+
+    //if (prob.value() > randNumber.globalScalar01()){
+    //theta = theta + randTheta*gaussianSeed;
+    phi_1 = phi_1 + gaussianSeed;
+    phi_2 = phi_2 + gaussianSeed;
+    phi_3 = phi_3 + gaussianSeed;
+    //}
+}
+}
+}
+}
+
+if (dimensions == 3)
+{
+//! Initial conditions for precipitate growth simulation
+if (swch == 2)
+{
+    /*theta = 0.01;
+    //NS = 1;
+
+    dimensionedScalar prob = Foam::exp(-0.5*(log(T0-initial)/0.5)*(log(T0-initial)/0.5))/(0.5*Foam::sqrt(2*pi)*(T0-initial));
+    Info << "Probability of nucleation: " << prob.value() << endl;*/
+maxvol = volume_fraction*xMax*yMax;
+curvol = 0;
+
+if (numSeeds != 1){
+while(curvol <= maxvol){
+    Info<< "creating a new seed" << endl;
+    xCenter = randNumber.globalScalar01()*xMax;
+    yCenter = randNumber.globalScalar01()*yMax;
+    zCenter = randNumber.globalScalar01()*zMax;
+    //xCenter = 0.5*xMax;
+    //yCenter = 0.5*yMax;
+    Info<< "xCenter, yCenter, zCenter: " << xCenter << ", " << yCenter << ", " << zCenter << endl;
+    //randTheta = randNumber.globalScalar01()*(pi.value()/2);
+    //Info<< "random theta: " << randTheta << endl;
+
+    Info<< "Filling phi field in seeds" << endl;
+    randRadius = (1 + spread*(2*randNumber.globalScalar01() - 1))*seedRadius;
+    curvol = curvol + pi.value()*randRadius*randRadius;
+    volScalarField gaussianSeed = phi_4*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(randRadius*randRadius));
+
+    //volScalarField gaussianSeed = (1-phi)*0.5*(1 - sign((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter) - randRadius*randRadius));
+
+    //if (prob.value() > randNumber.globalScalar01()){
+    //theta = theta + randTheta*gaussianSeed;
+    phi_1 = phi_1 + gaussianSeed;
+    phi_2 = phi_2 + gaussianSeed;
+    phi_3 = phi_3 + gaussianSeed;
     //}
 }
 }

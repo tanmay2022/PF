@@ -29,7 +29,10 @@ components $NUMCOMPONENTS; //Number of components
 //m_1         m_1 [0 0 0 0 0 0 0] 0.45; //Slope liquidus
 //omega       omega [0 0 0 0 0 0 0] 1.687331;
 //omega       omega [0 0 0 0 0 0 0] 1.0; //Relaxation coefficient for phi (order parameter)
-gamma       gamma [0 0 0 0 0 0 0] $GAMMA; //0.01; //Surface Energy
+gamma_1       gamma_1 [0 0 0 0 0 0 0] $GAMMA1; //0.01; //Surface Energy
+gamma_2       gamma_2 [0 0 0 0 0 0 0] $GAMMA2; //0.01; //Surface Energy
+gamma_3       gamma_3 [0 0 0 0 0 0 0] $GAMMA3; //0.01; //Surface Energy
+gamma_4       gamma_4 [0 0 0 0 0 0 0] $GAMMA4; //0.01; //Surface Energy
 //epsilon     epsilon [0 0 0 0 0 0 0] 48;
 epsilon     epsilon [0 0 0 0 0 0 0] $epsilon; //32.0e-11; //Interface Width
 //c_Sol       c_Sol [0 0 0 0 0 0 0] 0.7815; //Composition of solid in equilibrium with liquid

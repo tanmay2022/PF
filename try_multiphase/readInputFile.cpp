@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     
     int DIMENSION, MESH_X, MESH_Y, MESH_Z, NUMPHASES, NUMCOMPONENTS, VOIGT, Function_anisotropy;
     double DELTA_X, DELTA_t, NTIMESTEPS, SAVET, STARTTIME, DIFFUSIVITY00, DIFFUSIVITY01;
-    double GAMMA, V, DIFFUSIVITY[4], EIGEN_STRAIN[7], VOIGT0[6], VOIGT1[6], T, epsilon;
+    double GAMMA1, V, DIFFUSIVITY[4], EIGEN_STRAIN[7], VOIGT0[6], VOIGT1[6], T, epsilon;
     double DIFFUSIVITY10, DIFFUSIVITY11, dab, Amp_Noise_Phase, Equilibrium_temperature, Filling_temperature;
     double theta_x, theta_y, theta_z, center_x, center_y, center_z, seed_radius, volume_fraction, spread;
     
@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
     getline(ss2, line_value2, '{');
     getline(ss2, line_value2, '}');
     
-    GAMMA = stod(line_value2);
+    GAMMA1 = stod(line_value2);
     }
     
     else if (line_value1 == "DIFFUSIVITY")

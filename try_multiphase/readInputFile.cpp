@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     
     int DIMENSION, MESH_X, MESH_Y, MESH_Z, NUMPHASES, NUMCOMPONENTS, VOIGT, Function_anisotropy;
     double DELTA_X, DELTA_t, NTIMESTEPS, SAVET, STARTTIME, DIFFUSIVITY00, DIFFUSIVITY01;
-    double GAMMA1, V, DIFFUSIVITY[4], EIGEN_STRAIN[7], VOIGT0[6], VOIGT1[6], T, epsilon;
+    double GAMMA1, GAMMA2, GAMMA3, GAMMA4, V, DIFFUSIVITY[4], EIGEN_STRAIN[7], VOIGT0[6], VOIGT1[6], T, epsilon;
     double DIFFUSIVITY10, DIFFUSIVITY11, dab, Amp_Noise_Phase, Equilibrium_temperature, Filling_temperature;
     double theta_x, theta_y, theta_z, center_x, center_y, center_z, seed_radius, volume_fraction, spread;
     
@@ -153,9 +153,24 @@ int main(int argc, char *argv[])
     {
     istringstream ss2(line_value2);
     getline(ss2, line_value2, '{');
-    getline(ss2, line_value2, '}');
+    getline(ss2, line_value2, ',');
     
     GAMMA1 = stod(line_value2);
+
+    getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    
+    GAMMA2 = stod(line_value2);
+
+    getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    
+    GAMMA3 = stod(line_value2);
+
+    getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, '}');
+    
+    GAMMA4 = stod(line_value2);
     }
     
     else if (line_value1 == "DIFFUSIVITY")
@@ -183,7 +198,7 @@ int main(int argc, char *argv[])
     DIFFUSIVITY01 = DIFFUSIVITY[3];
     }
     
-    else if (DIFFUSIVITY[1] == 1)
+    else if (DIFFUSIVITY[1] == (NUMPHASES-1))
     {
     DIFFUSIVITY10 = DIFFUSIVITY[2];
     DIFFUSIVITY11 = DIFFUSIVITY[3];
@@ -481,7 +496,10 @@ int main(int argc, char *argv[])
     outpf << "SAVET " << SAVET << ";" << endl;
     outpf << "STARTTIME " << STARTTIME << ";" << endl;
     
-    outpf << "GAMMA " << GAMMA << ";" << endl;
+    outpf << "GAMMA1 " << GAMMA1 << ";" << endl;
+    outpf << "GAMMA2 " << GAMMA2 << ";" << endl;
+    outpf << "GAMMA3 " << GAMMA3 << ";" << endl;
+    outpf << "GAMMA4 " << GAMMA4 << ";" << endl;
     outpf << "epsilon " << epsilon << ";" << endl;
     outpf << "dab " << dab << ";" << endl;
     outpf << "theta_x " << theta_x << ";" << endl;

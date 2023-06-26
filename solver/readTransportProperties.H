@@ -47,7 +47,7 @@
         dimensionedScalar gamma_3(transportProperties.lookup("gamma_3"));
         dimensionedScalar gamma_4(transportProperties.lookup("gamma_4"));
         
-        dimensionedScalar DTs(transportProperties.lookup("DTs"));
+        //dimensionedScalar DTs(transportProperties.lookup("DTs"));
         //!Interface Width
         dimensionedScalar epsilon(transportProperties.lookup("epsilon"));
         //!Composition of solid in equilibrium with liquid

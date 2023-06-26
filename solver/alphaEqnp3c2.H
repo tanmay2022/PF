@@ -9,7 +9,7 @@ if (components == 2)
     
     fvScalarMatrix phi_1Eqn
     (
-        dimt*omega*epsilon*fvm::ddt(phi_1) -2.0*gamma_1*epsilon*dimx*dimx*fvm::laplacian(DTs, phi_1) == -(18.0*gamma_1*phi_1*(1.0 -phi_1)*(1.0 -2.0*phi_1))/(epsilon)
+        dimt*omega*epsilon*fvm::ddt(phi_1) -2.0*gamma_1*epsilon*dimx*dimx*fvm::laplacian(phi_1) == -(18.0*gamma_1*phi_1*(1.0 -phi_1)*(1.0 -2.0*phi_1))/(epsilon)
         - ((-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*0.25*15*(3.0*phi_1*phi_1*phi_1*phi_1 - 4.0*phi_1*phi_1*phi_1 - phi_1*phi_1 + 2.0*phi_1 - (phi_2 - phi_3)*(phi_2 - phi_3)*(2.0*phi_1 - 3.0*phi_1*phi_1))
          + (-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*-0.5*15*((phi_2*phi_2 - phi_2*phi_2*phi_2)*(phi_1 - phi_3))
           + (-1.0/4.0*(mu_1 - B_Liq)*(mu_1 - B_Liq)/A_Liq + D_Liq)*-0.5*15*((phi_3*phi_3 - phi_3*phi_3*phi_3)*(phi_1 - phi_2)))*(1 + noise_mag*randNum.globalScalar01())/Vm
@@ -24,7 +24,7 @@ if (components == 2)
     
     fvScalarMatrix phi_2Eqn
     (
-        dimt*omega*epsilon*fvm::ddt(phi_2) -2.0*gamma_2*epsilon*dimx*dimx*fvm::laplacian(DTs, phi_2) == -(18.0*gamma_2*phi_2*(1.0 -phi_2)*(1.0 -2.0*phi_2))/(epsilon)
+        dimt*omega*epsilon*fvm::ddt(phi_2) -2.0*gamma_2*epsilon*dimx*dimx*fvm::laplacian(phi_2) == -(18.0*gamma_2*phi_2*(1.0 -phi_2)*(1.0 -2.0*phi_2))/(epsilon)
         - ((-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*-0.5*15*((phi_1*phi_1 - phi_1*phi_1*phi_1)*(phi_2 - phi_3))
          + (-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*0.25*15*(3.0*phi_2*phi_2*phi_2*phi_2 - 4.0*phi_2*phi_2*phi_2 - phi_2*phi_2 + 2.0*phi_2 - (phi_3 - phi_1)*(phi_3 - phi_1)*(2.0*phi_2 - 3.0*phi_2*phi_2))
           + (-1.0/4.0*(mu_1 - B_Liq)*(mu_1 - B_Liq)/A_Liq + D_Liq)*-0.5*15*((phi_3*phi_3 - phi_3*phi_3*phi_3)*(phi_2 - phi_1)))*(1 + noise_mag*randNum.globalScalar01())/Vm
@@ -44,7 +44,7 @@ if (components == 2)
     
     fvScalarMatrix phi_3Eqn
     (
-        dimt*omega*epsilon*fvm::ddt(phi_3) -2.0*gamma_3*epsilon*dimx*dimx*fvm::laplacian(DTs, phi_3) == -(18.0*gamma_3*phi_3*(1.0 -phi_3)*(1.0 -2.0*phi_3))/(epsilon)
+        dimt*omega*epsilon*fvm::ddt(phi_3) -2.0*gamma_3*epsilon*dimx*dimx*fvm::laplacian(phi_3) == -(18.0*gamma_3*phi_3*(1.0 -phi_3)*(1.0 -2.0*phi_3))/(epsilon)
         - ((-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*-0.5*15*((phi_1*phi_1 - phi_1*phi_1*phi_1)*(phi_3 - phi_2))
          + (-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*-0.5*15*((phi_2*phi_2 - phi_2*phi_2*phi_2)*(phi_3 - phi_1))
           + (-1.0/4.0*(mu_1 - B_Liq)*(mu_1 - B_Liq)/A_Liq + D_Liq)*0.25*15*(3.0*phi_3*phi_3*phi_3*phi_3 - 4.0*phi_3*phi_3*phi_3 - phi_3*phi_3 + 2.0*phi_3 - (phi_1 - phi_2)*(phi_1 - phi_2)*(2.0*phi_3 - 3.0*phi_3*phi_3)))*(1 + noise_mag*randNum.globalScalar01())/Vm

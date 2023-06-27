@@ -63,20 +63,20 @@ swcool 0;
 
 //Switch = 1 to enable orientaton field, 2 to model precipitate growth,
 //else 0 for single dendrite solidification
-swch 0;
+swch 1;
 
 M_Scale 0.05;
 
-seedRadius $seed_radius;
+//seedRadius $seed_radius;
 
-volume_fraction $volume_fraction;
+//volume_fraction $volume_fraction;
 
-spread $spread;
+//spread $spread;
 
 //center coordinate only for single seed
-centerX $center_x;
-centerY $center_y;
-centerZ $center_z;
+//centerX $center_x;
+//centerY $center_y;
+//centerZ $center_z;
 
 numSeeds 4; //Maximum number depending on probability of nucleation
 

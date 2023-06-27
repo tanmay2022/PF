@@ -117,6 +117,24 @@
         scalar centerY(readScalar(transportProperties.lookup("centerY")));
         scalar centerZ(readScalar(transportProperties.lookup("centerZ")));
         
+        scalarRectangularMatrix center((phases-1),3,0);
+        
+        center[0][0]   = readScalar(transportProperties.lookup("center[0][0]"));      
+        center[0][1]   = readScalar(transportProperties.lookup("center[0][1]"));      
+        center[0][2]   = readScalar(transportProperties.lookup("center[0][2]"));
+	if (phases != 2)
+    	{
+        center[1][0]   = readScalar(transportProperties.lookup("center[1][0]"));
+        center[1][1]   = readScalar(transportProperties.lookup("center[1][1]"));
+        center[1][2]   = readScalar(transportProperties.lookup("center[1][2]"));
+        }
+	if (phases == 4)
+    	{
+        center[2][0]   = readScalar(transportProperties.lookup("center[2][0]"));      
+        center[2][1]   = readScalar(transportProperties.lookup("center[2][1]"));      
+        center[2][2]   = readScalar(transportProperties.lookup("center[2][2]"));
+        }
+        
         //! Maximum number depending on probability of nucleation
         scalar numSeeds(readScalar(transportProperties.lookup("numSeeds")));
 

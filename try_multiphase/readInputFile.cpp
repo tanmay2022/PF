@@ -11,7 +11,8 @@ int main(int argc, char *argv[])
     
     int DIMENSION, MESH_X, MESH_Y, MESH_Z, NUMPHASES, NUMCOMPONENTS, VOIGT, Function_anisotropy;
     double DELTA_X, DELTA_t, NTIMESTEPS, SAVET, STARTTIME, DIFFUSIVITY00, DIFFUSIVITY01;
-    double GAMMA1, GAMMA2, GAMMA3, GAMMA4, V, DIFFUSIVITY[4], EIGEN_STRAIN[7], VOIGT0[6], VOIGT1[6], T, epsilon;
+    double GAMMA1, GAMMA2, GAMMA3, GAMMA4, V, DIFFUSIVITY[4], EIGEN_STRAIN, EIGEN_STRAIN1[6], EIGEN_STRAIN2[6];
+    double EIGEN_STRAIN3[6], VOIGT0[6], VOIGT1[6], T, epsilon;
     double DIFFUSIVITY10, DIFFUSIVITY11, dab, Amp_Noise_Phase, Equilibrium_temperature, Filling_temperature;
     double theta_x, theta_y, theta_z, center_x, center_y, center_z, seed_radius, volume_fraction, spread;
     
@@ -126,7 +127,7 @@ int main(int argc, char *argv[])
     while (i_phase < (NUMPHASES-1)){
     getline(ss2, line_value2, ',');
     if (line_value2[0] == ' '){
-    for (int i = 1; i < size(line_value2); i++){
+    for (int i = 1; i < line_value2.size(); i++){
     outpfp << line_value2[i];
     }
     }
@@ -139,7 +140,7 @@ int main(int argc, char *argv[])
     
     getline(ss2, line_value2, '}');
     if (line_value2[0] == ' '){
-    for (int i = 1; i < size(line_value2); i++){
+    for (int i = 1; i < line_value2.size(); i++){
     outpfp << line_value2[i];
     }
     }
@@ -157,17 +158,17 @@ int main(int argc, char *argv[])
     
     GAMMA1 = stod(line_value2);
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     
     GAMMA2 = stod(line_value2);
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     
     GAMMA3 = stod(line_value2);
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, '}');
     
     GAMMA4 = stod(line_value2);
@@ -180,15 +181,15 @@ int main(int argc, char *argv[])
     getline(ss2, line_value2, ',');
     DIFFUSIVITY[0] = stod(line_value2);
     
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     DIFFUSIVITY[1] = stod(line_value2);
     
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     DIFFUSIVITY[2] = stod(line_value2);
     
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, '}');
     DIFFUSIVITY[3] = stod(line_value2);
     
@@ -215,33 +216,87 @@ int main(int argc, char *argv[])
     istringstream ss2(line_value2);
     getline(ss2, line_value2, '{');
     getline(ss2, line_value2, ',');
-    EIGEN_STRAIN[0] = stod(line_value2);
+    EIGEN_STRAIN = stod(line_value2);
     
-    if (EIGEN_STRAIN[0] == 0)
+    if (EIGEN_STRAIN == 0)
     {
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
-    EIGEN_STRAIN[1] = stod(line_value2);
+    EIGEN_STRAIN1[0] = stod(line_value2);
     
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
-    EIGEN_STRAIN[2] = stod(line_value2);
+    EIGEN_STRAIN1[1] = stod(line_value2);
     
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
-    EIGEN_STRAIN[3] = stod(line_value2);
+    EIGEN_STRAIN1[2] = stod(line_value2);
     
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
-    EIGEN_STRAIN[4] = stod(line_value2);
+    EIGEN_STRAIN1[3] = stod(line_value2);
     
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
-    EIGEN_STRAIN[5] = stod(line_value2);
+    EIGEN_STRAIN1[4] = stod(line_value2);
     
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, '}');
-    EIGEN_STRAIN[6] = stod(line_value2);
+    EIGEN_STRAIN1[5] = stod(line_value2);
+    }
+
+    if (EIGEN_STRAIN == 1)
+    {
+    //getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    EIGEN_STRAIN2[0] = stod(line_value2);
+    
+    //getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    EIGEN_STRAIN2[1] = stod(line_value2);
+    
+    //getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    EIGEN_STRAIN2[2] = stod(line_value2);
+    
+    //getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    EIGEN_STRAIN2[3] = stod(line_value2);
+    
+    //getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    EIGEN_STRAIN2[4] = stod(line_value2);
+    
+    //getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, '}');
+    EIGEN_STRAIN2[5] = stod(line_value2);
+    }
+
+    if (EIGEN_STRAIN == 2)
+    {
+    //getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    EIGEN_STRAIN3[0] = stod(line_value2);
+    
+    //getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    EIGEN_STRAIN3[1] = stod(line_value2);
+    
+    //getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    EIGEN_STRAIN3[2] = stod(line_value2);
+    
+    //getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    EIGEN_STRAIN3[3] = stod(line_value2);
+    
+    //getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, ',');
+    EIGEN_STRAIN3[4] = stod(line_value2);
+    
+    //getline(ss2, line_value2, ' ');
+    getline(ss2, line_value2, '}');
+    EIGEN_STRAIN3[5] = stod(line_value2);
     }
     }
     
@@ -252,7 +307,7 @@ int main(int argc, char *argv[])
     getline(ss2, line_value2, ',');
     VOIGT = stod(line_value2);
     
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     if (VOIGT == 0){
     VOIGT0[0] = stod(line_value2);
@@ -261,7 +316,7 @@ int main(int argc, char *argv[])
     VOIGT1[0] = stod(line_value2);
     }
     
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     if (VOIGT == 0){
     VOIGT0[1] = stod(line_value2);
@@ -270,7 +325,7 @@ int main(int argc, char *argv[])
     VOIGT1[1] = stod(line_value2);
     }
     
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, '}');
     if (VOIGT == 0){
     VOIGT0[2] = stod(line_value2);
@@ -312,19 +367,25 @@ int main(int argc, char *argv[])
     istringstream ss2(line_value2);
     getline(ss2, line_value2, '{');
     getline(ss2, line_value2, ',');
-    getline(ss2, line_value2, ' ');
+    if (stod(line_value2) == 0)
+    {
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
-    getline(ss2, line_value2, ' ');
+    if (stod(line_value2) == 1)
+    {
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     theta_x = stod(line_value2);
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     theta_y = stod(line_value2);
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, '}');
     theta_z = stod(line_value2);
+    }
+    }
     }
     
     else if (line_value1 == "Amp_Noise_Phase")
@@ -365,22 +426,22 @@ int main(int argc, char *argv[])
     istringstream ss2(line_value2);
     getline(ss2, line_value2, '{');
     getline(ss2, line_value2, ',');
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     center_x = stod(line_value2);
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     center_y = stod(line_value2);
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     center_z = stod(line_value2);
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, '}');
     seed_radius = stod(line_value2);
     volume_fraction = 0;
@@ -392,11 +453,11 @@ int main(int argc, char *argv[])
     istringstream ss2(line_value2);
     getline(ss2, line_value2, '{');
     getline(ss2, line_value2, ',');
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     seed_radius = stod(line_value2);
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     volume_fraction = stod(line_value2);
 
@@ -404,10 +465,10 @@ int main(int argc, char *argv[])
     center_y = 0;
     center_z = 0;
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, '}');
     spread = stod(line_value2);
     }
@@ -417,19 +478,19 @@ int main(int argc, char *argv[])
     istringstream ss2(line_value2);
     getline(ss2, line_value2, '{');
     getline(ss2, line_value2, ',');
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     center_x = stod(line_value2);
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     center_y = stod(line_value2);
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     center_z = stod(line_value2);
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, '}');
     seed_radius = stod(line_value2);
     volume_fraction = 0;
@@ -441,11 +502,11 @@ int main(int argc, char *argv[])
     istringstream ss2(line_value2);
     getline(ss2, line_value2, '{');
     getline(ss2, line_value2, ',');
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     seed_radius = stod(line_value2);
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
     volume_fraction = stod(line_value2);
 
@@ -453,10 +514,10 @@ int main(int argc, char *argv[])
     center_y = 0;
     center_z = 0;
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, ',');
 
-    getline(ss2, line_value2, ' ');
+    //getline(ss2, line_value2, ' ');
     getline(ss2, line_value2, '}');
     spread = stod(line_value2);
     }
@@ -516,8 +577,14 @@ int main(int argc, char *argv[])
     outpft << "initial " << Filling_temperature << ";" << endl;    
     outpft << "T0 " << Equilibrium_temperature << ";" << endl;
     
-    outpf << "EIGEN_STRAIN (" << EIGEN_STRAIN[1] << " " << EIGEN_STRAIN[6] << " " << EIGEN_STRAIN[5] <<
-    " " << EIGEN_STRAIN[2] << " " << EIGEN_STRAIN[4] << " " << EIGEN_STRAIN[3] << ");" << endl;
+    outpf << "EIGEN_STRAIN1 (" << EIGEN_STRAIN1[0] << " " << EIGEN_STRAIN1[5] << " " << EIGEN_STRAIN1[4] <<
+    " " << EIGEN_STRAIN1[1] << " " << EIGEN_STRAIN1[3] << " " << EIGEN_STRAIN1[2] << ");" << endl;
+
+    outpf << "EIGEN_STRAIN2 (" << EIGEN_STRAIN2[0] << " " << EIGEN_STRAIN2[5] << " " << EIGEN_STRAIN2[4] <<
+    " " << EIGEN_STRAIN2[1] << " " << EIGEN_STRAIN2[3] << " " << EIGEN_STRAIN2[2] << ");" << endl;
+
+    outpf << "EIGEN_STRAIN3 (" << EIGEN_STRAIN3[0] << " " << EIGEN_STRAIN3[5] << " " << EIGEN_STRAIN3[4] <<
+    " " << EIGEN_STRAIN3[1] << " " << EIGEN_STRAIN3[3] << " " << EIGEN_STRAIN3[2] << ");" << endl;
     
     outpf << "C11_1 " << VOIGT0[0] << ";" << endl;
     outpf << "C12_1 " << VOIGT0[1] << ";" << endl;

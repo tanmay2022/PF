@@ -77,7 +77,7 @@ theta = Foam::atan2(2*(qt2*qt3 + qt0*qt1), (qt0*qt0 - qt1*qt1 - qt2*qt2 + qt3*qt
   + Foam::atan2(2*(qt1*qt2 + qt0*qt3), (qt0*qt0 + qt1*qt1 - qt2*qt2 - qt3*qt3))*vector(0,0,1);
 }
 
-}
+
 
     // Writing into the log file
     //! For 3D simulations
@@ -87,4 +87,4 @@ Info<< "Min/max thetax:" << min(theta.component(0)).value() << ' ' << max(theta.
 Info<< "Min/max thetay:" << min(theta.component(1)).value() << ' ' << max(theta.component(1)).value() << endl;
 }
 Info<< "Min/max thetaz:" << min(theta.component(2)).value() << ' ' << max(theta.component(2)).value() << endl;
-
+}

@@ -620,7 +620,9 @@ volScalarField hphi4 = 0.0*phi_4;
         dcdmu_Liq = 0.5/A_Liq;
             
         omega = epsilon*0.18*DeltaC*DeltaC/(dcdmu_Liq*diff_Liq*Vm);
-    
+
+	//Info<< "omega= " << omega.value() << nl << endl;
+        
         B_Sol = 2.0*(A_Liq*c_Liq - A_Sol*c_Sol);
         dBdT = 2.0*(A_LiqdT*c_Liq + A_Liq*c_LiqdT - A_SoldT*c_Sol - A_Sol*c_SoldT);
         
@@ -696,7 +698,7 @@ volScalarField hphi4 = 0.0*phi_4;
    
    omega = epsilon*0.18*testMatrix[0][0]/Vm;
    
-   Info<< "omega= " << omega.value() << nl << endl;
+   //Info<< "omega= " << omega.value() << nl << endl;
       
    B_a1 = (dmudc_l[0][0]*ceq_l[0][0] - dmudc_a[0][0]*ceq_a[0][0]) + (dmudc_l[0][1]*ceq_l[1][0] - dmudc_a[0][1]*ceq_a[1][0]);
    

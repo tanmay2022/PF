@@ -298,6 +298,24 @@ while(curvol <= maxvol){
 }
 }
 }
+
+//! Initial conditions for single dendrite solidification simulation
+if (swch == 0)
+{
+xCenter = centerX;
+yCenter = centerY;
+phi_1 = phi_1 + (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius*seedRadius));
+
+phi_2 = phi_2 + (1-phi_2)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius*seedRadius));
+
+theta = theta_z.value()*vector(0,0,1);
+}
+
+Info<< "Initialised fields." << endl;
+
+Info<< "Min/max phi_1:" << min(phi_1).value() << ' ' << max(phi_1).value() << endl;
+Info<< "Min/max phi_2:" << min(phi_2).value() << ' ' << max(phi_2).value() << endl;
+Info<< "Min/max theta:" << min(theta).value() << ' ' << max(theta).value() << endl;
 }
 
 if (dimensions == 3)
@@ -340,6 +358,27 @@ while(curvol <= maxvol){
 }
 }
 }
+
+//! Initial conditions for single dendrite solidification simulation
+if (swch == 0)
+{
+xCenter = centerX;
+yCenter = centerY;
+zCenter = centerZ;
+phi_1 = phi_1 + (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius*seedRadius));
+
+phi_2 = phi_2 + (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius*seedRadius));
+
+theta = theta_x.value()*vector(1,0,0) + theta_y.value()*vector(0,1,0) + theta_z.value()*vector(0,0,1);
+}
+
+Info<< "Initialised fields." << endl;
+
+Info<< "Min/max phi_1:" << min(phi_1).value() << ' ' << max(phi_1).value() << endl;
+Info<< "Min/max phi_2:" << min(phi_2).value() << ' ' << max(phi_2).value() << endl;
+Info<< "Min/max thetaz:" << min(theta.component(2)).value() << ' ' << max(theta.component(2)).value() << endl;
+Info<< "Min/max thetax:" << min(theta.component(0)).value() << ' ' << max(theta.component(0)).value() << endl;
+Info<< "Min/max thetay:" << min(theta.component(1)).value() << ' ' << max(theta.component(1)).value() << endl;
 }
 }
 
@@ -385,6 +424,27 @@ while(curvol <= maxvol){
 }
 }
 }
+
+//! Initial conditions for single dendrite solidification simulation
+if (swch == 0)
+{
+xCenter = centerX;
+yCenter = centerY;
+phi_1 = phi_1 + (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-center[0][0])*(mesh.C().component(vector::X)/dimx-center[0][0]) + (mesh.C().component(vector::Y)/dimx-center[0][1])*(mesh.C().component(vector::Y)/dimx-center[0][1]))/(seedRadius*seedRadius));
+
+phi_2 = phi_2 + (1-phi_2)*exp(-((mesh.C().component(vector::X)/dimx-center[1][0])*(mesh.C().component(vector::X)/dimx-center[1][0]) + (mesh.C().component(vector::Y)/dimx-center[1][1])*(mesh.C().component(vector::Y)/dimx-center[1][1]))/(seedRadius*seedRadius));
+
+phi_3 = phi_3 + (1-phi_3)*exp(-((mesh.C().component(vector::X)/dimx-center[2][0])*(mesh.C().component(vector::X)/dimx-center[2][0]) + (mesh.C().component(vector::Y)/dimx-center[2][1])*(mesh.C().component(vector::Y)/dimx-center[2][1]))/(seedRadius*seedRadius));
+
+theta = theta_z.value()*vector(0,0,1);
+}
+
+Info<< "Initialised fields." << endl;
+
+Info<< "Min/max phi_1:" << min(phi_1).value() << ' ' << max(phi_1).value() << endl;
+Info<< "Min/max phi_2:" << min(phi_2).value() << ' ' << max(phi_2).value() << endl;
+Info<< "Min/max phi_3:" << min(phi_3).value() << ' ' << max(phi_3).value() << endl;
+Info<< "Min/max theta:" << min(theta).value() << ' ' << max(theta).value() << endl;
 }
 
 if (dimensions == 3)
@@ -428,6 +488,30 @@ while(curvol <= maxvol){
 }
 }
 }
+
+//! Initial conditions for single dendrite solidification simulation
+if (swch == 0)
+{
+xCenter = centerX;
+yCenter = centerY;
+zCenter = centerZ;
+phi_1 = phi_1 + (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius*seedRadius));
+
+phi_2 = phi_2 + (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius*seedRadius));
+
+phi_3 = phi_3 + (1-phi_3)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius*seedRadius));
+
+theta = theta_x.value()*vector(1,0,0) + theta_y.value()*vector(0,1,0) + theta_z.value()*vector(0,0,1);
+}
+
+Info<< "Initialised fields." << endl;
+
+Info<< "Min/max phi_1:" << min(phi_1).value() << ' ' << max(phi_1).value() << endl;
+Info<< "Min/max phi_2:" << min(phi_2).value() << ' ' << max(phi_2).value() << endl;
+Info<< "Min/max phi_3:" << min(phi_3).value() << ' ' << max(phi_3).value() << endl;
+Info<< "Min/max thetaz:" << min(theta.component(2)).value() << ' ' << max(theta.component(2)).value() << endl;
+Info<< "Min/max thetax:" << min(theta.component(0)).value() << ' ' << max(theta.component(0)).value() << endl;
+Info<< "Min/max thetay:" << min(theta.component(1)).value() << ' ' << max(theta.component(1)).value() << endl;
 }
 }
 

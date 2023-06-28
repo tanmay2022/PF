@@ -118,31 +118,36 @@
         //scalar centerY(readScalar(transportProperties.lookup("centerY")));
         //scalar centerZ(readScalar(transportProperties.lookup("centerZ")));
         
-        scalarRectangularMatrix center((phases-1),3,0);
+        scalarRectangularMatrix centerX((phases-1),1,0);
+        scalarRectangularMatrix centerY((phases-1),1,0);
+        scalarRectangularMatrix centerZ((phases-1),1,0);
+        scalarRectangularMatrix seedRadius((phases-1),1,0);
+        scalarRectangularMatrix volumeFraction((phases-1),1,0);
+        scalarRectangularMatrix spread((phases-1),1,0);
         
-        center_x[0]   = readScalar(transportProperties.lookup("center_x[0]"));      
-        center_y[0]   = readScalar(transportProperties.lookup("center_y[0]"));      
-        center_z[0]   = readScalar(transportProperties.lookup("center_z[0]"));
-        seedRadius[0] = readScalar(transportProperties.lookup("seedRadius[0]")); 
-        volume_fraction[0] = readScalar(transportProperties.lookup("volume_fraction[0]")); 
-        spread[0] = readScalar(transportProperties.lookup("spread[0]")); 
+        centerX[0][0]   = readScalar(transportProperties.lookup("centerX[0]"));      
+        centerY[0][0]   = readScalar(transportProperties.lookup("centerY[0]"));      
+        centerZ[0][0]   = readScalar(transportProperties.lookup("centerZ[0]"));
+        seedRadius[0][0] = readScalar(transportProperties.lookup("seedRadius[0]")); 
+        volumeFraction[0][0] = readScalar(transportProperties.lookup("volumeFraction[0]")); 
+        spread[0][0] = readScalar(transportProperties.lookup("spread[0]")); 
 	if (phases != 2)
     	{
-        center_x[1]   = readScalar(transportProperties.lookup("center_x[1]"));
-        center_y[1]   = readScalar(transportProperties.lookup("center_y[1]"));
-        center_z[1]   = readScalar(transportProperties.lookup("center_z[1]"));
-        seedRadius[1] = readScalar(transportProperties.lookup("seedRadius[1]")); 
-        volume_fraction[1] = readScalar(transportProperties.lookup("volume_fraction[1]")); 
-        spread[1] = readScalar(transportProperties.lookup("spread[1]")); 
+        centerX[1][0]   = readScalar(transportProperties.lookup("centerX[1]"));
+        centerY[1][0]   = readScalar(transportProperties.lookup("centerY[1]"));
+        centerZ[1][0]   = readScalar(transportProperties.lookup("centerZ[1]"));
+        seedRadius[1][0] = readScalar(transportProperties.lookup("seedRadius[1]")); 
+        volumeFraction[1][0] = readScalar(transportProperties.lookup("volumeFraction[1]")); 
+        spread[1][0] = readScalar(transportProperties.lookup("spread[1]")); 
         }
 	if (phases == 4)
     	{
-        center_x[2]   = readScalar(transportProperties.lookup("center_x[2]"));      
-        center_y[2]   = readScalar(transportProperties.lookup("center_y[2]"));      
-        center_z[2]   = readScalar(transportProperties.lookup("center_z[2]"));
-        seedRadius[2] = readScalar(transportProperties.lookup("seedRadius[2]")); 
-        volume_fraction[2] = readScalar(transportProperties.lookup("volume_fraction[2]")); 
-        spread[2] = readScalar(transportProperties.lookup("spread[2]")); 
+        centerX[2][0]   = readScalar(transportProperties.lookup("centerX[2]"));      
+        centerY[2][0]   = readScalar(transportProperties.lookup("centerY[2]"));      
+        centerZ[2][0]   = readScalar(transportProperties.lookup("centerZ[2]"));
+        seedRadius[2][0] = readScalar(transportProperties.lookup("seedRadius[2]")); 
+        volumeFraction[2][0] = readScalar(transportProperties.lookup("volumeFraction[2]")); 
+        spread[2][0] = readScalar(transportProperties.lookup("spread[2]")); 
         }
         
         //! Maximum number depending on probability of nucleation

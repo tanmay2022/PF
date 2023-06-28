@@ -806,7 +806,7 @@ if ((swcool == 1)&&(swch == 1))
         }
         scalar random = randNumber.globalScalar01();
         if (random < nprob) {
-          if ((int)(runTime.value()/runTime.deltaTValue())%(int)(nucleation_interval)==0) {
+          if ((int(runTime.value()/runTime.deltaTValue()))%(int(nucleation_interval))==0) {
               //#include "nucleateSeeds.H"
               //theta_fill = 2.0*M_PI*randNumber.scalar01();
     	      //r          = (droplet_radius)*randNumber.scalar01();
@@ -825,7 +825,7 @@ if ((swcool == 1)&&(swch == 1))
             Info<< "random theta: " << randTheta[2] << endl;
 
             Info<< "Filling phi and theta fields in seeds" << endl;
-            volScalarField gaussianSeed = (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[0]*seedRadius[0]));
+            volScalarField gaussianSeed = (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[0][0]*seedRadius[0][0]));
 
             theta = theta + randTheta[2]*gaussianSeed*vector(0,0,1);
             phi_1 = phi_1 + gaussianSeed;
@@ -845,7 +845,7 @@ if ((swcool == 1)&&(swch == 1))
             Info<< "random thetay: " << randTheta[1] << endl;
 
             Info<< "Filling phi and theta fields in seeds" << endl;
-            volScalarField gaussianSeed = (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius[0]*seedRadius[0]));
+            volScalarField gaussianSeed = (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius[0][0]*seedRadius[0][0]));
 
 
             theta = theta + gaussianSeed*(randTheta[0]*vector(1,0,0) + randTheta[1]*vector(0,1,0) + randTheta[2]*vector(0,0,1));

@@ -3,6 +3,19 @@
  #include "readTDB.H"
 
   //! Creating phase-field with the option to write
+   volScalarField phase_index
+    (
+        IOobject
+        (
+            "phase_index",
+            runTime.timeName(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh
+    );
+
    volScalarField phi_1
     (
         IOobject

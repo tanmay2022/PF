@@ -78,6 +78,8 @@ if (components == 2)
     phi_2 -=  lambda_phase*runTime.deltaTValue();
     phi_3 -=  lambda_phase*runTime.deltaTValue();
     phi_4 -=  lambda_phase*runTime.deltaTValue();
+
+phase_index = phi_1 + 2*phi_2 + 3*phi_3 + 4*phi_4;
 }
 }
 

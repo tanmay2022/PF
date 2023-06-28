@@ -506,11 +506,11 @@ int main(int argc, char *argv[])
     outpf << "mu2_elast_ " << mu2_elast_ << ";" << endl;
     
     for (i_phase = 0; i_phase < (NUMPHASES-1); i_phase++) {
-    outpf << "center_x[" << i_phase << "] " << DELTA_X*center_x[i_phase] << ";" << endl;
-    outpf << "center_y[" << i_phase << "] " << DELTA_X*center_y[i_phase] << ";" << endl;
-    outpf << "center_z[" << i_phase << "] " << DELTA_X*center_z[i_phase] << ";" << endl;
-    outpf << "seed_radius[" << i_phase << "] " << DELTA_X*seed_radius[i_phase] << ";" << endl;
-    outpf << "volume_fraction[" << i_phase << "] " << volume_fraction[i_phase] << ";" << endl;
+    outpf << "centerX[" << i_phase << "] " << DELTA_X*center_x[i_phase] << ";" << endl;
+    outpf << "centerY[" << i_phase << "] " << DELTA_X*center_y[i_phase] << ";" << endl;
+    outpf << "centerZ[" << i_phase << "] " << DELTA_X*center_z[i_phase] << ";" << endl;
+    outpf << "seedRadius[" << i_phase << "] " << DELTA_X*seed_radius[i_phase] << ";" << endl;
+    outpf << "volumeFraction[" << i_phase << "] " << volume_fraction[i_phase] << ";" << endl;
     outpf << "spread[" << i_phase << "] " << spread[i_phase] << ";" << endl;
     }
 

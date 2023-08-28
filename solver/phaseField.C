@@ -570,35 +570,7 @@ volScalarField hphi4 = 0.0*phi_4;
         
         //! Computing temperature evolution
     
-        dimensionedScalar T_old = T;
-        
-    solidVolFrac = fvc::domainIntegrate(phi_1)/totalVol;
-    
-    dsolidVolFracOld = dsolidVolFrac;
-    dsolidVolFrac = (solidVolFrac - solidVolFracOld);
-    
-        if (swcool == 1)
-        {
-            dimensionedScalar Lf = gsl_spline_eval (spline_L, T.value(), acc_L);
-            dimensionedScalar Cp = gsl_spline_eval (spline_C, T.value(), acc_C);
-            T = T + (Lf/Cp)*dsolidVolFrac - (qdot/Cp)*runTime.deltaTValue();
-        
-        }
-
-        if (T.value() > Tm.value()) {
-        T.value() = Tm.value();
-    	}
-    	else if (T.value() < T1[0]) {
-        T.value() = T1[0];
-        break;
-    	}
-    
-        solidVolFracOld = solidVolFrac;
-
-        outpft << "time " << runTime.timeName() << " " << T.value() << " " << solidVolFrac.value() << nl << endl;
-        Info << "Temperature: "  << T.value() << " K" << endl;
-        
-        dimensionedScalar Tdot = (T-T_old)/runTime.deltaTValue();
+        #include "TEqn.H"
 
         //! Computing the thermodynamic parameters in phase diagram
     //if (phases == 2)
@@ -764,6 +736,8 @@ volScalarField hphi4 = 0.0*phi_4;
     if (components == 2)
     {
     avg_liq_conc = fvc::domainIntegrate((0.5*(mu_1-B_Liq)/A_Liq)*(1-phi_1)).value()/fvc::domainIntegrate((1-phi_1)).value();
+    
+    c_1 = 0.5*(mu_1-B_Sol)/A_Sol;
     }
     
     if (components == 3)
@@ -771,6 +745,10 @@ volScalarField hphi4 = 0.0*phi_4;
     avg_liq_conct[0][0] = fvc::domainIntegrate((dcdmu_l[0][0]*(mu_1) + dcdmu_l[0][1]*(mu_2))*(1-phi_1)).value()/fvc::domainIntegrate((1-phi_1)).value();
 
       avg_liq_conct[1][0] = fvc::domainIntegrate((dcdmu_l[1][0]*(mu_1) + dcdmu_l[1][1]*(mu_2))*(1-phi_1)).value()/fvc::domainIntegrate((1-phi_1)).value();
+      
+      c_1 = dcdmu_a[0][0]*(mu_1 - B_a1) + dcdmu_a[0][1]*(mu_2 - B_a2);
+      
+      c_2 = dcdmu_a[1][0]*(mu_1 - B_a1) + dcdmu_a[1][1]*(mu_2 - B_a2);
     }
     }
     

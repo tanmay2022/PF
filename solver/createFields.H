@@ -95,6 +95,33 @@
         mesh
     );
     
+  //! Creating composition field with the option to write
+    volScalarField c_1
+    (
+        IOobject
+        (
+            "c_1",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh
+    );
+
+    volScalarField c_2
+    (
+        IOobject
+        (
+            "c_2",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh
+    );
+    
     //! Creating orientation field with the option to write
     volVectorField theta
     (

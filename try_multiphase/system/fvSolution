@@ -220,7 +220,7 @@ Tol_is_defined_here
 
 deltaTFactor
 {
-    dtf 0.1; //get_dtf_from_this
+    dtf 0.0; //get_dtf_from_this
 }
 
 // ************************************************************************* //

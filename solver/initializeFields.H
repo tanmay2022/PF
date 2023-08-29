@@ -275,7 +275,7 @@ curvol[i_phase] = 0;
 }
 
 if (numSeeds != 1){
-while(curvol[0] <= maxvol[0]){
+while((curvol[0]+curvol[1]) <= (maxvol[0]+maxvol[1])){
     Info<< "creating a new seed" << endl;
     xCenter = randNumber.globalScalar01()*xMax;
     yCenter = randNumber.globalScalar01()*yMax;
@@ -287,12 +287,20 @@ while(curvol[0] <= maxvol[0]){
 
     Info<< "Filling phi field in seeds" << endl;
     //randRadius = (1 + spread*(2*randNumber.globalScalar01() - 1))*seedRadius[0];
+    if (curvol[0] <= maxvol[0]){
     curvol[0] = curvol[0] + pi.value()*seedRadius[0][0]*seedRadius[0][0];
     
 phi_1 = phi_1 + (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[0][0]*seedRadius[0][0]));
-
 }
 
+if (curvol[1] <= maxvol[1]){
+    curvol[1] = curvol[1] + pi.value()*seedRadius[1][0]*seedRadius[1][0];
+
+phi_2 = phi_2 + (1-phi_2)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[1][0]*seedRadius[1][0]));
+}
+
+}
+/*
 while(curvol[1] <= maxvol[1]){
     Info<< "creating a new seed" << endl;
     xCenter = randNumber.globalScalar01()*xMax;
@@ -310,7 +318,7 @@ while(curvol[1] <= maxvol[1]){
 phi_2 = phi_2 + (1-phi_2)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[1][0]*seedRadius[1][0]));
 
 }
-
+*/
 phi_3 = 1 - (phi_1 + phi_2);
 
 theta = theta_z.value()*vector(0,0,1);
@@ -416,7 +424,7 @@ curvol[i_phase] = 0;
 }
 
 if (numSeeds != 1){
-while(curvol[0] <= maxvol[0]){
+while((curvol[0]+curvol[1]+curvol[2]) <= (maxvol[0]+maxvol[1]+maxvol[2])){
     Info<< "creating a new seed" << endl;
     xCenter = randNumber.globalScalar01()*xMax;
     yCenter = randNumber.globalScalar01()*yMax;
@@ -428,9 +436,23 @@ while(curvol[0] <= maxvol[0]){
 
     Info<< "Filling phi field in seeds" << endl;
     //randRadius = (1 + spread*(2*randNumber.globalScalar01() - 1))*seedRadius[0];
+    if (curvol[0] <= maxvol[0]){
     curvol[0] = curvol[0] + pi.value()*seedRadius[0][0]*seedRadius[0][0];
     
 phi_1 = phi_1 + (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[0][0]*seedRadius[0][0]));
+}
+
+else if (curvol[1] <= maxvol[1]){
+    curvol[1] = curvol[1] + pi.value()*seedRadius[1][0]*seedRadius[1][0];
+
+phi_2 = phi_2 + (1-phi_2)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[1][0]*seedRadius[1][0]));
+}
+
+else if (curvol[2] <= maxvol[2]){
+    curvol[2] = curvol[2] + pi.value()*seedRadius[2][0]*seedRadius[2][0];
+
+phi_3 = phi_3 + (1-phi_3)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[2][0]*seedRadius[2][0]));
+}
 
 //phi_2 = phi_2*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[0][0]*seedRadius[0][0]));
 
@@ -440,7 +462,7 @@ phi_1 = phi_1 + (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(me
 }
 
 //phi_4 = 1 - phi_1;
-
+/*
 while(curvol[1] <= maxvol[1]){
     Info<< "creating a new seed" << endl;
     xCenter = randNumber.globalScalar01()*xMax;
@@ -490,6 +512,8 @@ phi_3 = phi_3 + (1-phi_1-phi_2-phi_3)*exp(-((mesh.C().component(vector::X)/dimx-
 }
 
 phi_4 = 1 - phi_1*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[0][0]*seedRadius[0][0])) - phi_2*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[1][0]*seedRadius[1][0])) - phi_3*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[2][0]*seedRadius[2][0]));
+*/
+phi_4 = 1 - (phi_1 + phi_2 + phi_3);
 
 phase_index = phi_1 + 2*phi_2 + 3*phi_3 + 4*phi_4;
 

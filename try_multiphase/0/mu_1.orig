@@ -18,7 +18,7 @@ FoamFile
 
 dimensions      [0 0 0 0 0 0 0];
 
-internalField   uniform $muInit; 
+internalField   uniform $mu1Init; 
 
 //============== NO-FLUX BOUNDARY CONDITIONS ====================//
 /*

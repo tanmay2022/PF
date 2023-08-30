@@ -63,7 +63,7 @@ swcool 0;
 
 //Switch = 1 to enable orientaton field, 2 to model precipitate growth,
 //else 0 for single dendrite solidification
-swch 1;
+swch 2;
 
 M_Scale 0.05;
 

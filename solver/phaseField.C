@@ -45,27 +45,27 @@ Description
 // Using dynamicFvMesh for dynamic interface refinement
 //#include "dynamicFvMesh.H"
 
-gsl_spline *spline1;
-gsl_spline *spline2;
-gsl_spline *spline3;
+gsl_spline *spline1[3];
+gsl_spline *spline2[3];
+gsl_spline *spline3[3];
 gsl_spline *spline4;
 gsl_spline *spline5;
 gsl_spline *spline6;
-gsl_spline *spline7;
-gsl_spline *spline8;
+gsl_spline *spline7[3];
+gsl_spline *spline8[3];
 gsl_spline *spline9;
 gsl_spline *spline10;
 gsl_spline *spline_L;
 gsl_spline *spline_C;
 
-gsl_interp_accel *acc1;
-gsl_interp_accel *acc2;
-gsl_interp_accel *acc3;
+gsl_interp_accel *acc1[3];
+gsl_interp_accel *acc2[3];
+gsl_interp_accel *acc3[3];
 gsl_interp_accel *acc4;
 gsl_interp_accel *acc5;
 gsl_interp_accel *acc6;
-gsl_interp_accel *acc7;
-gsl_interp_accel *acc8;
+gsl_interp_accel *acc7[3];
+gsl_interp_accel *acc8[3];
 gsl_interp_accel *acc9;
 gsl_interp_accel *acc10;
 gsl_interp_accel *acc_L;
@@ -78,16 +78,16 @@ double calculate_melting_point(double cl, double T_guess, double T_high, double 
   dimensionedScalar fval, dfdT;  
   
   do {
-    dimensionedScalar A_Sol = gsl_spline_eval (spline1, T.value(), acc1);
-    dimensionedScalar A_Liq = gsl_spline_eval (spline2, T.value(), acc2);
+    dimensionedScalar A_Sol = gsl_spline_eval (spline1[0], T.value(), acc1[0]);
+    dimensionedScalar A_Liq = gsl_spline_eval (spline2[0], T.value(), acc2[0]);
   
-    dimensionedScalar A_SoldT = gsl_spline_eval_deriv (spline1, T.value(), acc1);
-    dimensionedScalar A_LiqdT = gsl_spline_eval_deriv (spline2, T.value(), acc2);
+    dimensionedScalar A_SoldT = gsl_spline_eval_deriv (spline1[0], T.value(), acc1[0]);
+    dimensionedScalar A_LiqdT = gsl_spline_eval_deriv (spline2[0], T.value(), acc2[0]);
   
-    dimensionedScalar c_Sol = gsl_spline_eval (spline3, T.value(), acc3);
+    dimensionedScalar c_Sol = gsl_spline_eval (spline3[0], T.value(), acc3[0]);
     dimensionedScalar c_Liq = gsl_spline_eval (spline4, T.value(), acc4);
 
-    dimensionedScalar c_SoldT = gsl_spline_eval_deriv (spline3, T.value(), acc3);
+    dimensionedScalar c_SoldT = gsl_spline_eval_deriv (spline3[0], T.value(), acc3[0]);
     dimensionedScalar c_LiqdT = gsl_spline_eval_deriv (spline4, T.value(), acc4);
     
     dimensionedScalar B_Sol = 2.0*(A_Liq*c_Liq - A_Sol*c_Sol);
@@ -146,13 +146,13 @@ double calculate_melting_point(scalarRectangularMatrix cl, double T_guess, doubl
    scalarRectangularMatrix ceq_ldT(2,1,0);
   
   do {
-    dmudc_a[0][0] = gsl_spline_eval (spline1, T.value(), acc1);
-    dmudc_a[0][1] = gsl_spline_eval (spline2, T.value(), acc2);
-    dmudc_a[1][1] = gsl_spline_eval (spline3, T.value(), acc3);
+    dmudc_a[0][0] = gsl_spline_eval (spline1[0], T.value(), acc1[0]);
+    dmudc_a[0][1] = gsl_spline_eval (spline2[0], T.value(), acc2[0]);
+    dmudc_a[1][1] = gsl_spline_eval (spline3[0], T.value(), acc3[0]);
 
-    dmudc_adT[0][0] = gsl_spline_eval_deriv (spline1, T.value(), acc1);
-    dmudc_adT[0][1] = gsl_spline_eval_deriv (spline2, T.value(), acc2);
-    dmudc_adT[1][1] = gsl_spline_eval_deriv (spline3, T.value(), acc3);
+    dmudc_adT[0][0] = gsl_spline_eval_deriv (spline1[0], T.value(), acc1[0]);
+    dmudc_adT[0][1] = gsl_spline_eval_deriv (spline2[0], T.value(), acc2[0]);
+    dmudc_adT[1][1] = gsl_spline_eval_deriv (spline3[0], T.value(), acc3[0]);
     
     dmudc_l[0][0] = gsl_spline_eval (spline4, T.value(), acc4);
     dmudc_l[0][1] = gsl_spline_eval (spline5, T.value(), acc5);
@@ -162,11 +162,11 @@ double calculate_melting_point(scalarRectangularMatrix cl, double T_guess, doubl
     dmudc_ldT[0][1] = gsl_spline_eval_deriv (spline5, T.value(), acc5);
     dmudc_ldT[1][1] = gsl_spline_eval_deriv (spline6, T.value(), acc6);
     
-    ceq_a[0][0] = gsl_spline_eval (spline7, T.value(), acc7);
-    ceq_a[1][0] = gsl_spline_eval (spline8, T.value(), acc8);
+    ceq_a[0][0] = gsl_spline_eval (spline7[0], T.value(), acc7[0]);
+    ceq_a[1][0] = gsl_spline_eval (spline8[0], T.value(), acc8[0]);
 
-    ceq_adT[0][0] = gsl_spline_eval_deriv (spline7, T.value(), acc7);
-    ceq_adT[1][0] = gsl_spline_eval_deriv (spline8, T.value(), acc8);
+    ceq_adT[0][0] = gsl_spline_eval_deriv (spline7[0], T.value(), acc7[0]);
+    ceq_adT[1][0] = gsl_spline_eval_deriv (spline8[0], T.value(), acc8[0]);
     
     ceq_l[0][0] = gsl_spline_eval (spline9, T.value(), acc9);
     ceq_l[1][0] = gsl_spline_eval (spline10, T.value(), acc10);
@@ -321,17 +321,17 @@ volScalarField hphi4 = 0.0*phi_4;
     //{
     if (components == 2)
     {
-    spline1 = gsl_spline_alloc (gsl_interp_cspline, np);
-    acc1 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline1, T1, ASol[0], np);
+    spline1[0] = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc1[0] = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline1[0], T1, ASol[0], np);
     
-    spline2 = gsl_spline_alloc (gsl_interp_cspline, np);
-    acc2 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline2, T1, ALiq, np);
+    spline2[0] = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc2[0] = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline2[0], T1, ALiq, np);
     
-    spline3 = gsl_spline_alloc (gsl_interp_cspline, np);
-    acc3 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline3, T1, cSol[0], np);
+    spline3[0] = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc3[0] = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline3[0], T1, cSol[0], np);
     
     spline4 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc4 = gsl_interp_accel_alloc ();
@@ -347,17 +347,17 @@ volScalarField hphi4 = 0.0*phi_4;
     }
     else if (components == 3)
     {
-    spline1 = gsl_spline_alloc (gsl_interp_cspline, np);
-    acc1 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline1, T1, HSol11[0], np);
+    spline1[0] = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc1[0] = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline1[0], T1, HSol11[0], np);
 
-    spline2 = gsl_spline_alloc (gsl_interp_cspline, np);
-    acc2 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline2, T1, HSol12[0], np);
+    spline2[0] = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc2[0] = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline2[0], T1, HSol12[0], np);
 
-    spline3 = gsl_spline_alloc (gsl_interp_cspline, np);
-    acc3 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline3, T1, HSol22[0], np);
+    spline3[0] = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc3[0] = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline3[0], T1, HSol22[0], np);
     
     spline4 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc4 = gsl_interp_accel_alloc ();
@@ -371,13 +371,13 @@ volScalarField hphi4 = 0.0*phi_4;
     acc6 = gsl_interp_accel_alloc ();
     gsl_spline_init (spline6, T1, HLiq22, np);
     
-    spline7 = gsl_spline_alloc (gsl_interp_cspline, np);
-    acc7 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline7, T1, cSol1[0], np);
+    spline7[0] = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc7[0] = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline7[0], T1, cSol1[0], np);
     
-    spline8 = gsl_spline_alloc (gsl_interp_cspline, np);
-    acc8 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline8, T1, cSol2[0], np);
+    spline8[0] = gsl_spline_alloc (gsl_interp_cspline, np);
+    acc8[0] = gsl_interp_accel_alloc ();
+    gsl_spline_init (spline8[0], T1, cSol2[0], np);
     
     spline9 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc9 = gsl_interp_accel_alloc ();
@@ -456,7 +456,7 @@ volScalarField hphi4 = 0.0*phi_4;
     //{
     if (components == 2)
     {
-    dimensionedScalar c_a = gsl_spline_eval (spline3, Tm.value(), acc3);
+    dimensionedScalar c_a = gsl_spline_eval (spline3[0], Tm.value(), acc3[0]);
     dimensionedScalar c_l = gsl_spline_eval (spline4, Tm.value(), acc4);
     
     //Info << T << "AS " << A_Sol << "AL " << A_Liq << "cS " << c_Sol << "cL " << c_Liq << endl;
@@ -490,8 +490,8 @@ volScalarField hphi4 = 0.0*phi_4;
     //{
     if (components == 3)
     {
-    c_at[0][0] = gsl_spline_eval (spline7, Tm.value(), acc7);
-    c_at[1][0] = gsl_spline_eval (spline8, Tm.value(), acc8);
+    c_at[0][0] = gsl_spline_eval (spline7[0], Tm.value(), acc7[0]);
+    c_at[1][0] = gsl_spline_eval (spline8[0], Tm.value(), acc8[0]);
     
     c_lt[0][0] = gsl_spline_eval (spline9, Tm.value(), acc9);
     c_lt[1][0] = gsl_spline_eval (spline10, Tm.value(), acc10);
@@ -513,54 +513,8 @@ volScalarField hphi4 = 0.0*phi_4;
     while (runTime.loop())
     {
         Info<< "Time = " << runTime.timeName() << nl << endl;
-
-        //! Timestep increment for accelerating simulation.
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	//! Checking monotonicity for stability of phi equation
-	//! Change of average phi showing no oscillation
-	if (sign(dsolidVolFrac.value()) == sign(dsolidVolFracOld.value()))
-	//if (dsolidVolFrac.value() >= 0)
-	{
-	iter_num += 1;
-
-	if (iter_num > 100 && max(max(InitialResidual_0,max(InitialResidual_10,InitialResidual_11)),max(max(max(InitialResidual_20,InitialResidual_21),max(InitialResidual_22,InitialResidual_23)),InitialResidual_3)) < Tol) //.value() && runTime.value() < 1000*InitialDeltaT
-	{   
-    	runTime.setDeltaT
-        	(
-            	runTime.deltaTValue() + dtf*InitialDeltaT
-        	);
-    	// set the iter_num = 0
-    	iter_num = 0;
-    	Info<< "deltaT increased to " <<  runTime.deltaTValue() << endl;
-    	
-    
-	} else if (iter_num > 100 && max(max(InitialResidual_0,max(InitialResidual_10,InitialResidual_11)),max(max(max(InitialResidual_20,InitialResidual_21),max(InitialResidual_22,InitialResidual_23)),InitialResidual_3)) > Tol)
-	{
-    
-	runTime.setDeltaT
-        	(
-            	runTime.deltaTValue() - dtf*InitialDeltaT 
-        	);
-	if (runTime.deltaTValue() < InitialDeltaT) //|| mag(Tdot) > )
-	  {
-          	runTime.setDeltaT(InitialDeltaT);  
-          }
-    	iter_num =0;
-    	Info<< "deltaT decreased to " <<  runTime.deltaTValue() << endl;
-
-	}
-
-	Info<< "iter_num = " <<  iter_num << endl;
-	}
-	//! Change of average phi showing oscillation
-	if (sign(dsolidVolFrac.value()) != sign(dsolidVolFracOld.value()))
-	//if (dsolidVolFrac.value() < 0)
-	{
-	runTime.setDeltaT(InitialDeltaT);
-    	Info<< "deltaT decreased to " <<  runTime.deltaTValue() << endl;
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        #include "variabledeltaT.H"
 
         #include "readSolidDisplacementFoamControls.H"
         
@@ -577,16 +531,16 @@ volScalarField hphi4 = 0.0*phi_4;
     //{
         if (components == 2)
     	{
-        A_Sol = gsl_spline_eval (spline1, T.value(), acc1);
-        A_Liq = gsl_spline_eval (spline2, T.value(), acc2);
+        A_Sol = gsl_spline_eval (spline1[0], T.value(), acc1[0]);
+        A_Liq = gsl_spline_eval (spline2[0], T.value(), acc2[0]);
         
-        A_SoldT = gsl_spline_eval_deriv (spline1, T.value(), acc1);
-        A_LiqdT = gsl_spline_eval_deriv (spline2, T.value(), acc2);
+        A_SoldT = gsl_spline_eval_deriv (spline1[0], T.value(), acc1[0]);
+        A_LiqdT = gsl_spline_eval_deriv (spline2[0], T.value(), acc2[0]);
         
-        c_Sol = gsl_spline_eval (spline3, T.value(), acc3);
+        c_Sol = gsl_spline_eval (spline3[0], T.value(), acc3[0]);
         c_Liq = gsl_spline_eval (spline4, T.value(), acc4);
 
-        c_SoldT = gsl_spline_eval_deriv (spline3, T.value(), acc3);
+        c_SoldT = gsl_spline_eval_deriv (spline3[0], T.value(), acc3[0]);
         c_LiqdT = gsl_spline_eval_deriv (spline4, T.value(), acc4);
         
         dcdmu_Liq = 0.5/A_Liq;
@@ -606,13 +560,13 @@ volScalarField hphi4 = 0.0*phi_4;
         
         if (components == 3)
     	{
-    dmudc_a[0][0] = gsl_spline_eval (spline1, T.value(), acc1);
-    dmudc_a[0][1] = gsl_spline_eval (spline2, T.value(), acc2);
-    dmudc_a[1][1] = gsl_spline_eval (spline3, T.value(), acc3);
+    dmudc_a[0][0] = gsl_spline_eval (spline1[0], T.value(), acc1[0]);
+    dmudc_a[0][1] = gsl_spline_eval (spline2[0], T.value(), acc2[0]);
+    dmudc_a[1][1] = gsl_spline_eval (spline3[0], T.value(), acc3[0]);
 
-    dmudc_adT[0][0] = gsl_spline_eval_deriv (spline1, T.value(), acc1);
-    dmudc_adT[0][1] = gsl_spline_eval_deriv (spline2, T.value(), acc2);
-    dmudc_adT[1][1] = gsl_spline_eval_deriv (spline3, T.value(), acc3);
+    dmudc_adT[0][0] = gsl_spline_eval_deriv (spline1[0], T.value(), acc1[0]);
+    dmudc_adT[0][1] = gsl_spline_eval_deriv (spline2[0], T.value(), acc2[0]);
+    dmudc_adT[1][1] = gsl_spline_eval_deriv (spline3[0], T.value(), acc3[0]);
     
     dmudc_l[0][0] = gsl_spline_eval (spline4, T.value(), acc4);
     dmudc_l[0][1] = gsl_spline_eval (spline5, T.value(), acc5);
@@ -622,11 +576,11 @@ volScalarField hphi4 = 0.0*phi_4;
     dmudc_ldT[0][1] = gsl_spline_eval_deriv (spline5, T.value(), acc5);
     dmudc_ldT[1][1] = gsl_spline_eval_deriv (spline6, T.value(), acc6);
     
-    ceq_a[0][0] = gsl_spline_eval (spline7, T.value(), acc7);
-    ceq_a[1][0] = gsl_spline_eval (spline8, T.value(), acc8);
+    ceq_a[0][0] = gsl_spline_eval (spline7[0], T.value(), acc7[0]);
+    ceq_a[1][0] = gsl_spline_eval (spline8[0], T.value(), acc8[0]);
 
-    ceq_adT[0][0] = gsl_spline_eval_deriv (spline7, T.value(), acc7);
-    ceq_adT[1][0] = gsl_spline_eval_deriv (spline8, T.value(), acc8);
+    ceq_adT[0][0] = gsl_spline_eval_deriv (spline7[0], T.value(), acc7[0]);
+    ceq_adT[1][0] = gsl_spline_eval_deriv (spline8[0], T.value(), acc8[0]);
     
     ceq_l[0][0] = gsl_spline_eval (spline9, T.value(), acc9);
     ceq_l[1][0] = gsl_spline_eval (spline10, T.value(), acc10);
@@ -852,28 +806,31 @@ if ((swcool == 1)&&(swch == 1))
     Info<< "End\n" << endl;
     
     //! releasing reserved memory from GSL interpolation
-    gsl_spline_free (spline1);
-    gsl_spline_free (spline2);
-    gsl_spline_free (spline3);
+    for (i_phase = 0; i_phase < (phases-1); i_phase++){
+    gsl_spline_free (spline1[i_phase]);
+    gsl_spline_free (spline2[i_phase]);
+    gsl_spline_free (spline3[i_phase]);
+    gsl_spline_free (spline7[i_phase]);
+    gsl_spline_free (spline8[i_phase]);
+    gsl_interp_accel_free (acc1[i_phase]);
+    gsl_interp_accel_free (acc2[i_phase]);
+    gsl_interp_accel_free (acc3[i_phase]);
+    gsl_interp_accel_free (acc7[i_phase]);
+    gsl_interp_accel_free (acc8[i_phase]);    
+    }
+    
     gsl_spline_free (spline4);
     gsl_spline_free (spline5);
     gsl_spline_free (spline6);
-    gsl_spline_free (spline7);
-    gsl_spline_free (spline8);
     gsl_spline_free (spline9);
     gsl_spline_free (spline10);
     gsl_spline_free (spline_L);
     gsl_spline_free (spline_C);
-
     
-    gsl_interp_accel_free (acc1);
-    gsl_interp_accel_free (acc2);
-    gsl_interp_accel_free (acc3);
+    
     gsl_interp_accel_free (acc4);    
     gsl_interp_accel_free (acc5);
     gsl_interp_accel_free (acc6);
-    gsl_interp_accel_free (acc7);
-    gsl_interp_accel_free (acc8);    
     gsl_interp_accel_free (acc9);
     gsl_interp_accel_free (acc10);
     gsl_interp_accel_free (acc_L);

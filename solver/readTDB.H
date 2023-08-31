@@ -40,7 +40,7 @@
     double T1[buffer], ASol[buffer][n_phase-1], HSol11[buffer][n_phase-1], HSol12[buffer][n_phase-1], HSol22[buffer][n_phase-1];
 
     for (i_phase = 0; i_phase < (n_phase-1); i_phase++){
-    const fileName pathToFile1 = "constant/HSN_"+phase[0]+".csv";
+    const fileName pathToFile1 = "constant/HSN_"+phase[i_phase]+".csv";
     ifstream inpfs(pathToFile1);
     if (!inpfs.is_open())
     {
@@ -126,7 +126,7 @@
     double cLiq[buffer], cLiq1[buffer], cLiq2[buffer];
     
     for (i_phase = 0; i_phase < (n_phase-1); i_phase++){
-    const fileName pathToFile3 = "constant/Composition_"+phase[0]+".csv";
+    const fileName pathToFile3 = "constant/Composition_"+phase[i_phase]+".csv";
     ifstream inpfc(pathToFile3);
     if (!inpfc.is_open())
     {

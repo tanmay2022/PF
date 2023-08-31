@@ -323,7 +323,7 @@ volScalarField hphi4 = 0.0*phi_4;
     {
     spline1 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc1 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline1, T1, ASol, np);
+    gsl_spline_init (spline1, T1, ASol[0], np);
     
     spline2 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc2 = gsl_interp_accel_alloc ();
@@ -331,7 +331,7 @@ volScalarField hphi4 = 0.0*phi_4;
     
     spline3 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc3 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline3, T1, cSol, np);
+    gsl_spline_init (spline3, T1, cSol[0], np);
     
     spline4 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc4 = gsl_interp_accel_alloc ();
@@ -349,15 +349,15 @@ volScalarField hphi4 = 0.0*phi_4;
     {
     spline1 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc1 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline1, T1, HSol11, np);
+    gsl_spline_init (spline1, T1, HSol11[0], np);
 
     spline2 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc2 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline2, T1, HSol12, np);
+    gsl_spline_init (spline2, T1, HSol12[0], np);
 
     spline3 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc3 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline3, T1, HSol22, np);
+    gsl_spline_init (spline3, T1, HSol22[0], np);
     
     spline4 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc4 = gsl_interp_accel_alloc ();
@@ -373,11 +373,11 @@ volScalarField hphi4 = 0.0*phi_4;
     
     spline7 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc7 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline7, T1, cSol1, np);
+    gsl_spline_init (spline7, T1, cSol1[0], np);
     
     spline8 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc8 = gsl_interp_accel_alloc ();
-    gsl_spline_init (spline8, T1, cSol2, np);
+    gsl_spline_init (spline8, T1, cSol2[0], np);
     
     spline9 = gsl_spline_alloc (gsl_interp_cspline, np);
     acc9 = gsl_interp_accel_alloc ();

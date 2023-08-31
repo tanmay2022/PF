@@ -36,6 +36,10 @@
 
     inpfph.close();
 
+    int np;
+    double T1[buffer], ASol[buffer][n_phase-1], HSol11[buffer][n_phase-1], HSol12[buffer][n_phase-1], HSol22[buffer][n_phase-1];
+
+    for (i_phase = 0; i_phase < (n_phase-1); i_phase++){
     const fileName pathToFile1 = "constant/HSN_"+phase[0]+".csv";
     ifstream inpfs(pathToFile1);
     if (!inpfs.is_open())
@@ -44,8 +48,8 @@
     }
     //string line;
     getline(inpfs, line);
-    double T1[buffer], ASol[buffer], HSol11[buffer], HSol12[buffer], HSol22[buffer];
-    int np = 0;
+    //double T1[buffer], ASol[buffer], HSol11[buffer], HSol12[buffer], HSol22[buffer];
+    np = 0;
 
     while (getline(inpfs, line))
     {
@@ -56,16 +60,16 @@
         if (n_compo == 2)
         {
         getline(ss, line_value);
-        ASol[np] = 0.5*stod(line_value);
+        ASol[np][i_phase] = 0.5*stod(line_value);
         }
         else if (n_compo == 3)
         {
         getline(ss, line_value, ',');
-        HSol11[np] = stod(line_value);
+        HSol11[np][i_phase] = stod(line_value);
         getline(ss, line_value, ',');
-        HSol22[np] = stod(line_value);
+        HSol22[np][i_phase] = stod(line_value);
         getline(ss, line_value);
-        HSol12[np] = stod(line_value);
+        HSol12[np][i_phase] = stod(line_value);
         }
     
     //Info << T1[np] << " " << ASol[np] << endl;
@@ -75,6 +79,10 @@
     }
     
     inpfs.close();
+    }
+    
+    
+    double ALiq[buffer], HLiq11[buffer], HLiq12[buffer], HLiq22[buffer];
     
     const fileName pathToFile2 = "constant/HSN_"+phase[n_phase-1]+".csv";
     ifstream inpfl(pathToFile2);
@@ -83,7 +91,6 @@
         Info << "No liquid data found" << endl;
     }
     getline(inpfl, line);
-    double ALiq[buffer], HLiq11[buffer], HLiq12[buffer], HLiq22[buffer];
     np = 0;
 
     while (getline(inpfl, line))
@@ -115,6 +122,10 @@
 
     inpfl.close();
     
+    double cSol[buffer][n_phase-1], cSol1[buffer][n_phase-1], cSol2[buffer][n_phase-1];
+    double cLiq[buffer], cLiq1[buffer], cLiq2[buffer];
+    
+    for (i_phase = 0; i_phase < (n_phase-1); i_phase++){
     const fileName pathToFile3 = "constant/Composition_"+phase[0]+".csv";
     ifstream inpfc(pathToFile3);
     if (!inpfc.is_open())
@@ -122,8 +133,6 @@
         Info << "No composition data found" << endl;
     }
     getline(inpfc, line);
-    double cSol[buffer], cSol1[buffer], cSol2[buffer];
-    double cLiq[buffer], cLiq1[buffer], cLiq2[buffer];
     np = 0;
     
     while (getline(inpfc, line))
@@ -135,15 +144,15 @@
         getline(ss, line_value, ',');
         if (n_compo == 2)
         {
-        cSol[np] = stod(line_value);
+        cSol[np][i_phase] = stod(line_value);
         getline(ss, line_value);
         cLiq[np] = stod(line_value);
         }
         else if (n_compo == 3)
         {
-        cSol1[np] = stod(line_value);
+        cSol1[np][i_phase] = stod(line_value);
         getline(ss, line_value, ',');
-        cSol2[np] = stod(line_value);
+        cSol2[np][i_phase] = stod(line_value);
         getline(ss, line_value, ',');
         cLiq1[np] = stod(line_value);
         getline(ss, line_value);
@@ -157,6 +166,10 @@
     }
     
     inpfc.close();
+    }
+    
+    double T2[buffer], Lf_arr[buffer], Cp_arr[buffer];
+    int np1 = 0;
     
     const fileName pathToFile4 = "constant/Thermal.csv";
     ifstream inpft(pathToFile4);
@@ -166,8 +179,6 @@
     }
     getline(inpft, line);
     getline(inpft, line);
-    double T2[buffer], Lf_arr[buffer], Cp_arr[buffer];
-    int np1 = 0;
     
     while (getline(inpft, line))
     {

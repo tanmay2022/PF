@@ -158,23 +158,12 @@
         scalar dt_s(readScalar(transportProperties.lookup("dt_s")));
         
         scalar nucleation_interval(readScalar(transportProperties.lookup("nucleation_interval")));
-        
-
-        scalarSquareMatrix dmudc_a(2,0);
-        scalarSquareMatrix dmudc_l(2,0);
-        
-        scalarRectangularMatrix dcdmu_a(2,2,0);
-        scalarRectangularMatrix dcdmu_l(2,2,0);
+       
 
         scalarRectangularMatrix D_a(2,2,0);
         scalarRectangularMatrix D_l(2,2,0);
         
-        scalarRectangularMatrix M_a(2,2,0);
-        scalarRectangularMatrix M_l(2,2,0);
         
-        scalarRectangularMatrix ceq_a(2,1,0);
-        scalarRectangularMatrix ceq_l(2,1,0);
-
         if (components == 3)
     	{
         D_a[0][0]   = readScalar(transportProperties.lookup("D_a[0][0]"));      

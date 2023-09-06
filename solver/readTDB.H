@@ -37,14 +37,14 @@
     inpfph.close();
 
     int np;
-    double T1[buffer], ASol[buffer][n_phase-1], HSol11[buffer][n_phase-1], HSol12[buffer][n_phase-1], HSol22[buffer][n_phase-1];
+    double T1[buffer], A_arr[buffer][n_phase], H11_arr[buffer][n_phase], H12_arr[buffer][n_phase], H22_arr[buffer][n_phase];
 
-    for (i_phase = 0; i_phase < (n_phase-1); i_phase++){
+    for (i_phase = 0; i_phase < n_phase; i_phase++){
     const fileName pathToFile1 = "constant/HSN_"+phase[i_phase]+".csv";
     ifstream inpfs(pathToFile1);
     if (!inpfs.is_open())
     {
-        Info << "No solid data found" << endl;
+        Info << "No hessian data found" << endl;
     }
     //string line;
     getline(inpfs, line);
@@ -60,19 +60,19 @@
         if (n_compo == 2)
         {
         getline(ss, line_value);
-        ASol[np][i_phase] = 0.5*stod(line_value);
+        A_arr[np][i_phase] = 0.5*stod(line_value);
         }
         else if (n_compo == 3)
         {
         getline(ss, line_value, ',');
-        HSol11[np][i_phase] = stod(line_value);
+        H11_arr[np][i_phase] = stod(line_value);
         getline(ss, line_value, ',');
-        HSol22[np][i_phase] = stod(line_value);
+        H22_arr[np][i_phase] = stod(line_value);
         getline(ss, line_value);
-        HSol12[np][i_phase] = stod(line_value);
+        H12_arr[np][i_phase] = stod(line_value);
         }
     
-    //Info << T1[np] << " " << ASol[np] << endl;
+    //Info << T1[np] << " " << H11_arr[np][i_phase] << endl;
     //cout << T1[np] << " " << ASol[np] << endl;
             
     ++np;
@@ -81,7 +81,7 @@
     inpfs.close();
     }
     
-    
+    /*
     double ALiq[buffer], HLiq11[buffer], HLiq12[buffer], HLiq22[buffer];
     
     const fileName pathToFile2 = "constant/HSN_"+phase[n_phase-1]+".csv";
@@ -120,10 +120,10 @@
     ++np;
     }
 
-    inpfl.close();
+    inpfl.close();*/
     
-    double cSol[buffer][n_phase-1], cSol1[buffer][n_phase-1], cSol2[buffer][n_phase-1];
-    double cLiq[buffer], cLiq1[buffer], cLiq2[buffer];
+    double c_arr[buffer][n_phase], c1_arr[buffer][n_phase], c2_arr[buffer][n_phase];
+    //double cLiq[buffer], cLiq1[buffer], cLiq2[buffer];
     
     for (i_phase = 0; i_phase < (n_phase-1); i_phase++){
     const fileName pathToFile3 = "constant/Composition_"+phase[i_phase]+".csv";
@@ -144,22 +144,22 @@
         getline(ss, line_value, ',');
         if (n_compo == 2)
         {
-        cSol[np][i_phase] = stod(line_value);
+        c_arr[np][i_phase] = stod(line_value);
         getline(ss, line_value);
-        cLiq[np] = stod(line_value);
+        c_arr[np][int(phases)-1] = stod(line_value);
         }
         else if (n_compo == 3)
         {
-        cSol1[np][i_phase] = stod(line_value);
+        c1_arr[np][i_phase] = stod(line_value);
         getline(ss, line_value, ',');
-        cSol2[np][i_phase] = stod(line_value);
+        c2_arr[np][i_phase] = stod(line_value);
         getline(ss, line_value, ',');
-        cLiq1[np] = stod(line_value);
+        c1_arr[np][int(phases)-1] = stod(line_value);
         getline(ss, line_value);
-        cLiq2[np] = stod(line_value);
+        c2_arr[np][int(phases)-1] = stod(line_value);
         }
     
-    //Info << T1[np] << " " << cSol[np] << " " << cLiq[np] << endl;
+    //Info << T1[np] << " " << c1_arr[np][i_phase] << " " << c2_arr[np][i_phase] << endl;
     //cout << T1[np] << " " << cSol[np] << " " << cLiq[np] << endl;
             
     ++np;

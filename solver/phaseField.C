@@ -419,6 +419,9 @@ volScalarField hphi4 = 0.0*phi_4;
    double A_dT[int(phases)];
    double c_bin[int(phases)];
    double c_bin_dT[int(phases)];
+   double B_bin[int(phases)];
+   double B_bin_dT[int(phases)];
+   double D_bin[int(phases)];
    
    dimensionedScalar DeltaC = 0.0;
 
@@ -472,6 +475,11 @@ volScalarField hphi4 = 0.0*phi_4;
    double c_ter2[int(phases)];
    double c_ter1_dT[int(phases)];
    double c_ter2_dT[int(phases)];
+   double B_ter1[int(phases)];
+   double B_ter2[int(phases)];
+   double B_ter1_dT[int(phases)];
+   double B_ter2_dT[int(phases)];
+   double D_ter[int(phases)];
    
    /*scalarRectangularMatrix dmudc(2*phases,2,0);
    scalarRectangularMatrix dmudc_dT(2*phases,2,0);
@@ -560,12 +568,7 @@ volScalarField hphi4 = 0.0*phi_4;
         c_bin[i_phase] = gsl_spline_eval (spline_comp1[i_phase], T.value(), acc_comp1[i_phase]);
         c_bin_dT[i_phase] = gsl_spline_eval_deriv (spline_comp1[i_phase], T.value(), acc_comp1[i_phase]);
         }
-        /*
-        A[int(phases)-1] = gsl_spline_eval (spline_hess1[int(phases)-1], T.value(), acc_hess1[int(phases)-1]);
-        A_dT[int(phases)-1] = gsl_spline_eval_deriv (spline_hess1[int(phases)-1], T.value(), acc_hess1[int(phases)-1]);
-        c_bin[int(phases)-1] = gsl_spline_eval (spline_comp1[int(phases)-1], T.value(), acc_comp1[int(phases)-1]);
-        c_bin_dT[int(phases)-1] = gsl_spline_eval_deriv (spline_comp1[int(phases)-1], T.value(), acc_comp1[int(phases)-1]);
-        */
+        
         A_Sol = A[0];
         A_Liq = A[int(phases)-1];
         A_SoldT = A_dT[0];
@@ -576,19 +579,29 @@ volScalarField hphi4 = 0.0*phi_4;
         c_LiqdT = c_bin_dT[int(phases)-1];
         
         
-        dcdmu_Liq = 0.5/A_Liq;
+        dcdmu_Liq = 0.5/A[int(phases)-1];
             
         omega = epsilon*0.18*DeltaC*DeltaC/(dcdmu_Liq*diff_Liq*Vm);
 
 	//Info<< "omega= " << omega.value() << nl << endl;
         
-        B_Sol = 2.0*(A_Liq*c_Liq - A_Sol*c_Sol);
-        dBdT = 2.0*(A_LiqdT*c_Liq + A_Liq*c_LiqdT - A_SoldT*c_Sol - A_Sol*c_SoldT);
+        B_bin[0] = 2.0*(A[int(phases)-1]*c_bin[int(phases)-1] - A[0]*c_bin[0]);
+        B_bin_dT[0] = 2.0*(A_dT[int(phases)-1]*c_bin[int(phases)-1] + A[int(phases)-1]*c_bin_dT[int(phases)-1] - A_dT[0]*c_bin[0] - A[0]*c_bin_dT[0]);
         
-        B_Liq = 0.0; //("B_Liq", 0.*mu);
+        B_bin[int(phases)-1] = 0.0; //("B_Liq", 0.*mu);
 
-        D_Sol = -A_Liq*c_Liq*c_Liq + A_Sol*c_Sol*c_Sol;
-        D_Liq = 0.0; //("D_Liq", 0.*mu);
+        D_bin[0] = -A[int(phases)-1]*c_bin[int(phases)-1]*c_bin[int(phases)-1] + A[0]*c_bin[0]*c_bin[0];
+        D_bin[int(phases)-1] = 0.0; //("D_Liq", 0.*mu);
+        
+        //////////////////////
+        
+        B_Sol = B_bin[0];
+        dBdT = B_bin_dT[0];
+        
+        B_Liq = B_bin[int(phases)-1]; //("B_Liq", 0.*mu);
+
+        D_Sol = D_bin[0];
+        D_Liq = D_bin[int(phases)-1]; //("D_Liq", 0.*mu);
 	}
         
         if (components == 3)
@@ -611,39 +624,6 @@ volScalarField hphi4 = 0.0*phi_4;
     
     //Info << T.value() << " " << c_ter1[i_phase] << " " << c_ter2[i_phase] << " " << H11[i_phase] << " " << H22[i_phase] << endl;
     }
-    /*
-    i_phase = int(phases)-1;
-    dmudc[2*i_phase][0] = gsl_spline_eval (spline_hess1[i_phase], T.value(), acc_hess1[i_phase]);
-    dmudc[2*i_phase][1] = gsl_spline_eval (spline_hess2[i_phase], T.value(), acc_hess2[i_phase]);
-    dmudc[2*i_phase+1][1] = gsl_spline_eval (spline_hess3[i_phase], T.value(), acc_hess3[i_phase]);
-
-    dmudc_dT[2*i_phase][0] = gsl_spline_eval_deriv (spline_hess1[i_phase], T.value(), acc_hess1[i_phase]);
-    dmudc_dT[2*i_phase][1] = gsl_spline_eval_deriv (spline_hess2[i_phase], T.value(), acc_hess2[i_phase]);
-    dmudc_dT[2*i_phase+1][1] = gsl_spline_eval_deriv (spline_hess3[i_phase], T.value(), acc_hess3[i_phase]);
-    
-    ceq[2*i_phase][0] = gsl_spline_eval (spline_comp1[i_phase], T.value(), acc_comp1[i_phase]);
-    ceq[2*i_phase+1][0] = gsl_spline_eval (spline_comp2[i_phase], T.value(), acc_comp2[i_phase]);
-
-    ceq_dT[2*i_phase][0] = gsl_spline_eval_deriv (spline_comp1[i_phase], T.value(), acc_comp1[i_phase]);
-    ceq_dT[2*i_phase+1][0] = gsl_spline_eval_deriv (spline_comp2[i_phase], T.value(), acc_comp2[i_phase]);
-    
-    Info << T.value() << " " << ceq[2*i_phase][0] << " " << ceq_a[2*i_phase+1][0] << " " << dmudc[2*i_phase][0] << " " << dmudc[2*i_phase+1][1] << endl;
-*/
-    /*
-    dmudc_l[0][0] = gsl_spline_eval (spline_hess1[int(phases)-1], T.value(), acc_hess1[int(phases)-1]);
-    dmudc_l[0][1] = gsl_spline_eval (spline_hess2[int(phases)-1], T.value(), acc_hess2[int(phases)-1]);
-    dmudc_l[1][1] = gsl_spline_eval (spline_hess3[int(phases)-1], T.value(), acc_hess3[int(phases)-1]);
-
-    dmudc_ldT[0][0] = gsl_spline_eval_deriv (spline_hess1[int(phases)-1], T.value(), acc_hess1[int(phases)-1]);
-    dmudc_ldT[0][1] = gsl_spline_eval_deriv (spline_hess2[int(phases)-1], T.value(), acc_hess2[int(phases)-1]);
-    dmudc_ldT[1][1] = gsl_spline_eval_deriv (spline_hess3[int(phases)-1], T.value(), acc_hess3[int(phases)-1]);
-    
-    ceq_l[0][0] = gsl_spline_eval (spline_comp1[int(phases)-1], T.value(), acc_comp1[int(phases)-1]);
-    ceq_l[1][0] = gsl_spline_eval (spline_comp2[int(phases)-1], T.value(), acc_comp2[int(phases)-1]);
-
-    ceq_ldT[0][0] = gsl_spline_eval_deriv (spline_comp1[int(phases)-1], T.value(), acc_comp1[int(phases)-1]);
-    ceq_ldT[1][0] = gsl_spline_eval_deriv (spline_comp2[int(phases)-1], T.value(), acc_comp2[int(phases)-1]);
-    */
     
     dmudc_a[0][0] = H11[0];
     dmudc_a[0][1] = H12[0];
@@ -665,7 +645,7 @@ volScalarField hphi4 = 0.0*phi_4;
 
     dmudc_ldT[0][0] = H11_dT[int(phases)-1];
     dmudc_ldT[0][1] = H12_dT[int(phases)-1];
-    dmudc_ldT[1][1] = H11_dT[int(phases)-1];
+    dmudc_ldT[1][1] = H22_dT[int(phases)-1];
     
     ceq_l[0][0] = c_ter1[int(phases)-1];
     ceq_l[1][0] = c_ter2[int(phases)-1];
@@ -681,17 +661,17 @@ volScalarField hphi4 = 0.0*phi_4;
     
     //Info << T.value() << " " << ceq_l[0][0] << " " << ceq_l[1][0] << " " << ceq_a[0][0] << " " << ceq_a[1][0] << " " << dmudc_l[0][0] << " " << dmudc_l[1][1] << " " << dmudc_a[0][0] << " " << dmudc_a[1][1] << endl;
     
-    scalar detdmudc_a = (dmudc_a[0][0]*dmudc_a[1][1]-dmudc_a[0][1]*dmudc_a[0][1]);
+    scalar detdmudc_a = (H11[0]*H22[0]-H12[0]*H12[0]);
     
-    dcdmu_adT[0][0] = -dmudc_a[1][1]*(dmudc_adT[0][0]*dmudc_a[1][1] + dmudc_a[0][0]*dmudc_adT[1][1] - 2*dmudc_adT[0][1]*dmudc_a[0][1])/(detdmudc_a*detdmudc_a) + dmudc_adT[1][1]/detdmudc_a;
-    dcdmu_adT[0][1] = dmudc_a[0][1]*(dmudc_adT[0][0]*dmudc_a[1][1] + dmudc_a[0][0]*dmudc_adT[1][1] - 2*dmudc_adT[0][1]*dmudc_a[0][1])/(detdmudc_a*detdmudc_a) - dmudc_adT[0][1]/detdmudc_a;
-    dcdmu_adT[1][1] = -dmudc_a[0][0]*(dmudc_adT[0][0]*dmudc_a[1][1] + dmudc_a[0][0]*dmudc_adT[1][1] - 2*dmudc_adT[0][1]*dmudc_a[0][1])/(detdmudc_a*detdmudc_a) + dmudc_adT[0][0]/detdmudc_a;
+    dcdmu_adT[0][0] = -H22[0]*(H11_dT[0]*H22[0] + H11[0]*H22_dT[0] - 2*H12_dT[0]*H12[0])/(detdmudc_a*detdmudc_a) + H22_dT[0]/detdmudc_a;
+    dcdmu_adT[0][1] = H12[0]*(H11_dT[0]*H22[0] + H11[0]*H22_dT[0] - 2*H12_dT[0]*H12[0])/(detdmudc_a*detdmudc_a) - H12_dT[0]/detdmudc_a;
+    dcdmu_adT[1][1] = -H11[0]*(H11_dT[0]*H22[0] + H11[0]*H22_dT[0] - 2*H12_dT[0]*H12[0])/(detdmudc_a*detdmudc_a) + H11_dT[0]/detdmudc_a;
 
-    scalar detdmudc_l = (dmudc_l[0][0]*dmudc_l[1][1]-dmudc_l[0][1]*dmudc_l[0][1]);
+    scalar detdmudc_l = (H11[int(phases)-1]*H22[int(phases)-1]-H12[int(phases)-1]*H12[int(phases)-1]);
     
-    dcdmu_ldT[0][0] = -dmudc_l[1][1]*(dmudc_ldT[0][0]*dmudc_l[1][1] + dmudc_l[0][0]*dmudc_ldT[1][1] - 2*dmudc_ldT[0][1]*dmudc_l[0][1])/(detdmudc_l*detdmudc_l) + dmudc_ldT[1][1]/detdmudc_l;
-    dcdmu_ldT[0][1] = dmudc_l[0][1]*(dmudc_ldT[0][0]*dmudc_l[1][1] + dmudc_l[0][0]*dmudc_ldT[1][1] - 2*dmudc_ldT[0][1]*dmudc_l[0][1])/(detdmudc_l*detdmudc_l) - dmudc_ldT[0][1]/detdmudc_l;
-    dcdmu_ldT[1][1] = -dmudc_l[0][0]*(dmudc_ldT[0][0]*dmudc_l[1][1] + dmudc_l[0][0]*dmudc_ldT[1][1] - 2*dmudc_ldT[0][1]*dmudc_l[0][1])/(detdmudc_l*detdmudc_l) + dmudc_ldT[0][0]/detdmudc_l;
+    dcdmu_ldT[0][0] = -H22[int(phases)-1]*(H11_dT[int(phases)-1]*H22[int(phases)-1] + H11[int(phases)-1]*H22_dT[int(phases)-1] - 2*H12_dT[int(phases)-1]*H12[int(phases)-1])/(detdmudc_l*detdmudc_l) + H22_dT[int(phases)-1]/detdmudc_l;
+    dcdmu_ldT[0][1] = H12[int(phases)-1]*(H11_dT[int(phases)-1]*H22[int(phases)-1] + H11[int(phases)-1]*H22_dT[int(phases)-1] - 2*H12_dT[int(phases)-1]*H12[int(phases)-1])/(detdmudc_l*detdmudc_l) - H12_dT[int(phases)-1]/detdmudc_l;
+    dcdmu_ldT[1][1] = -H11[int(phases)-1]*(H11_dT[int(phases)-1]*H22[int(phases)-1] + H11[int(phases)-1]*H22_dT[int(phases)-1] - 2*H12_dT[int(phases)-1]*H12[int(phases)-1])/(detdmudc_l*detdmudc_l) + H11_dT[int(phases)-1]/detdmudc_l;
     
     dcdmu_a = SVDinv(dmudc_a);
     dcdmu_l = SVDinv(dmudc_l);
@@ -711,15 +691,27 @@ volScalarField hphi4 = 0.0*phi_4;
    
    //Info<< "omega= " << omega.value() << nl << endl;
       
-   B_a1 = (dmudc_l[0][0]*ceq_l[0][0] - dmudc_a[0][0]*ceq_a[0][0]) + (dmudc_l[0][1]*ceq_l[1][0] - dmudc_a[0][1]*ceq_a[1][0]);
+   B_ter1[0] = (dmudc_l[0][0]*ceq_l[0][0] - dmudc_a[0][0]*ceq_a[0][0]) + (dmudc_l[0][1]*ceq_l[1][0] - dmudc_a[0][1]*ceq_a[1][0]);
    
-   dB_a1dT = (dmudc_ldT[0][0]*ceq_l[0][0] + dmudc_l[0][0]*ceq_ldT[0][0] - dmudc_adT[0][0]*ceq_a[0][0] - dmudc_a[0][0]*ceq_adT[0][0]) + (dmudc_ldT[0][1]*ceq_l[1][0] + dmudc_l[0][1]*ceq_ldT[1][0] - dmudc_adT[0][1]*ceq_a[1][0] - dmudc_a[0][1]*ceq_adT[1][0]);
+   B_ter1_dT[0] = (dmudc_ldT[0][0]*ceq_l[0][0] + dmudc_l[0][0]*ceq_ldT[0][0] - dmudc_adT[0][0]*ceq_a[0][0] - dmudc_a[0][0]*ceq_adT[0][0]) + (dmudc_ldT[0][1]*ceq_l[1][0] + dmudc_l[0][1]*ceq_ldT[1][0] - dmudc_adT[0][1]*ceq_a[1][0] - dmudc_a[0][1]*ceq_adT[1][0]);
    
-   B_a2 = (dmudc_l[1][1]*ceq_l[1][0] - dmudc_a[1][1]*ceq_a[1][0]) + (dmudc_l[0][1]*ceq_l[0][0] - dmudc_a[0][1]*ceq_a[0][0]);
+   B_ter2[0] = (dmudc_l[1][1]*ceq_l[1][0] - dmudc_a[1][1]*ceq_a[1][0]) + (dmudc_l[0][1]*ceq_l[0][0] - dmudc_a[0][1]*ceq_a[0][0]);
    
-   dB_a2dT = (dmudc_ldT[1][1]*ceq_l[1][0] + dmudc_l[1][1]*ceq_ldT[1][0] - dmudc_adT[1][1]*ceq_a[1][0] - dmudc_a[1][1]*ceq_adT[1][0]) + (dmudc_ldT[0][1]*ceq_l[0][0] + dmudc_l[0][1]*ceq_ldT[0][0] - dmudc_adT[0][1]*ceq_a[0][0] - dmudc_a[0][1]*ceq_adT[0][0]);
+   B_ter2_dT[0] = (dmudc_ldT[1][1]*ceq_l[1][0] + dmudc_l[1][1]*ceq_ldT[1][0] - dmudc_adT[1][1]*ceq_a[1][0] - dmudc_a[1][1]*ceq_adT[1][0]) + (dmudc_ldT[0][1]*ceq_l[0][0] + dmudc_l[0][1]*ceq_ldT[0][0] - dmudc_adT[0][1]*ceq_a[0][0] - dmudc_a[0][1]*ceq_adT[0][0]);
    
-   DD_a = -(0.5*dmudc_l[0][0]*ceq_l[0][0]*ceq_l[0][0] + 0.5*dmudc_l[1][1]*ceq_l[1][0]*ceq_l[1][0] + dmudc_l[0][1]*ceq_l[0][0]*ceq_l[1][0]) + (0.5*dmudc_a[0][0]*ceq_a[0][0]*ceq_a[0][0] + 0.5*dmudc_a[1][1]*ceq_a[1][0]*ceq_a[1][0] + dmudc_a[0][1]*ceq_a[0][0]*ceq_a[1][0]);
+   D_ter[0] = -(0.5*dmudc_l[0][0]*ceq_l[0][0]*ceq_l[0][0] + 0.5*dmudc_l[1][1]*ceq_l[1][0]*ceq_l[1][0] + dmudc_l[0][1]*ceq_l[0][0]*ceq_l[1][0]) + (0.5*dmudc_a[0][0]*ceq_a[0][0]*ceq_a[0][0] + 0.5*dmudc_a[1][1]*ceq_a[1][0]*ceq_a[1][0] + dmudc_a[0][1]*ceq_a[0][0]*ceq_a[1][0]);
+   
+   ///////////////////////////////////
+   
+   B_a1 = B_ter1[0];
+   
+   B_a2 = B_ter2[0];
+   
+   dB_a1dT = B_ter1_dT[0];
+   
+   dB_a2dT = B_ter2_dT[0];
+   
+   DD_a = D_ter[0];
     	}
     	//}
 

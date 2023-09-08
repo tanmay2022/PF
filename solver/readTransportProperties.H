@@ -160,21 +160,51 @@
         scalar nucleation_interval(readScalar(transportProperties.lookup("nucleation_interval")));
        
 
-        scalarRectangularMatrix D_a(2,2,0);
-        scalarRectangularMatrix D_l(2,2,0);
+        scalarRectangularMatrix diff_ter(2*phases,2,0);
         
         
         if (components == 3)
     	{
-        D_a[0][0]   = readScalar(transportProperties.lookup("D_a[0][0]"));      
-        D_a[0][1]   = readScalar(transportProperties.lookup("D_a[0][1]"));
-        D_a[1][0]   = readScalar(transportProperties.lookup("D_a[1][0]"));
-        D_a[1][1]   = readScalar(transportProperties.lookup("D_a[1][1]"));
+    	if (phases == 3)
+    	{
+        diff_ter[0][0]   = readScalar(transportProperties.lookup("D_a[0][0]"));      
+        diff_ter[0][1]   = readScalar(transportProperties.lookup("D_a[0][1]"));
+        diff_ter[1][0]   = readScalar(transportProperties.lookup("D_a[1][0]"));
+        diff_ter[1][1]   = readScalar(transportProperties.lookup("D_a[1][1]"));
         
-        D_l[0][0]   = readScalar(transportProperties.lookup("D_l[0][0]"));      
-        D_l[0][1]   = readScalar(transportProperties.lookup("D_l[0][1]"));
-        D_l[1][0]   = readScalar(transportProperties.lookup("D_l[1][0]"));
-        D_l[1][1]   = readScalar(transportProperties.lookup("D_l[1][1]"));
+        diff_ter[2][0]   = readScalar(transportProperties.lookup("D_a[0][0]"));      
+        diff_ter[2][1]   = readScalar(transportProperties.lookup("D_a[0][1]"));
+        diff_ter[3][0]   = readScalar(transportProperties.lookup("D_a[1][0]"));
+        diff_ter[3][1]   = readScalar(transportProperties.lookup("D_a[1][1]"));
+        
+        diff_ter[4][0]   = readScalar(transportProperties.lookup("D_l[0][0]"));      
+        diff_ter[4][1]   = readScalar(transportProperties.lookup("D_l[0][1]"));
+        diff_ter[5][0]   = readScalar(transportProperties.lookup("D_l[1][0]"));
+        diff_ter[5][1]   = readScalar(transportProperties.lookup("D_l[1][1]"));
+        }
+        
+        if (phases == 4)
+    	{
+        diff_ter[0][0]   = readScalar(transportProperties.lookup("D_a[0][0]"));      
+        diff_ter[0][1]   = readScalar(transportProperties.lookup("D_a[0][1]"));
+        diff_ter[1][0]   = readScalar(transportProperties.lookup("D_a[1][0]"));
+        diff_ter[1][1]   = readScalar(transportProperties.lookup("D_a[1][1]"));
+        
+        diff_ter[2][0]   = readScalar(transportProperties.lookup("D_a[0][0]"));      
+        diff_ter[2][1]   = readScalar(transportProperties.lookup("D_a[0][1]"));
+        diff_ter[3][0]   = readScalar(transportProperties.lookup("D_a[1][0]"));
+        diff_ter[3][1]   = readScalar(transportProperties.lookup("D_a[1][1]"));
+        
+        diff_ter[4][0]   = readScalar(transportProperties.lookup("D_a[0][0]"));      
+        diff_ter[4][1]   = readScalar(transportProperties.lookup("D_a[0][1]"));
+        diff_ter[5][0]   = readScalar(transportProperties.lookup("D_a[1][0]"));
+        diff_ter[5][1]   = readScalar(transportProperties.lookup("D_a[1][1]"));
+        
+        diff_ter[6][0]   = readScalar(transportProperties.lookup("D_l[0][0]"));      
+        diff_ter[6][1]   = readScalar(transportProperties.lookup("D_l[0][1]"));
+        diff_ter[7][0]   = readScalar(transportProperties.lookup("D_l[1][0]"));
+        diff_ter[7][1]   = readScalar(transportProperties.lookup("D_l[1][1]"));
+        }
     	}
         
         //!Properties for incorporating elasticity

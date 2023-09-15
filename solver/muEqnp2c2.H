@@ -10,7 +10,7 @@ if (components == 2)
 {
 fvScalarMatrix muEqn
 (
-    (0.5)*((hphi/A_Sol) + ((1-hphi)/A_Liq))*dimt*fvm::ddt(mu_1) == dimx*dimx*fvm::laplacian(diff_Sol*0.5*(1/A_Sol)*phi_1 + diff_Liq*0.5*(1/A_Liq)*(1-phi_1), mu_1) - 0.5*((mu_1 - B_Sol)/A_Sol - (mu_1 - B_Liq)/A_Liq)*dimt*fvc::ddt(phi_1)*30.0*phi_1*phi_1*(1.0-phi_1)*(1.0-phi_1) - Tdot*(((-dBdT)/(2*A_Sol) + (mu_1 - B_Sol)*A_SoldT/(-2*A_Sol*A_Sol))*hphi + (mu_1 - B_Liq)*A_LiqdT*(1-hphi)/(-2*A_Liq*A_Liq)) - anti_trap*epsilon*0.5*((mu_1 - B_Sol)/A_Sol - (mu_1 - B_Liq)/A_Liq)*dimx*fvc::div((n*dimt*fvc::ddt(phi_1)))
+    (0.5)*((hphi/A[0]) + ((1-hphi)/A[int(phases)-1]))*dimt*fvm::ddt(mu_1) == dimx*dimx*fvm::laplacian(diff_1*0.5*(1/A[0])*phi_1 + diff_Liq*0.5*(1/A[int(phases)-1])*(1-phi_1), mu_1) - 0.5*((mu_1 - B_bin[0])/A[0] - (mu_1 - B_bin[int(phases)-1])/A[int(phases)-1])*dimt*fvc::ddt(phi_1)*30.0*phi_1*phi_1*(1.0-phi_1)*(1.0-phi_1) - Tdot*(((-B_bin_dT[0])/(2*A[0]) + (mu_1 - B_bin[0])*A_dT[0]/(-2*A[0]*A[0]))*hphi + (mu_1 - B_bin[int(phases)-1])*A_dT[int(phases)-1]*(1-hphi)/(-2*A[int(phases)-1]*A[int(phases)-1])) - anti_trap*epsilon*0.5*((mu_1 - B_bin[0])/A[0] - (mu_1 - B_bin[int(phases)-1])/A[int(phases)-1])*dimx*fvc::div((n*dimt*fvc::ddt(phi_1)))
 );
 
 //muEqn.solve();

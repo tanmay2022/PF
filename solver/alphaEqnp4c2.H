@@ -8,7 +8,7 @@ if (components == 2)
     fvScalarMatrix phi_1Eqn
     (
         dimt*omega*epsilon*fvm::ddt(phi_1) -2.0*gamma_1*epsilon*dimx*dimx*fvm::laplacian(phi_1) == -(18.0*gamma_1*phi_1*(1.0 -phi_1)*(1.0 -2.0*phi_1))/(epsilon)
-        - ((-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*(6.0*phi_1*(1-phi_1) + 2*(phi_2*phi_3 + phi_2*phi_4 + phi_3*phi_4)) + (-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*2*phi_2*(phi_3 + phi_4) + (-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*2*phi_3*(phi_2 + phi_4) + (-1.0/4.0*(mu_1 - B_Liq)*(mu_1 - B_Liq)/A_Liq + D_Liq)*2*phi_4*(phi_2 + phi_3))/Vm
+        - ((-1.0/4.0*(mu_1 - B_bin[0])*(mu_1 - B_bin[0])/A[0] + D_bin[0])*(6.0*phi_1*(1-phi_1) + 2*(phi_2*phi_3 + phi_2*phi_4 + phi_3*phi_4)) + (-1.0/4.0*(mu_1 - B_bin[1])*(mu_1 - B_bin[1])/A[1] + D_bin[1])*2*phi_2*(phi_3 + phi_4) + (-1.0/4.0*(mu_1 - B_bin[2])*(mu_1 - B_bin[2])/A[2] + D_bin[2])*2*phi_3*(phi_2 + phi_4) + (-1.0/4.0*(mu_1 - B_bin[int(phases)-1])*(mu_1 - B_bin[int(phases)-1])/A[int(phases)-1] + D_bin[int(phases)-1])*2*phi_4*(phi_2 + phi_3))/Vm
              - (6.0*phi_1*(1-phi_1)*(0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi_1*phi_1*(3-2*phi_1)*cEigenStrain1 - phi_2*phi_2*(3-2*phi_2)*cEigenStrain2
                                                                     - phi_3*phi_3*(3-2*phi_3)*cEigenStrain3))-(Sigma && cEigenStrain1)))
     );
@@ -21,7 +21,7 @@ if (components == 2)
     fvScalarMatrix phi_2Eqn
     (
         dimt*omega*epsilon*fvm::ddt(phi_2) -2.0*gamma_2*epsilon*dimx*dimx*fvm::laplacian(phi_2) == -(18.0*gamma_2*phi_2*(1.0 -phi_2)*(1.0 -2.0*phi_2))/(epsilon)
-        - ((-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*2*phi_1*(phi_3 + phi_4) + (-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*(6.0*phi_2*(1-phi_2) + 2*(phi_1*phi_3 + phi_1*phi_4 + phi_3*phi_4)) + (-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*2*phi_3*(phi_1 + phi_4) + (-1.0/4.0*(mu_1 - B_Liq)*(mu_1 - B_Liq)/A_Liq + D_Liq)*2*phi_4*(phi_1 + phi_3))/Vm
+        - ((-1.0/4.0*(mu_1 - B_bin[0])*(mu_1 - B_bin[0])/A[0] + D_bin[0])*2*phi_1*(phi_3 + phi_4) + (-1.0/4.0*(mu_1 - B_bin[1])*(mu_1 - B_bin[1])/A[1] + D_bin[1])*(6.0*phi_2*(1-phi_2) + 2*(phi_1*phi_3 + phi_1*phi_4 + phi_3*phi_4)) + (-1.0/4.0*(mu_1 - B_bin[2])*(mu_1 - B_bin[2])/A[2] + D_bin[2])*2*phi_3*(phi_1 + phi_4) + (-1.0/4.0*(mu_1 - B_bin[int(phases)-1])*(mu_1 - B_bin[int(phases)-1])/A[int(phases)-1] + D_bin[int(phases)-1])*2*phi_4*(phi_1 + phi_3))/Vm
 		- (6.0*phi_2*(1-phi_2)*(0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi_1*phi_1*(3-2*phi_1)*cEigenStrain1 - phi_2*phi_2*(3-2*phi_2)*cEigenStrain2
                                                                     - phi_3*phi_3*(3-2*phi_3)*cEigenStrain3))-(Sigma && cEigenStrain2)))
     );
@@ -34,7 +34,7 @@ if (components == 2)
     fvScalarMatrix phi_3Eqn
     (
         dimt*omega*epsilon*fvm::ddt(phi_3) -2.0*gamma_3*epsilon*dimx*dimx*fvm::laplacian(phi_3) == -(18.0*gamma_3*phi_3*(1.0 -phi_3)*(1.0 -2.0*phi_3))/(epsilon)
-        - ((-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*2*phi_1*(phi_2 + phi_4) + (-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*2*phi_2*(phi_1 + phi_4) + (-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*(6.0*phi_3*(1-phi_3) + 2*(phi_1*phi_2 + phi_1*phi_4 + phi_2*phi_4)) + (-1.0/4.0*(mu_1 - B_Liq)*(mu_1 - B_Liq)/A_Liq + D_Liq)*2*phi_4*(phi_1 + phi_2))/Vm
+        - ((-1.0/4.0*(mu_1 - B_bin[0])*(mu_1 - B_bin[0])/A[0] + D_bin[0])*2*phi_1*(phi_2 + phi_4) + (-1.0/4.0*(mu_1 - B_bin[1])*(mu_1 - B_bin[1])/A[1] + D_bin[1])*2*phi_2*(phi_1 + phi_4) + (-1.0/4.0*(mu_1 - B_bin[2])*(mu_1 - B_bin[2])/A[2] + D_bin[2])*(6.0*phi_3*(1-phi_3) + 2*(phi_1*phi_2 + phi_1*phi_4 + phi_2*phi_4)) + (-1.0/4.0*(mu_1 - B_bin[int(phases)-1])*(mu_1 - B_bin[int(phases)-1])/A[int(phases)-1] + D_bin[int(phases)-1])*2*phi_4*(phi_1 + phi_2))/Vm
 			- (6.0*phi_3*(1-phi_3)*(0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi_1*phi_1*(3-2*phi_1)*cEigenStrain1 - phi_2*phi_2*(3-2*phi_2)*cEigenStrain2
                                                                     - phi_3*phi_3*(3-2*phi_3)*cEigenStrain3))-(Sigma && cEigenStrain3)))
     );
@@ -52,7 +52,7 @@ if (components == 2)
     fvScalarMatrix phi_4Eqn
     (
         dimt*omega*epsilon*fvm::ddt(phi_4) -2.0*gamma_4*epsilon*dimx*dimx*fvm::laplacian(phi_4) == -(18.0*gamma_4*phi_4*(1.0 -phi_4)*(1.0 -2.0*phi_4))/(epsilon)
-        - ((-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*2*phi_1*(phi_2 + phi_3) + (-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*2*phi_2*(phi_1 + phi_3) + (-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol)*2*phi_3*(phi_1 + phi_2) + (-1.0/4.0*(mu_1 - B_Liq)*(mu_1 - B_Liq)/A_Liq + D_Liq)*(6.0*phi_4*(1-phi_4) + 2*(phi_1*phi_2 + phi_1*phi_3 + phi_2*phi_3)))/Vm
+        - ((-1.0/4.0*(mu_1 - B_bin[0])*(mu_1 - B_bin[0])/A[0] + D_bin[0])*2*phi_1*(phi_2 + phi_3) + (-1.0/4.0*(mu_1 - B_bin[1])*(mu_1 - B_bin[1])/A[1] + D_bin[1])*2*phi_2*(phi_1 + phi_3) + (-1.0/4.0*(mu_1 - B_bin[2])*(mu_1 - B_bin[2])/A[2] + D_bin[2])*2*phi_3*(phi_1 + phi_2) + (-1.0/4.0*(mu_1 - B_bin[int(phases)-1])*(mu_1 - B_bin[int(phases)-1])/A[int(phases)-1] + D_bin[int(phases)-1])*(6.0*phi_4*(1-phi_4) + 2*(phi_1*phi_2 + phi_1*phi_3 + phi_2*phi_3)))/Vm
 			- 6.0*phi_4*(1-phi_4)*(0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi_1*phi_1*(3-2*phi_1)*cEigenStrain1 - phi_2*phi_2*(3-2*phi_2)*cEigenStrain2
                                                                     - phi_3*phi_3*(3-2*phi_3)*cEigenStrain3)))
     );

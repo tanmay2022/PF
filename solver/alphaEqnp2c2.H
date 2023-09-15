@@ -82,7 +82,7 @@ fvScalarMatrix alphaEqn
 
 omega*epsilon*dimt*fvm::ddt(phi_1)     //alpha=1 liquid phase
                 ==
-		2.0*epsilon*gamma_1*dimx*dimx*fvm::laplacian(ac_01*ac_01,phi_1) + 2*gamma_1*epsilon*dimx*fvc::div(dadgradPhi) - 18.0*(gamma_1/epsilon)*(phi_1)*(1-phi_1)*(1-2.0*phi_1) + ((-1.0/4.0*(mu_1 - B_Liq)*(mu_1 - B_Liq)/A_Liq + D_Liq) - (-1.0/4.0*(mu_1 - B_Sol)*(mu_1 - B_Sol)/A_Sol + D_Sol))*(30.0*phi_1*phi_1*(1.0-phi_1)*(1.0-phi_1))*(1 + noise_mag*randNum.globalScalar01())/Vm - epsilon*mu_th*mu_th*grad_qt_sqr*((3*(7*phi_1*phi_1+8*phi_1*phi_1*phi_1)*(1-phi_1) + 2*phi_1*phi_1*phi_1*(7-6*phi_1))/(1+eps-phi_1)) - 6.0*phi_1*(1-phi_1)*(0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi_1*phi_1*(3-2*phi_1)*cEigenStrain1))-(Sigma && cEigenStrain1))
+		2.0*epsilon*gamma_1*dimx*dimx*fvm::laplacian(ac_01*ac_01,phi_1) + 2*gamma_1*epsilon*dimx*fvc::div(dadgradPhi) - 18.0*(gamma_1/epsilon)*(phi_1)*(1-phi_1)*(1-2.0*phi_1) + ((-1.0/4.0*(mu_1 - B_bin[int(phases)-1])*(mu_1 - B_bin[int(phases)-1])/A[int(phases)-1] + D_bin[int(phases)-1]) - (-1.0/4.0*(mu_1 - B_bin[0])*(mu_1 - B_bin[0])/A[0] + D_bin[0]))*(30.0*phi_1*phi_1*(1.0-phi_1)*(1.0-phi_1))*(1 + noise_mag*randNum.globalScalar01())/Vm - epsilon*mu_th*mu_th*grad_qt_sqr*((3*(7*phi_1*phi_1+8*phi_1*phi_1*phi_1)*(1-phi_1) + 2*phi_1*phi_1*phi_1*(7-6*phi_1))/(1+eps-phi_1)) - 6.0*phi_1*(1-phi_1)*(0.5*(deltaSigmaD && (symm(fvc::grad(D))-phi_1*phi_1*(3-2*phi_1)*cEigenStrain1))-(Sigma && cEigenStrain1))
 //+ 30.0*noise_mag*phi*(1.0-phi)*phi*(1-phi)*randNum.globalScalar01()
 
 

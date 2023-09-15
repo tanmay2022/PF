@@ -425,7 +425,7 @@ volScalarField hphi4 = 0.0*phi_4;
    
    dimensionedScalar DeltaC = 0.0;
 
-   dimensionedScalar A_Sol = 0.0;
+   /*dimensionedScalar A_Sol = 0.0;
    dimensionedScalar A_Liq = 0.0;
         dimensionedScalar A_SoldT = 0.0;
         dimensionedScalar A_LiqdT = 0.0;
@@ -434,20 +434,20 @@ volScalarField hphi4 = 0.0*phi_4;
         dimensionedScalar c_Liq = 0.0;
 
         dimensionedScalar c_SoldT = 0.0;
-        dimensionedScalar c_LiqdT = 0.0;
+        dimensionedScalar c_LiqdT = 0.0;*/
         
         
         dimensionedScalar dcdmu_Liq = 0.0;
             
    dimensionedScalar omega = 0.0;
     
-        dimensionedScalar B_Sol = 0.0;
+        /*dimensionedScalar B_Sol = 0.0;
         dimensionedScalar dBdT = 0.0;
         
         dimensionedScalar B_Liq = 0.0; //("B_Liq", 0.*mu);
 
         dimensionedScalar D_Sol = 0.0;
-        dimensionedScalar D_Liq = 0.0;
+        dimensionedScalar D_Liq = 0.0;*/
         
         dimensionedScalar avg_liq_conc = 0.0;
    
@@ -502,31 +502,31 @@ volScalarField hphi4 = 0.0*phi_4;
    scalarRectangularMatrix testMatrix(2,2,0);
    scalarRectangularMatrix testMatrix_1(2,2,0);
 
-        scalarSquareMatrix dmudc_a(2,0);
+        /*scalarSquareMatrix dmudc_a(2,0);
         scalarSquareMatrix dmudc_l(2,0);
    scalarRectangularMatrix dmudc_adT(2,2,0);
-   scalarRectangularMatrix dmudc_ldT(2,2,0);
+   scalarRectangularMatrix dmudc_ldT(2,2,0);*/
 
-        scalarRectangularMatrix dcdmu_a(2,2,0);
+        /*scalarRectangularMatrix dcdmu_a(2,2,0);
         scalarRectangularMatrix dcdmu_l(2,2,0);
    scalarRectangularMatrix dcdmu_adT(2,2,0);
-   scalarRectangularMatrix dcdmu_ldT(2,2,0);
+   scalarRectangularMatrix dcdmu_ldT(2,2,0);*/
 
-        scalarRectangularMatrix ceq_a(2,1,0);
+        /*scalarRectangularMatrix ceq_a(2,1,0);
         scalarRectangularMatrix ceq_l(2,1,0);
    scalarRectangularMatrix ceq_adT(2,1,0);
-   scalarRectangularMatrix ceq_ldT(2,1,0);
+   scalarRectangularMatrix ceq_ldT(2,1,0);*/
 
-        scalarRectangularMatrix D_a(2,2,0);
+        /*scalarRectangularMatrix D_a(2,2,0);
         scalarRectangularMatrix D_l(2,2,0);
-        scalarRectangularMatrix M_a(2,2,0);
+        scalarRectangularMatrix M_a(2,2,0);*/
         scalarRectangularMatrix M_l(2,2,0);
    
-   dimensionedScalar B_a1 = 0.0;
+   /*dimensionedScalar B_a1 = 0.0;
    dimensionedScalar dB_a1dT = 0.0;
    dimensionedScalar B_a2 = 0.0;
    dimensionedScalar dB_a2dT = 0.0;
-   dimensionedScalar DD_a = 0.0;
+   dimensionedScalar DD_a = 0.0;*/
     
     //if (phases == 2)
     //{
@@ -540,7 +540,7 @@ volScalarField hphi4 = 0.0*phi_4;
    
    DeltaCt = c_lt-c_at;
    
-   D_a[0][0]   = diff_ter[0][0];      
+   /*D_a[0][0]   = diff_ter[0][0];      
    D_a[0][1]   = diff_ter[0][1];
    D_a[1][0]   = diff_ter[1][0];
    D_a[1][1]   = diff_ter[1][1];
@@ -548,7 +548,7 @@ volScalarField hphi4 = 0.0*phi_4;
    D_l[0][0]   = diff_ter[2*(int(phases)-1)][0];      
    D_l[0][1]   = diff_ter[2*(int(phases)-1)][1];
    D_l[1][0]   = diff_ter[2*(int(phases)-1)+1][0];
-   D_l[1][1]   = diff_ter[2*(int(phases)-1)+1][1];
+   D_l[1][1]   = diff_ter[2*(int(phases)-1)+1][1];*/
    }
    //}
 
@@ -590,14 +590,14 @@ volScalarField hphi4 = 0.0*phi_4;
         c_bin_dT[i_phase] = gsl_spline_eval_deriv (spline_comp1[i_phase], T.value(), acc_comp1[i_phase]);
         }
         
-        A_Sol = A[0];
+        /*A_Sol = A[0];
         A_Liq = A[int(phases)-1];
         A_SoldT = A_dT[0];
         A_LiqdT = A_dT[int(phases)-1];
         c_Sol = c_bin[0];
         c_Liq = c_bin[int(phases)-1];
         c_SoldT = c_bin_dT[0];
-        c_LiqdT = c_bin_dT[int(phases)-1];
+        c_LiqdT = c_bin_dT[int(phases)-1];*/
         
         
         dcdmu_Liq = 0.5/A[int(phases)-1];
@@ -606,23 +606,25 @@ volScalarField hphi4 = 0.0*phi_4;
 
 	//Info<< "omega= " << omega.value() << nl << endl;
         
-        B_bin[0] = 2.0*(A[int(phases)-1]*c_bin[int(phases)-1] - A[0]*c_bin[0]);
-        B_bin_dT[0] = 2.0*(A_dT[int(phases)-1]*c_bin[int(phases)-1] + A[int(phases)-1]*c_bin_dT[int(phases)-1] - A_dT[0]*c_bin[0] - A[0]*c_bin_dT[0]);
+        for (i_phase = 0; i_phase < int(phases)-1; i_phase++){
+        B_bin[i_phase] = 2.0*(A[int(phases)-1]*c_bin[int(phases)-1] - A[i_phase]*c_bin[i_phase]);
+        B_bin_dT[i_phase] = 2.0*(A_dT[int(phases)-1]*c_bin[int(phases)-1] + A[int(phases)-1]*c_bin_dT[int(phases)-1] - A_dT[i_phase]*c_bin[i_phase] - A[i_phase]*c_bin_dT[i_phase]);
+        
+        D_bin[i_phase] = -A[int(phases)-1]*c_bin[int(phases)-1]*c_bin[int(phases)-1] + A[i_phase]*c_bin[i_phase]*c_bin[i_phase];
+        }
         
         B_bin[int(phases)-1] = 0.0; //("B_Liq", 0.*mu);
-
-        D_bin[0] = -A[int(phases)-1]*c_bin[int(phases)-1]*c_bin[int(phases)-1] + A[0]*c_bin[0]*c_bin[0];
-        D_bin[int(phases)-1] = 0.0; //("D_Liq", 0.*mu);
         
+        D_bin[int(phases)-1] = 0.0; //("D_Liq", 0.*mu);
         //////////////////////
         
-        B_Sol = B_bin[0];
+        /*B_Sol = B_bin[0];
         dBdT = B_bin_dT[0];
         
         B_Liq = B_bin[int(phases)-1]; //("B_Liq", 0.*mu);
 
         D_Sol = D_bin[0];
-        D_Liq = D_bin[int(phases)-1]; //("D_Liq", 0.*mu);
+        D_Liq = D_bin[int(phases)-1];*/ //("D_Liq", 0.*mu);
 	}
         
         if (components == 3)
@@ -646,37 +648,37 @@ volScalarField hphi4 = 0.0*phi_4;
     //Info << T.value() << " " << c_ter1[i_phase] << " " << c_ter2[i_phase] << " " << H11[i_phase] << " " << H22[i_phase] << endl;
     }
     
-    dmudc_a[0][0] = H11[0];
+    /*dmudc_a[0][0] = H11[0];
     dmudc_a[0][1] = H12[0];
     dmudc_a[1][0] = dmudc_a[0][1];
-    dmudc_a[1][1] = H22[0];
+    dmudc_a[1][1] = H22[0];*/
     
-    dmudc_adT[0][0] = H11_dT[0];
+    /*dmudc_adT[0][0] = H11_dT[0];
     dmudc_adT[0][1] = H12_dT[0];
     dmudc_adT[1][0] = dmudc_adT[0][1];
-    dmudc_adT[1][1] = H22_dT[0];
+    dmudc_adT[1][1] = H22_dT[0];*/
     
-    ceq_a[0][0] = c_ter1[0];
+    /*ceq_a[0][0] = c_ter1[0];
     ceq_a[1][0] = c_ter2[0];
     
     ceq_adT[0][0] = c_ter1_dT[0];
-    ceq_adT[1][0] = c_ter2_dT[0];
+    ceq_adT[1][0] = c_ter2_dT[0];*/
     
-    dmudc_l[0][0] = H11[int(phases)-1];
+    /*dmudc_l[0][0] = H11[int(phases)-1];
     dmudc_l[0][1] = H12[int(phases)-1];
     dmudc_l[1][0] = dmudc_l[0][1];
-    dmudc_l[1][1] = H22[int(phases)-1];
+    dmudc_l[1][1] = H22[int(phases)-1];*/
 
-    dmudc_ldT[0][0] = H11_dT[int(phases)-1];
+    /*dmudc_ldT[0][0] = H11_dT[int(phases)-1];
     dmudc_ldT[0][1] = H12_dT[int(phases)-1];
     dmudc_ldT[1][0] = dmudc_ldT[0][1]; 
-    dmudc_ldT[1][1] = H22_dT[int(phases)-1];
+    dmudc_ldT[1][1] = H22_dT[int(phases)-1];*/
     
-    ceq_l[0][0] = c_ter1[int(phases)-1];
+    /*ceq_l[0][0] = c_ter1[int(phases)-1];
     ceq_l[1][0] = c_ter2[int(phases)-1];
 
     ceq_ldT[0][0] = c_ter1_dT[int(phases)-1];
-    ceq_ldT[1][0] = c_ter2_dT[int(phases)-1];
+    ceq_ldT[1][0] = c_ter2_dT[int(phases)-1];*/
 
    
     
@@ -723,7 +725,7 @@ volScalarField hphi4 = 0.0*phi_4;
     Mob[2*i_phase+1][1] = M_temp[1][1];
     }
     
-    dcdmu_adT[0][0] = dcdmu_dT[0][0];
+    /*dcdmu_adT[0][0] = dcdmu_dT[0][0];
     dcdmu_adT[0][1] = dcdmu_dT[0][1];
     dcdmu_adT[1][0] = dcdmu_dT[1][0];
     dcdmu_adT[1][1] = dcdmu_dT[1][1];
@@ -741,7 +743,7 @@ volScalarField hphi4 = 0.0*phi_4;
     dcdmu_l[0][0] = dcdmu[2*(int(phases)-1)][0];
     dcdmu_l[0][1] = dcdmu[2*(int(phases)-1)][1];
     dcdmu_l[1][0] = dcdmu[2*(int(phases)-1)+1][0];
-    dcdmu_l[1][1] = dcdmu[2*(int(phases)-1)+1][1];
+    dcdmu_l[1][1] = dcdmu[2*(int(phases)-1)+1][1];*/
     
     //Info << T.value() << " " << dcdmu_adT[0][0] << " " << dcdmu_adT[0][1] << " " << dcdmu_adT[1][0] << " " << dcdmu_adT[1][1] << endl;
 	//Info << T.value() << " " << dcdmu_a[0][0] << " " << dcdmu_a[0][1] << " " << dcdmu_a[1][0] << " " << dcdmu_a[1][1] << endl;
@@ -750,29 +752,11 @@ volScalarField hphi4 = 0.0*phi_4;
 	//Info << T.value() << " " << dcdmu_ldT[0][0] << " " << dcdmu_ldT[0][1] << " " << dcdmu_ldT[1][0] << " " << dcdmu_ldT[1][1] << endl;
 	//Info << T.value() << " " << dcdmu_l[0][0] << " " << dcdmu_l[0][1] << " " << dcdmu_l[1][0] << " " << dcdmu_l[1][1] << endl;
     
-    /*
-    scalar detdmudc_a = (H11[0]*H22[0]-H12[0]*H12[0]);
-    
-    dcdmu_adT[0][0] = -H22[0]*(H11_dT[0]*H22[0] + H11[0]*H22_dT[0] - 2*H12_dT[0]*H12[0])/(detdmudc_a*detdmudc_a) + H22_dT[0]/detdmudc_a;
-    dcdmu_adT[0][1] = H12[0]*(H11_dT[0]*H22[0] + H11[0]*H22_dT[0] - 2*H12_dT[0]*H12[0])/(detdmudc_a*detdmudc_a) - H12_dT[0]/detdmudc_a;
-    dcdmu_adT[1][1] = -H11[0]*(H11_dT[0]*H22[0] + H11[0]*H22_dT[0] - 2*H12_dT[0]*H12[0])/(detdmudc_a*detdmudc_a) + H11_dT[0]/detdmudc_a;
-
-    scalar detdmudc_l = (H11[int(phases)-1]*H22[int(phases)-1]-H12[int(phases)-1]*H12[int(phases)-1]);
-    
-    dcdmu_ldT[0][0] = -H22[int(phases)-1]*(H11_dT[int(phases)-1]*H22[int(phases)-1] + H11[int(phases)-1]*H22_dT[int(phases)-1] - 2*H12_dT[int(phases)-1]*H12[int(phases)-1])/(detdmudc_l*detdmudc_l) + H22_dT[int(phases)-1]/detdmudc_l;
-    dcdmu_ldT[0][1] = H12[int(phases)-1]*(H11_dT[int(phases)-1]*H22[int(phases)-1] + H11[int(phases)-1]*H22_dT[int(phases)-1] - 2*H12_dT[int(phases)-1]*H12[int(phases)-1])/(detdmudc_l*detdmudc_l) - H12_dT[int(phases)-1]/detdmudc_l;
-    dcdmu_ldT[1][1] = -H11[int(phases)-1]*(H11_dT[int(phases)-1]*H22[int(phases)-1] + H11[int(phases)-1]*H22_dT[int(phases)-1] - 2*H12_dT[int(phases)-1]*H12[int(phases)-1])/(detdmudc_l*detdmudc_l) + H11_dT[int(phases)-1]/detdmudc_l;
-    
-    dcdmu_a = SVDinv(dmudc_a);
-    dcdmu_l = SVDinv(dmudc_l);
-    
-   multiply(M_a, D_a, dcdmu_a);
-   multiply(M_l, D_l, dcdmu_l);*/
    
-   M_a[0][0]   = Mob[0][0];      
+   /*M_a[0][0]   = Mob[0][0];      
    M_a[0][1]   = Mob[0][1];
    M_a[1][0]   = Mob[1][0];
-   M_a[1][1]   = Mob[1][1];
+   M_a[1][1]   = Mob[1][1];*/
         
    M_l[0][0]   = Mob[2*(int(phases)-1)][0];      
    M_l[0][1]   = Mob[2*(int(phases)-1)][1];
@@ -802,11 +786,13 @@ volScalarField hphi4 = 0.0*phi_4;
    B_ter2_dT[i_phase] = (H22_dT[int(phases)-1]*c_ter2[int(phases)-1] + H22[int(phases)-1]*c_ter2_dT[int(phases)-1] - H22_dT[i_phase]*c_ter2[i_phase] - H22[i_phase]*c_ter2_dT[i_phase]) + (H12_dT[int(phases)-1]*c_ter1[int(phases)-1] + H12[int(phases)-1]*c_ter1_dT[int(phases)-1] - H12_dT[i_phase]*c_ter1[i_phase] - H12[i_phase]*c_ter1_dT[i_phase]);
    
    D_ter[i_phase] = -(0.5*H11[int(phases)-1]*c_ter1[int(phases)-1]*c_ter1[int(phases)-1] + 0.5*H22[int(phases)-1]*c_ter2[int(phases)-1]*c_ter2[int(phases)-1] + H12[int(phases)-1]*c_ter1[int(phases)-1]*c_ter2[int(phases)-1]) + (0.5*H11[i_phase]*c_ter1[i_phase]*c_ter1[i_phase] + 0.5*H22[i_phase]*c_ter2[i_phase]*c_ter2[i_phase] + H12[i_phase]*c_ter1[i_phase]*c_ter2[i_phase]);
+   
+   //Info << T.value() << " " << B_ter1[i_phase] << " " << B_ter2[i_phase] << " " << B_ter1_dT[i_phase] << " " << B_ter2_dT[i_phase] << " " << D_ter[i_phase] << endl;
    }
    
    ///////////////////////////////////
    
-   B_a1 = B_ter1[0];
+   /*B_a1 = B_ter1[0];
    
    B_a2 = B_ter2[0];
    
@@ -814,9 +800,8 @@ volScalarField hphi4 = 0.0*phi_4;
    
    dB_a2dT = B_ter2_dT[0];
    
-   DD_a = D_ter[0];
+   DD_a = D_ter[0];*/
    
-   //Info << T.value() << " " << B_a1 << " " << B_a2 << " " << dB_a1dT << " " << dB_a2dT << " " << DD_a << endl;
     	}
     	//}
 
@@ -867,24 +852,32 @@ volScalarField hphi4 = 0.0*phi_4;
 	#include "DEqnp4.H"
 
     //#include "nucleateFields.H"
+    //for (i_phase = 0; i_phase < phases; i_phase++){
+    if (components == 2)
+    {
+    c_1 = 0.5*(mu_1-B_bin[0])/A[0];
+    }
+    if (components == 3)
+    {      
+      c_1 = dcdmu[0][0]*(mu_1 - B_ter1[0]) + dcdmu[0][1]*(mu_2 - B_ter2[0]);
+      
+      c_2 = dcdmu[1][0]*(mu_1 - B_ter1[0]) + dcdmu[1][1]*(mu_2 - B_ter2[0]);
+    }
+    //}
+    
+
     if (phases == 2)
     {
     if (components == 2)
     {
-    avg_liq_conc = fvc::domainIntegrate((0.5*(mu_1-B_Liq)/A_Liq)*(1-phi_1)).value()/fvc::domainIntegrate((1-phi_1)).value();
-    
-    c_1 = 0.5*(mu_1-B_Sol)/A_Sol;
+    avg_liq_conc = fvc::domainIntegrate((0.5*(mu_1-B_bin[int(phases)-1])/A[int(phases)-1])*(1-phi_1)).value()/fvc::domainIntegrate((1-phi_1)).value();
     }
     
     if (components == 3)
     {
-    avg_liq_conct[0][0] = fvc::domainIntegrate((dcdmu_l[0][0]*(mu_1) + dcdmu_l[0][1]*(mu_2))*(1-phi_1)).value()/fvc::domainIntegrate((1-phi_1)).value();
+    avg_liq_conct[0][0] = fvc::domainIntegrate((dcdmu[2*(int(phases)-1)][0]*(mu_1) + dcdmu[2*(int(phases)-1)][1]*(mu_2))*(1-phi_1)).value()/fvc::domainIntegrate((1-phi_1)).value();
 
-      avg_liq_conct[1][0] = fvc::domainIntegrate((dcdmu_l[1][0]*(mu_1) + dcdmu_l[1][1]*(mu_2))*(1-phi_1)).value()/fvc::domainIntegrate((1-phi_1)).value();
-      
-      c_1 = dcdmu_a[0][0]*(mu_1 - B_a1) + dcdmu_a[0][1]*(mu_2 - B_a2);
-      
-      c_2 = dcdmu_a[1][0]*(mu_1 - B_a1) + dcdmu_a[1][1]*(mu_2 - B_a2);
+      avg_liq_conct[1][0] = fvc::domainIntegrate((dcdmu[2*(int(phases)-1)+1][0]*(mu_1) + dcdmu[2*(int(phases)-1)+1][1]*(mu_2))*(1-phi_1)).value()/fvc::domainIntegrate((1-phi_1)).value();
     }
     }
     

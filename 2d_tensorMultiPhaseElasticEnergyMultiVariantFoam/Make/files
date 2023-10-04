@@ -1,3 +1,0 @@
-solidDisplacementElasticEnergyVariantFoam.C
-
-EXE = $(FOAM_APPBIN)/tensorElasticEnergyThreeVariantFoam

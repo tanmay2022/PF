@@ -1,4 +1,0 @@
-tractionDisplacement/tractionDisplacementFvPatchVectorField.C
-solidDisplacementElasticEnergyVariantFoam.C
-
-EXE = $(FOAM_USER_APPBIN)/solidDisplacementElasticEnergyVariantFoam

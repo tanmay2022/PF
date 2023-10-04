@@ -125,13 +125,15 @@
         scalarRectangularMatrix centerZ((phases-1),1,0);
         scalarRectangularMatrix seedRadius((phases-1),1,0);
         scalarRectangularMatrix volumeFraction((phases-1),1,0);
+        scalarRectangularMatrix shieldDist((phases-1),1,0);
         scalarRectangularMatrix spread((phases-1),1,0);
         
         centerX[0][0]   = readScalar(transportProperties.lookup("centerX[0]"));      
         centerY[0][0]   = readScalar(transportProperties.lookup("centerY[0]"));      
         centerZ[0][0]   = readScalar(transportProperties.lookup("centerZ[0]"));
         seedRadius[0][0] = readScalar(transportProperties.lookup("seedRadius[0]")); 
-        volumeFraction[0][0] = readScalar(transportProperties.lookup("volumeFraction[0]")); 
+        volumeFraction[0][0] = readScalar(transportProperties.lookup("volumeFraction[0]"));  
+        shieldDist[0][0] = readScalar(transportProperties.lookup("shieldDist[0]")); 
         spread[0][0] = readScalar(transportProperties.lookup("spread[0]")); 
 	if (phases != 2)
     	{
@@ -140,6 +142,7 @@
         centerZ[1][0]   = readScalar(transportProperties.lookup("centerZ[1]"));
         seedRadius[1][0] = readScalar(transportProperties.lookup("seedRadius[1]")); 
         volumeFraction[1][0] = readScalar(transportProperties.lookup("volumeFraction[1]")); 
+        shieldDist[1][0] = readScalar(transportProperties.lookup("shieldDist[1]")); 
         spread[1][0] = readScalar(transportProperties.lookup("spread[1]")); 
         }
 	if (phases == 4)
@@ -149,6 +152,7 @@
         centerZ[2][0]   = readScalar(transportProperties.lookup("centerZ[2]"));
         seedRadius[2][0] = readScalar(transportProperties.lookup("seedRadius[2]")); 
         volumeFraction[2][0] = readScalar(transportProperties.lookup("volumeFraction[2]")); 
+        shieldDist[2][0] = readScalar(transportProperties.lookup("shieldDist[2]")); 
         spread[2][0] = readScalar(transportProperties.lookup("spread[2]")); 
         }
         
@@ -169,15 +173,15 @@
     	{
     	if (phases == 3)
     	{
-        diff_ter[0][0]   = readScalar(transportProperties.lookup("D_a[0][0]"));      
-        diff_ter[0][1]   = readScalar(transportProperties.lookup("D_a[0][1]"));
-        diff_ter[1][0]   = readScalar(transportProperties.lookup("D_a[1][0]"));
-        diff_ter[1][1]   = readScalar(transportProperties.lookup("D_a[1][1]"));
+        diff_ter[0][0]   = readScalar(transportProperties.lookup("D_a1[0][0]"));      
+        diff_ter[0][1]   = readScalar(transportProperties.lookup("D_a1[0][1]"));
+        diff_ter[1][0]   = readScalar(transportProperties.lookup("D_a1[1][0]"));
+        diff_ter[1][1]   = readScalar(transportProperties.lookup("D_a1[1][1]"));
         
-        diff_ter[2][0]   = readScalar(transportProperties.lookup("D_a[0][0]"));      
-        diff_ter[2][1]   = readScalar(transportProperties.lookup("D_a[0][1]"));
-        diff_ter[3][0]   = readScalar(transportProperties.lookup("D_a[1][0]"));
-        diff_ter[3][1]   = readScalar(transportProperties.lookup("D_a[1][1]"));
+        diff_ter[2][0]   = readScalar(transportProperties.lookup("D_a2[0][0]"));      
+        diff_ter[2][1]   = readScalar(transportProperties.lookup("D_a2[0][1]"));
+        diff_ter[3][0]   = readScalar(transportProperties.lookup("D_a2[1][0]"));
+        diff_ter[3][1]   = readScalar(transportProperties.lookup("D_a2[1][1]"));
         
         diff_ter[4][0]   = readScalar(transportProperties.lookup("D_l[0][0]"));      
         diff_ter[4][1]   = readScalar(transportProperties.lookup("D_l[0][1]"));
@@ -187,20 +191,20 @@
         
         if (phases == 4)
     	{
-        diff_ter[0][0]   = readScalar(transportProperties.lookup("D_a[0][0]"));      
-        diff_ter[0][1]   = readScalar(transportProperties.lookup("D_a[0][1]"));
-        diff_ter[1][0]   = readScalar(transportProperties.lookup("D_a[1][0]"));
-        diff_ter[1][1]   = readScalar(transportProperties.lookup("D_a[1][1]"));
+        diff_ter[0][0]   = readScalar(transportProperties.lookup("D_a1[0][0]"));      
+        diff_ter[0][1]   = readScalar(transportProperties.lookup("D_a1[0][1]"));
+        diff_ter[1][0]   = readScalar(transportProperties.lookup("D_a1[1][0]"));
+        diff_ter[1][1]   = readScalar(transportProperties.lookup("D_a1[1][1]"));
         
-        diff_ter[2][0]   = readScalar(transportProperties.lookup("D_a[0][0]"));      
-        diff_ter[2][1]   = readScalar(transportProperties.lookup("D_a[0][1]"));
-        diff_ter[3][0]   = readScalar(transportProperties.lookup("D_a[1][0]"));
-        diff_ter[3][1]   = readScalar(transportProperties.lookup("D_a[1][1]"));
+        diff_ter[2][0]   = readScalar(transportProperties.lookup("D_a2[0][0]"));      
+        diff_ter[2][1]   = readScalar(transportProperties.lookup("D_a2[0][1]"));
+        diff_ter[3][0]   = readScalar(transportProperties.lookup("D_a2[1][0]"));
+        diff_ter[3][1]   = readScalar(transportProperties.lookup("D_a2[1][1]"));
         
-        diff_ter[4][0]   = readScalar(transportProperties.lookup("D_a[0][0]"));      
-        diff_ter[4][1]   = readScalar(transportProperties.lookup("D_a[0][1]"));
-        diff_ter[5][0]   = readScalar(transportProperties.lookup("D_a[1][0]"));
-        diff_ter[5][1]   = readScalar(transportProperties.lookup("D_a[1][1]"));
+        diff_ter[4][0]   = readScalar(transportProperties.lookup("D_a3[0][0]"));      
+        diff_ter[4][1]   = readScalar(transportProperties.lookup("D_a3[0][1]"));
+        diff_ter[5][0]   = readScalar(transportProperties.lookup("D_a3[1][0]"));
+        diff_ter[5][1]   = readScalar(transportProperties.lookup("D_a3[1][1]"));
         
         diff_ter[6][0]   = readScalar(transportProperties.lookup("D_l[0][0]"));      
         diff_ter[6][1]   = readScalar(transportProperties.lookup("D_l[0][1]"));

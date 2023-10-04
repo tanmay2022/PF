@@ -1,3 +1,28 @@
+if (swch == 2)
+    {
+    if (phases == 4)
+    {
+   strain=((gradD-((phi_1*phi_1*(3-2*phi_1)*cEigenStrain1)+(phi_2*phi_2*(3-2*phi_2)*cEigenStrain2)+(phi_3*phi_3*(3-2*phi_3)*cEigenStrain3)))
+		&&symmTensor(1,0,0,0,0,0))*symmTensor(1,0,0,0,0,0)
+	  +((gradD-((phi_1*phi_1*(3-2*phi_1)*cEigenStrain1)+(phi_2*phi_2*(3-2*phi_2)*cEigenStrain2)+(phi_3*phi_3*(3-2*phi_3)*cEigenStrain3)))
+                &&symmTensor(0,0,0,1,0,0))*symmTensor(0,0,0,1,0,0)
+	  +((gradD-((phi_1*phi_1*(3-2*phi_1)*cEigenStrain1)+(phi_2*phi_2*(3-2*phi_2)*cEigenStrain2)+(phi_3*phi_3*(3-2*phi_3)*cEigenStrain3)))
+                &&symmTensor(0,0,0,0,0,1))*symmTensor(0,0,0,0,0,1);
+//    vector eStrain = (T0*T0*(3-2*T0)*cEigenStrain0 + T1*T1*(3-2*T1)*cEigenStrain1 +T2*T2*(3-2*T2)*cEigenStrain2);
+           
+   Sigma = (2*(mu2_elast*phi_4*phi_4*(3-2*phi_4) + mu1_elast*(1-phi_4)*(1-phi_4)*(1+2*phi_4))*(symm(fvc::grad(D)) 
+	      - (phi_1*phi_1*(3-2*phi_1)*cEigenStrain1 + phi_2*phi_2*(3-2*phi_2)*cEigenStrain2 +phi_3*phi_3*(3-2*phi_3)*cEigenStrain3)) 
+	  + (lambda2*phi_4*phi_4*(3-2*phi_4) + lambda1*(1-phi_4)*(1-phi_4)*(1+2*phi_4))*(I*tr(fvc::grad(D) 
+	      - (phi_1*phi_1*(3-2*phi_1)*cEigenStrain1 + phi_2*phi_2*(3-2*phi_2)*cEigenStrain2 +phi_3*phi_3*(3-2*phi_3)*cEigenStrain3))))
+	  + (mu2_elast_*phi_4*phi_4*(3-2*phi_4) + mu1_elast_*(1-phi_4)*(1-phi_4)*(1+2*phi_4))*strain;		
+		
+   deltaSigmaD = ((mu1_elast-mu2_elast)*twoSymm(fvc::grad(D)) + (lambda1-lambda2)*(I*tr(fvc::grad(D))) 
+		- 2*(mu1_elast-mu2_elast)*(phi_1*phi_1*(3-2*phi_1)*cEigenStrain1 + phi_2*phi_2*(3-2*phi_2)*cEigenStrain2 +phi_3*phi_3*(3-2*phi_3)*cEigenStrain3) 
+		- (lambda1-lambda2)*(I*tr((phi_1*phi_1*(3-2*phi_1)*cEigenStrain1 + phi_2*phi_2*(3-2*phi_2)*cEigenStrain2 +phi_3*phi_3*(3-2*phi_3)*cEigenStrain3))))
+		+ (mu1_elast_-mu2_elast_)*strain;
+}
+}
+
 
 if (phases == 4)
 {

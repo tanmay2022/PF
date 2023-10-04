@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     double VOIGT[4][6], T, epsilon;
     double DIFFUSIVITY10, DIFFUSIVITY11, dab, Amp_Noise_Phase, Equilibrium_temperature, Filling_temperature;
     double theta_x, theta_y, theta_z, center_x[3], center_y[3], center_z[3], seed_radius[3], volume_fraction[3], spread[3];
+    double DIFFUSIVITY20, DIFFUSIVITY21, DIFFUSIVITY30, DIFFUSIVITY31;
     
     //ifstream inpf("Input_tdb_new.in");
     ifstream inpf(argv[1]);

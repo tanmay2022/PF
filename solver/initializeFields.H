@@ -7,8 +7,9 @@ Info<< "Initialising fields... " << endl;
 double xMax = max(mesh.C().component(vector::X)).value();
 double yMax = max(mesh.C().component(vector::Y)).value();
 double zMax = max(mesh.C().component(vector::Z)).value();
-double xCenter, yCenter, zCenter, randTheta[3], randRadius, maxvol[int(phases)-1], curvol[int(phases)-1];
-//int NS;
+double xCenter, yCenter, zCenter, randTheta[3], randRadius, maxvol[int(phases)-1];
+int numNucl[int(phases)-1];
+bool outside;
 if (phases == 2)
 {
 //! For 2D simulations
@@ -38,8 +39,8 @@ if ((swcool == 1)&&(swch == 1))
     volScalarField gaussianSeed = (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[0][0]*seedRadius[0][0]));
 
     //if (prob.value() > randNumber.globalScalar01()){
-    theta = theta + randTheta[2]*gaussianSeed*vector(0,0,1);
-    phi_1 = phi_1 + gaussianSeed;
+    theta += randTheta[2]*gaussianSeed*vector(0,0,1);
+    phi_1 += gaussianSeed;
     //}
 //}
 }
@@ -63,8 +64,8 @@ for(int i=0; i<numSeeds; i++){
     Info<< "Filling phi and theta fields in seeds" << endl;
     volScalarField gaussianSeed = (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[0][0]*seedRadius[0][0]));
 
-    theta = theta + randTheta[2]*gaussianSeed*vector(0,0,1);
-    phi_1 = phi_1 + gaussianSeed;
+    theta += randTheta[2]*gaussianSeed*vector(0,0,1);
+    phi_1 += gaussianSeed;
 }
 }
 
@@ -76,38 +77,78 @@ if (swch == 2)
     
     dimensionedScalar prob = Foam::exp(-0.5*(log(T0-initial)/0.5)*(log(T0-initial)/0.5))/(0.5*Foam::sqrt(2*pi)*(T0-initial));
     Info << "Probability of nucleation: " << prob.value() << endl;*/
+//curvol[0] = 0;
+
 maxvol[0] = volumeFraction[0][0]*xMax*yMax;
-curvol[0] = 0;
+numSeeds = int(maxvol[0]/(pi.value()*seedRadius[0][0]*seedRadius[0][0]));
+
+double xcArray[int(numSeeds)], ycArray[int(numSeeds)];
+
+xcArray[0] = randNumber.globalScalar01()*xMax;
+ycArray[0] = randNumber.globalScalar01()*yMax;
+Info<< "creating a new seed" << endl;
+Info<< "xCenter, yCenter: " << xcArray[0] << ", " << ycArray[0] << endl;
+    
+for (int i=1; i<numSeeds; i++)
+{
+    outside = false;
+    while (!outside)
+    {
+        xCenter = randNumber.globalScalar01()*xMax;
+        yCenter = randNumber.globalScalar01()*yMax;
+        for (int j=0; j<i; j++)
+        {
+            if (((xCenter - xcArray[j])*(xCenter - xcArray[j]) + (yCenter - ycArray[j])*(yCenter - ycArray[j])) < max(2*seedRadius+shieldDist)*max(2*seedRadius+shieldDist))
+            {
+                break;
+            }
+            if (j == i-1)
+            {
+                outside = true;
+            }
+        }
+    }
+    if (outside)
+    {
+        xcArray[i] = xCenter;
+        ycArray[i] = yCenter;
+        Info<< "creating a new seed" << endl;
+        Info<< "xCenter, yCenter: " << xcArray[i] << ", " << ycArray[i] << endl;
+    }
+}
 
 if (numSeeds != 1){
-while(curvol[0] <= maxvol[0]){
-    Info<< "creating a new seed" << endl;
-    xCenter = randNumber.globalScalar01()*xMax;
-    yCenter = randNumber.globalScalar01()*yMax;
+for(int i=0; i<numSeeds; i++){
+//while((curvol[0]+curvol[1]+curvol[2]) <= (maxvol[0]+maxvol[1]+maxvol[2])){
+    //Info<< "creating a new seed" << endl;
+    //xCenter = randNumber.globalScalar01()*xMax;
+    //yCenter = randNumber.globalScalar01()*yMax;
     //xCenter = 0.5*xMax;
     //yCenter = 0.5*yMax;
-    Info<< "xCenter, yCenter: " << xCenter << ", " << yCenter << endl;
+    //Info<< "xCenter, yCenter: " << xCenter << ", " << yCenter << endl;
     //randTheta = randNumber.globalScalar01()*(pi.value()/2);
     //Info<< "random theta: " << randTheta << endl;
 
     Info<< "Filling phi field in seeds" << endl;
     randRadius = (1 + spread[0][0]*(2*randNumber.globalScalar01() - 1))*seedRadius[0][0];
-    curvol[0] = curvol[0] + pi.value()*randRadius*randRadius;
+    //if (curvol[0] <= maxvol[0]){
+    //curvol[0] += pi.value()*seedRadius[0][0]*seedRadius[0][0];
+    xCenter = xcArray[i];
+    yCenter = ycArray[i];
     volScalarField gaussianSeed = (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(randRadius*randRadius));
     
     //volScalarField gaussianSeed = (1-phi)*0.5*(1 - sign((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) - randRadius*randRadius));
 
     //if (prob.value() > randNumber.globalScalar01()){
     //theta = theta + randTheta*gaussianSeed;
-    phi_1 = phi_1 + gaussianSeed;
-    //}
+    phi_1 += gaussianSeed;
 }
 }
 
 if (numSeeds == 1){
 xCenter = centerX[0][0];
 yCenter = centerY[0][0];
-phi_1 = phi_1 + (1-phi_1)*0.5*(1 - sign((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) - seedRadius[0][0]*seedRadius[0][0]));//(1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius*seedRadius));
+phi_1 += (1-phi_1)*0.5*(1 - sign((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) - seedRadius[0][0]*seedRadius[0][0]));
 }
 }
 
@@ -116,7 +157,7 @@ if (swch == 0)
 {
 xCenter = centerX[0][0];
 yCenter = centerY[0][0];
-phi_1 = phi_1 + (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[0][0]*seedRadius[0][0]));
+phi_1 += (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[0][0]*seedRadius[0][0]));
 
 theta = theta_z.value()*vector(0,0,1);
 }
@@ -158,8 +199,8 @@ for(int i=0; i<numSeeds; i++){*/
     volScalarField gaussianSeed = (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius[0][0]*seedRadius[0][0]));
 
             //if (prob.value() > randNumber.globalScalar01()){
-     theta = theta + gaussianSeed*(randTheta[0]*vector(1,0,0) + randTheta[1]*vector(0,1,0) + randTheta[2]*vector(0,0,1));
-     phi_1 = phi_1 + gaussianSeed;
+     theta += gaussianSeed*(randTheta[0]*vector(1,0,0) + randTheta[1]*vector(0,1,0) + randTheta[2]*vector(0,0,1));
+     phi_1 += gaussianSeed;
 
 }
 
@@ -187,8 +228,8 @@ for(int i=0; i<numSeeds; i++){
     Info<< "Filling phi and theta fields in seeds" << endl;
     volScalarField gaussianSeed = (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius[0][0]*seedRadius[0][0]));
 
-    theta = theta + gaussianSeed*(randTheta[0]*vector(1,0,0) + randTheta[1]*vector(0,1,0) + randTheta[2]*vector(0,0,1));
-    phi_1 = phi_1 + gaussianSeed;
+    theta += gaussianSeed*(randTheta[0]*vector(1,0,0) + randTheta[1]*vector(0,1,0) + randTheta[2]*vector(0,0,1));
+    phi_1 += gaussianSeed;
 }
 }
 
@@ -200,31 +241,82 @@ if (swch == 2)
 
     dimensionedScalar prob = Foam::exp(-0.5*(log(T0-initial)/0.5)*(log(T0-initial)/0.5))/(0.5*Foam::sqrt(2*pi)*(T0-initial));
     Info << "Probability of nucleation: " << prob.value() << endl;*/
-maxvol[0] = volumeFraction[0][0]*xMax*yMax;
-curvol[0] = 0;
+//curvol[0] = 0;
+
+//numSeeds = 0;
+//for (int i_phase = 0; i_phase < (phases-1); i_phase++){   
+maxvol[0] = volumeFraction[i_phase][0]*xMax*yMax*zMax;
+//curvol[i_phase] = 0;
+numSeeds = int(maxvol[0]/(pi.value()*(4/3)*seedRadius[0][0]*seedRadius[0][0]*seedRadius[0][0]));
+//numSeeds += numNucl[i_phase];
+//}
+
+double xcArray[int(numSeeds)], ycArray[int(numSeeds)], zcArray[int(numSeeds)];
+
+xcArray[0] = randNumber.globalScalar01()*xMax;
+ycArray[0] = randNumber.globalScalar01()*yMax;
+zcArray[0] = randNumber.globalScalar01()*zMax;
+Info<< "creating a new seed" << endl;
+Info<< "xCenter, yCenter, zCenter: " << xcArray[0] << ", " << ycArray[0] << ", " << zcArray[0] << endl;
+    
+for (int i=1; i<numSeeds; i++)
+{
+    outside = false;
+    while (!outside)
+    {
+        xCenter = randNumber.globalScalar01()*xMax;
+        yCenter = randNumber.globalScalar01()*yMax;
+        zCenter = randNumber.globalScalar01()*zMax;
+        for (int j=0; j<i; j++)
+        {
+            if (((xCenter - xcArray[j])*(xCenter - xcArray[j]) + (yCenter - ycArray[j])*(yCenter - ycArray[j]) + (zCenter - zcArray[j])*(zCenter - zcArray[j])) < max(2*seedRadius+shieldDist)*max(2*seedRadius+shieldDist))
+            {
+                break;
+            }
+            if (j == i-1)
+            {
+                outside = true;
+            }
+        }
+    }
+    if (outside)
+    {
+        xcArray[i] = xCenter;
+        ycArray[i] = yCenter;
+        zcArray[i] = zCenter;
+        Info<< "creating a new seed" << endl;
+        Info<< "xCenter, yCenter, zCenter: " << xcArray[i] << ", " << ycArray[i] << ", " << zcArray[i] << endl;
+    }
+}
+
+
 
 if (numSeeds != 1){
-while(curvol[0] <= maxvol[0]){
-    Info<< "creating a new seed" << endl;
-    xCenter = randNumber.globalScalar01()*xMax;
-    yCenter = randNumber.globalScalar01()*yMax;
-    zCenter = randNumber.globalScalar01()*zMax;
+for(int i=0; i<numSeeds; i++){
+//while(curvol[0] <= maxvol[0]){
+    //Info<< "creating a new seed" << endl;
+    //xCenter = randNumber.globalScalar01()*xMax;
+    //yCenter = randNumber.globalScalar01()*yMax;
+    //zCenter = randNumber.globalScalar01()*zMax;
     //xCenter = 0.5*xMax;
     //yCenter = 0.5*yMax;
-    Info<< "xCenter, yCenter, zCenter: " << xCenter << ", " << yCenter << ", " << zCenter << endl;
+    //Info<< "xCenter, yCenter, zCenter: " << xCenter << ", " << yCenter << ", " << zCenter << endl;
     //randTheta = randNumber.globalScalar01()*(pi.value()/2);
     //Info<< "random theta: " << randTheta << endl;
 
     Info<< "Filling phi field in seeds" << endl;
     randRadius = (1 + spread[0][0]*(2*randNumber.globalScalar01() - 1))*seedRadius[0][0];
-    curvol[0] = curvol[0] + pi.value()*(4/3)*randRadius*randRadius*randRadius;
+    //curvol[0] += pi.value()*(4/3)*randRadius*randRadius*randRadius;xCenter = xcArray[i];
+    xCenter = xcArray[i];
+    yCenter = ycArray[i];
+    zCenter = zcArray[i];
     volScalarField gaussianSeed = (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(randRadius*randRadius));
 
     //volScalarField gaussianSeed = (1-phi)*0.5*(1 - sign((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter) - randRadius*randRadius));
 
     //if (prob.value() > randNumber.globalScalar01()){
     //theta = theta + randTheta*gaussianSeed;
-    phi_1 = phi_1 + gaussianSeed;
+    phi_1 += gaussianSeed;
     //}
 }
 }
@@ -233,7 +325,7 @@ if (numSeeds == 1){
 xCenter = centerX[0][0];
 yCenter = centerY[0][0];
 zCenter = centerZ[0][0];
-phi_1 = phi_1 + (1-phi_1)*0.5*(1 - sign((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter) - seedRadius[0][0]*seedRadius[0][0]));//(1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius*seedRadius));
+phi_1 += (1-phi_1)*0.5*(1 - sign((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter) - seedRadius[0][0]*seedRadius[0][0]));//(1-phi)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius*seedRadius));
 }
 }
 
@@ -243,7 +335,7 @@ if (swch == 0)
 xCenter = centerX[0][0];
 yCenter = centerY[0][0];
 zCenter = centerZ[0][0];
-phi_1 = phi_1 + (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius[0][0]*seedRadius[0][0]));
+phi_1 += (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius[0][0]*seedRadius[0][0]));
 
 theta = theta_x.value()*vector(1,0,0) + theta_y.value()*vector(0,1,0) + theta_z.value()*vector(0,0,1);
 }
@@ -269,35 +361,77 @@ if (swch == 2)
 
     dimensionedScalar prob = Foam::exp(-0.5*(log(T0-initial)/0.5)*(log(T0-initial)/0.5))/(0.5*Foam::sqrt(2*pi)*(T0-initial));
     Info << "Probability of nucleation: " << prob.value() << endl;*/
+numSeeds = 0;
 for (int i_phase = 0; i_phase < (phases-1); i_phase++){   
 maxvol[i_phase] = volumeFraction[i_phase][0]*xMax*yMax;
-curvol[i_phase] = 0;
+//curvol[i_phase] = 0;
+numNucl[i_phase] = int(maxvol[i_phase]/(pi.value()*seedRadius[i_phase][0]*seedRadius[i_phase][0]));
+numSeeds += numNucl[i_phase];
+}
+
+double xcArray[int(numSeeds)], ycArray[int(numSeeds)];
+
+xcArray[0] = randNumber.globalScalar01()*xMax;
+ycArray[0] = randNumber.globalScalar01()*yMax;
+Info<< "creating a new seed" << endl;
+Info<< "xCenter, yCenter: " << xcArray[0] << ", " << ycArray[0] << endl;
+    
+for (int i=1; i<numSeeds; i++)
+{
+    outside = false;
+    while (!outside)
+    {
+        xCenter = randNumber.globalScalar01()*xMax;
+        yCenter = randNumber.globalScalar01()*yMax;
+        for (int j=0; j<i; j++)
+        {
+            if (((xCenter - xcArray[j])*(xCenter - xcArray[j]) + (yCenter - ycArray[j])*(yCenter - ycArray[j])) < max(2*seedRadius+shieldDist)*max(2*seedRadius+shieldDist))
+            {
+                break;
+            }
+            if (j == i-1)
+            {
+                outside = true;
+            }
+        }
+    }
+    if (outside)
+    {
+        xcArray[i] = xCenter;
+        ycArray[i] = yCenter;
+        Info<< "creating a new seed" << endl;
+        Info<< "xCenter, yCenter: " << xcArray[i] << ", " << ycArray[i] << endl;
+    }
 }
 
 if (numSeeds != 1){
-while((curvol[0]+curvol[1]) <= (maxvol[0]+maxvol[1])){
-    Info<< "creating a new seed" << endl;
-    xCenter = randNumber.globalScalar01()*xMax;
-    yCenter = randNumber.globalScalar01()*yMax;
+for(int i=0; i<numNucl[0]; i++){
+//while((curvol[0]+curvol[1]+curvol[2]) <= (maxvol[0]+maxvol[1]+maxvol[2])){
+    //Info<< "creating a new seed" << endl;
+    //xCenter = randNumber.globalScalar01()*xMax;
+    //yCenter = randNumber.globalScalar01()*yMax;
     //xCenter = 0.5*xMax;
     //yCenter = 0.5*yMax;
-    Info<< "xCenter, yCenter: " << xCenter << ", " << yCenter << endl;
+    //Info<< "xCenter, yCenter: " << xCenter << ", " << yCenter << endl;
     //randTheta = randNumber.globalScalar01()*(pi.value()/2);
     //Info<< "random theta: " << randTheta << endl;
 
     Info<< "Filling phi field in seeds" << endl;
-    //randRadius = (1 + spread*(2*randNumber.globalScalar01() - 1))*seedRadius[0];
-    if (curvol[0] <= maxvol[0]){
-    curvol[0] = curvol[0] + pi.value()*seedRadius[0][0]*seedRadius[0][0];
-    
-phi_1 = phi_1 + (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[0][0]*seedRadius[0][0]));
+    randRadius = (1 + spread[0][0]*(2*randNumber.globalScalar01() - 1))*seedRadius[0][0];
+    //if (curvol[0] <= maxvol[0]){
+    //curvol[0] += pi.value()*seedRadius[0][0]*seedRadius[0][0];
+    xCenter = xcArray[i];
+    yCenter = ycArray[i];
+phi_1 += (1-phi_1-phi_2)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(randRadius*randRadius));
 }
 
-else if (curvol[1] <= maxvol[1]){
-    curvol[1] = curvol[1] + pi.value()*seedRadius[1][0]*seedRadius[1][0];
-
-phi_2 = phi_2 + (1-phi_2)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[1][0]*seedRadius[1][0]));
-}
+//else if (curvol[1] <= maxvol[1]){
+for(int i=numNucl[0]; i<numSeeds; i++){
+    //curvol[1] += pi.value()*seedRadius[1][0]*seedRadius[1][0];
+    randRadius = (1 + spread[1][0]*(2*randNumber.globalScalar01() - 1))*seedRadius[1][0];
+    xCenter = xcArray[i];
+    yCenter = ycArray[i];
+phi_2 += (1-phi_1-phi_2)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(randRadius*randRadius));
 }
 
 phi_3 = 1 - (phi_1 + phi_2);
@@ -326,43 +460,90 @@ if (swch == 2)
 
     dimensionedScalar prob = Foam::exp(-0.5*(log(T0-initial)/0.5)*(log(T0-initial)/0.5))/(0.5*Foam::sqrt(2*pi)*(T0-initial));
     Info << "Probability of nucleation: " << prob.value() << endl;*/
+numSeeds = 0;
 for (int i_phase = 0; i_phase < (phases-1); i_phase++){   
-maxvol[i_phase] = volumeFraction[i_phase][0]*xMax*yMax;
-curvol[i_phase] = 0;
+maxvol[i_phase] = volumeFraction[i_phase][0]*xMax*yMax*zMax;
+//curvol[i_phase] = 0;
+numNucl[i_phase] = int(maxvol[i_phase]/(pi.value()*(4/3)*seedRadius[i_phase][0]*seedRadius[i_phase][0]*seedRadius[i_phase][0]));
+numSeeds += numNucl[i_phase];
+}
+
+double xcArray[int(numSeeds)], ycArray[int(numSeeds)], zcArray[int(numSeeds)];
+
+xcArray[0] = randNumber.globalScalar01()*xMax;
+ycArray[0] = randNumber.globalScalar01()*yMax;
+zcArray[0] = randNumber.globalScalar01()*zMax;
+Info<< "creating a new seed" << endl;
+Info<< "xCenter, yCenter, zCenter: " << xcArray[0] << ", " << ycArray[0] << ", " << zcArray[0] << endl;
+    
+for (int i=1; i<numSeeds; i++)
+{
+    outside = false;
+    while (!outside)
+    {
+        xCenter = randNumber.globalScalar01()*xMax;
+        yCenter = randNumber.globalScalar01()*yMax;
+        zCenter = randNumber.globalScalar01()*zMax;
+        for (int j=0; j<i; j++)
+        {
+            if (((xCenter - xcArray[j])*(xCenter - xcArray[j]) + (yCenter - ycArray[j])*(yCenter - ycArray[j]) + (zCenter - zcArray[j])*(zCenter - zcArray[j])) < max(2*seedRadius+shieldDist)*max(2*seedRadius+shieldDist))
+            {
+                break;
+            }
+            if (j == i-1)
+            {
+                outside = true;
+            }
+        }
+    }
+    if (outside)
+    {
+        xcArray[i] = xCenter;
+        ycArray[i] = yCenter;
+        zcArray[i] = zCenter;
+        Info<< "creating a new seed" << endl;
+        Info<< "xCenter, yCenter, zCenter: " << xcArray[i] << ", " << ycArray[i] << ", " << zcArray[i] << endl;
+    }
 }
 
 if (numSeeds != 1){
-while((curvol[0]+curvol[1]) <= (maxvol[0]+maxvol[1])){
-    Info<< "creating a new seed" << endl;
-    xCenter = randNumber.globalScalar01()*xMax;
-    yCenter = randNumber.globalScalar01()*yMax;
-    zCenter = randNumber.globalScalar01()*zMax;
+
+for(int i=0; i<numNucl[0]; i++){
+//while((curvol[0]+curvol[1]+curvol[2]) <= (maxvol[0]+maxvol[1]+maxvol[2])){
+    //Info<< "creating a new seed" << endl;
+    //xCenter = randNumber.globalScalar01()*xMax;
+    //yCenter = randNumber.globalScalar01()*yMax;
     //xCenter = 0.5*xMax;
     //yCenter = 0.5*yMax;
-    Info<< "xCenter, yCenter, zCenter: " << xCenter << ", " << yCenter << ", " << zCenter << endl;
+    //Info<< "xCenter, yCenter: " << xCenter << ", " << yCenter << endl;
     //randTheta = randNumber.globalScalar01()*(pi.value()/2);
     //Info<< "random theta: " << randTheta << endl;
 
     Info<< "Filling phi field in seeds" << endl;
-    //randRadius = (1 + spread*(2*randNumber.globalScalar01() - 1))*seedRadius[0];
-    if (curvol[0] <= maxvol[0]){
-    curvol[0] = curvol[0] + pi.value()*(4/3)*seedRadius[0][0]*seedRadius[0][0]*seedRadius[0][0];
-    
-phi_1 = phi_1 + (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius[0][0]*seedRadius[0][0]));
+    randRadius = (1 + spread[0][0]*(2*randNumber.globalScalar01() - 1))*seedRadius[0][0];
+    //if (curvol[0] <= maxvol[0]){
+    //curvol[0] += pi.value()*seedRadius[0][0]*seedRadius[0][0];
+    xCenter = xcArray[i];
+    yCenter = ycArray[i];
+    zCenter = zcArray[i];
+phi_1 += (1-phi_1-phi_2)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(randRadius*randRadius));
 }
 
-else if (curvol[1] <= maxvol[1]){
-    curvol[1] = curvol[1] + pi.value()*(4/3)*seedRadius[1][0]*seedRadius[1][0]*seedRadius[1][0];
-
-phi_2 = phi_2 + (1-phi_2)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius[1][0]*seedRadius[1][0]));
-}
+//else if (curvol[1] <= maxvol[1]){
+for(int i=numNucl[0]; i<numSeeds; i++){
+    //curvol[1] += pi.value()*seedRadius[1][0]*seedRadius[1][0];
+    randRadius = (1 + spread[1][0]*(2*randNumber.globalScalar01() - 1))*seedRadius[1][0];
+    xCenter = xcArray[i];
+    yCenter = ycArray[i];
+    zCenter = zcArray[i];
+phi_2 += (1-phi_1-phi_2)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(randRadius*randRadius));
 }
 
 phi_3 = 1 - (phi_1 + phi_2);
 
 phase_index = phi_1 + 2*phi_2 + 3*phi_3;
 
-theta = theta_z.value()*vector(0,0,1);
+theta = theta_x.value()*vector(1,0,0) + theta_y.value()*vector(0,1,0) + theta_z.value()*vector(0,0,1);
 }
 }
 
@@ -389,41 +570,86 @@ if (swch == 2)
 
     dimensionedScalar prob = Foam::exp(-0.5*(log(T0-initial)/0.5)*(log(T0-initial)/0.5))/(0.5*Foam::sqrt(2*pi)*(T0-initial));
     Info << "Probability of nucleation: " << prob.value() << endl;*/
+numSeeds = 0;
 for (int i_phase = 0; i_phase < (phases-1); i_phase++){   
 maxvol[i_phase] = volumeFraction[i_phase][0]*xMax*yMax;
-curvol[i_phase] = 0;
+//curvol[i_phase] = 0;
+numNucl[i_phase] = int(maxvol[i_phase]/(pi.value()*seedRadius[i_phase][0]*seedRadius[i_phase][0]));
+numSeeds += numNucl[i_phase];
+}
+
+double xcArray[int(numSeeds)], ycArray[int(numSeeds)];
+
+xcArray[0] = randNumber.globalScalar01()*xMax;
+ycArray[0] = randNumber.globalScalar01()*yMax;
+Info<< "creating a new seed" << endl;
+Info<< "xCenter, yCenter: " << xcArray[0] << ", " << ycArray[0] << endl;
+    
+for (int i=1; i<numSeeds; i++)
+{
+    outside = false;
+    while (!outside)
+    {
+        xCenter = randNumber.globalScalar01()*xMax;
+        yCenter = randNumber.globalScalar01()*yMax;
+        for (int j=0; j<i; j++)
+        {
+            if (((xCenter - xcArray[j])*(xCenter - xcArray[j]) + (yCenter - ycArray[j])*(yCenter - ycArray[j])) < max(2*seedRadius+shieldDist)*max(2*seedRadius+shieldDist))
+            {
+                break;
+            }
+            if (j == i-1)
+            {
+                outside = true;
+            }
+        }
+    }
+    if (outside)
+    {
+        xcArray[i] = xCenter;
+        ycArray[i] = yCenter;
+        Info<< "creating a new seed" << endl;
+        Info<< "xCenter, yCenter: " << xcArray[i] << ", " << ycArray[i] << endl;
+    }
 }
 
 if (numSeeds != 1){
-while((curvol[0]+curvol[1]+curvol[2]) <= (maxvol[0]+maxvol[1]+maxvol[2])){
-    Info<< "creating a new seed" << endl;
-    xCenter = randNumber.globalScalar01()*xMax;
-    yCenter = randNumber.globalScalar01()*yMax;
+for(int i=0; i<numNucl[0]; i++){
+//while((curvol[0]+curvol[1]+curvol[2]) <= (maxvol[0]+maxvol[1]+maxvol[2])){
+    //Info<< "creating a new seed" << endl;
+    //xCenter = randNumber.globalScalar01()*xMax;
+    //yCenter = randNumber.globalScalar01()*yMax;
     //xCenter = 0.5*xMax;
     //yCenter = 0.5*yMax;
-    Info<< "xCenter, yCenter: " << xCenter << ", " << yCenter << endl;
+    //Info<< "xCenter, yCenter: " << xCenter << ", " << yCenter << endl;
     //randTheta = randNumber.globalScalar01()*(pi.value()/2);
     //Info<< "random theta: " << randTheta << endl;
 
     Info<< "Filling phi field in seeds" << endl;
-    //randRadius = (1 + spread*(2*randNumber.globalScalar01() - 1))*seedRadius[0];
-    if (curvol[0] <= maxvol[0]){
-    curvol[0] = curvol[0] + pi.value()*seedRadius[0][0]*seedRadius[0][0];
-    
-phi_1 = phi_1 + (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[0][0]*seedRadius[0][0]));
+    randRadius = (1 + spread[0][0]*(2*randNumber.globalScalar01() - 1))*seedRadius[0][0];
+    //if (curvol[0] <= maxvol[0]){
+    //curvol[0] += pi.value()*seedRadius[0][0]*seedRadius[0][0];
+    xCenter = xcArray[i];
+    yCenter = ycArray[i];
+phi_1 += (1-phi_1-phi_2-phi_3)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(randRadius*randRadius));
 }
 
-else if (curvol[1] <= maxvol[1]){
-    curvol[1] = curvol[1] + pi.value()*seedRadius[1][0]*seedRadius[1][0];
-
-phi_2 = phi_2 + (1-phi_2)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[1][0]*seedRadius[1][0]));
+//else if (curvol[1] <= maxvol[1]){
+for(int i=numNucl[0]; i<numNucl[0]+numNucl[1]; i++){
+    //curvol[1] += pi.value()*seedRadius[1][0]*seedRadius[1][0];
+    randRadius = (1 + spread[1][0]*(2*randNumber.globalScalar01() - 1))*seedRadius[1][0];
+    xCenter = xcArray[i];
+    yCenter = ycArray[i];
+phi_2 += (1-phi_1-phi_2-phi_3)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(randRadius*randRadius));
 }
 
-else if (curvol[2] <= maxvol[2]){
-    curvol[2] = curvol[2] + pi.value()*seedRadius[2][0]*seedRadius[2][0];
-
-phi_3 = phi_3 + (1-phi_3)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(seedRadius[2][0]*seedRadius[2][0]));
-}
+//else if (curvol[2] <= maxvol[2]){
+for(int i=numNucl[0]+numNucl[1]; i<numSeeds; i++){
+    //curvol[2] += pi.value()*seedRadius[2][0]*seedRadius[2][0];
+    randRadius = (1 + spread[2][0]*(2*randNumber.globalScalar01() - 1))*seedRadius[2][0];
+    xCenter = xcArray[i];
+    yCenter = ycArray[i];
+phi_3 += (1-phi_1-phi_2-phi_3)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter))/(randRadius*randRadius));
 }
 
 phi_4 = 1 - (phi_1 + phi_2 + phi_3);
@@ -453,42 +679,93 @@ if (swch == 2)
 
     dimensionedScalar prob = Foam::exp(-0.5*(log(T0-initial)/0.5)*(log(T0-initial)/0.5))/(0.5*Foam::sqrt(2*pi)*(T0-initial));
     Info << "Probability of nucleation: " << prob.value() << endl;*/
+numSeeds = 0;
 for (int i_phase = 0; i_phase < (phases-1); i_phase++){   
-maxvol[i_phase] = volumeFraction[i_phase][0]*xMax*yMax;
-curvol[i_phase] = 0;
+maxvol[i_phase] = volumeFraction[i_phase][0]*xMax*yMax*zMax;
+//curvol[i_phase] = 0;
+numNucl[i_phase] = int(maxvol[i_phase]/(pi.value()*(4/3)*seedRadius[i_phase][0]*seedRadius[i_phase][0]*seedRadius[i_phase][0]));
+numSeeds += numNucl[i_phase];
+}
+
+double xcArray[int(numSeeds)], ycArray[int(numSeeds)], zcArray[int(numSeeds)];
+
+xcArray[0] = randNumber.globalScalar01()*xMax;
+ycArray[0] = randNumber.globalScalar01()*yMax;
+zcArray[0] = randNumber.globalScalar01()*zMax;
+Info<< "creating a new seed" << endl;
+Info<< "xCenter, yCenter, zCenter: " << xcArray[0] << ", " << ycArray[0] << ", " << zcArray[0] << endl;
+    
+for (int i=1; i<numSeeds; i++)
+{
+    outside = false;
+    while (!outside)
+    {
+        xCenter = randNumber.globalScalar01()*xMax;
+        yCenter = randNumber.globalScalar01()*yMax;
+        zCenter = randNumber.globalScalar01()*zMax;
+        for (int j=0; j<i; j++)
+        {
+            if (((xCenter - xcArray[j])*(xCenter - xcArray[j]) + (yCenter - ycArray[j])*(yCenter - ycArray[j]) + (zCenter - zcArray[j])*(zCenter - zcArray[j])) < max(2*seedRadius+shieldDist)*max(2*seedRadius+shieldDist))
+            {
+                break;
+            }
+            if (j == i-1)
+            {
+                outside = true;
+            }
+        }
+    }
+    if (outside)
+    {
+        xcArray[i] = xCenter;
+        ycArray[i] = yCenter;
+        zcArray[i] = zCenter;
+        Info<< "creating a new seed" << endl;
+        Info<< "xCenter, yCenter, zCenter: " << xcArray[i] << ", " << ycArray[i] << ", " << zcArray[i] << endl;
+    }
 }
 
 if (numSeeds != 1){
-while((curvol[0]+curvol[1]+curvol[2]) <= (maxvol[0]+maxvol[1]+maxvol[2])){
-    Info<< "creating a new seed" << endl;
-    xCenter = randNumber.globalScalar01()*xMax;
-    yCenter = randNumber.globalScalar01()*yMax;
-    zCenter = randNumber.globalScalar01()*zMax;
+
+for(int i=0; i<numNucl[0]; i++){
+//while((curvol[0]+curvol[1]+curvol[2]) <= (maxvol[0]+maxvol[1]+maxvol[2])){
+    //Info<< "creating a new seed" << endl;
+    //xCenter = randNumber.globalScalar01()*xMax;
+    //yCenter = randNumber.globalScalar01()*yMax;
     //xCenter = 0.5*xMax;
     //yCenter = 0.5*yMax;
-    Info<< "xCenter, yCenter, zCenter: " << xCenter << ", " << yCenter << ", " << zCenter << endl;
+    //Info<< "xCenter, yCenter: " << xCenter << ", " << yCenter << endl;
     //randTheta = randNumber.globalScalar01()*(pi.value()/2);
     //Info<< "random theta: " << randTheta << endl;
 
     Info<< "Filling phi field in seeds" << endl;
-    //randRadius = (1 + spread*(2*randNumber.globalScalar01() - 1))*seedRadius[0];
-    if (curvol[0] <= maxvol[0]){
-    curvol[0] = curvol[0] + pi.value()*(4/3)*seedRadius[0][0]*seedRadius[0][0]*seedRadius[0][0];
-    
-phi_1 = phi_1 + (1-phi_1)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius[0][0]*seedRadius[0][0]));
+    randRadius = (1 + spread[0][0]*(2*randNumber.globalScalar01() - 1))*seedRadius[0][0];
+    //if (curvol[0] <= maxvol[0]){
+    //curvol[0] += pi.value()*seedRadius[0][0]*seedRadius[0][0];
+    xCenter = xcArray[i];
+    yCenter = ycArray[i];
+    zCenter = zcArray[i];
+phi_1 += (1-phi_1-phi_2-phi_3)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(randRadius*randRadius));
 }
 
-else if (curvol[1] <= maxvol[1]){
-    curvol[1] = curvol[1] + pi.value()*(4/3)*seedRadius[1][0]*seedRadius[1][0]*seedRadius[1][0];
-
-phi_2 = phi_2 + (1-phi_2)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius[1][0]*seedRadius[1][0]));
+//else if (curvol[1] <= maxvol[1]){
+for(int i=numNucl[0]; i<numNucl[0]+numNucl[1]; i++){
+    //curvol[1] += pi.value()*seedRadius[1][0]*seedRadius[1][0];
+    randRadius = (1 + spread[1][0]*(2*randNumber.globalScalar01() - 1))*seedRadius[1][0];
+    xCenter = xcArray[i];
+    yCenter = ycArray[i];
+    zCenter = zcArray[i];
+phi_2 += (1-phi_1-phi_2-phi_3)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(randRadius*randRadius));
 }
 
-else if (curvol[2] <= maxvol[2]){
-    curvol[2] = curvol[2] + pi.value()*(4/3)*seedRadius[2][0]*seedRadius[2][0]*seedRadius[2][0];
-
-phi_3 = phi_3 + (1-phi_3)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(seedRadius[2][0]*seedRadius[2][0]));
-}
+//else if (curvol[2] <= maxvol[2]){
+for(int i=numNucl[0]+numNucl[1]; i<numSeeds; i++){
+    //curvol[2] += pi.value()*seedRadius[2][0]*seedRadius[2][0];
+    randRadius = (1 + spread[2][0]*(2*randNumber.globalScalar01() - 1))*seedRadius[2][0];
+    xCenter = xcArray[i];
+    yCenter = ycArray[i];
+    zCenter = zcArray[i];
+phi_3 += (1-phi_1-phi_2-phi_3)*exp(-((mesh.C().component(vector::X)/dimx-xCenter)*(mesh.C().component(vector::X)/dimx-xCenter) + (mesh.C().component(vector::Y)/dimx-yCenter)*(mesh.C().component(vector::Y)/dimx-yCenter) + (mesh.C().component(vector::Z)/dimx-zCenter)*(mesh.C().component(vector::Z)/dimx-zCenter))/(randRadius*randRadius));
 }
 
 phi_4 = 1 - (phi_1 + phi_2 + phi_3);

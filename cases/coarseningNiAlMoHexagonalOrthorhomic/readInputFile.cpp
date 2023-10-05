@@ -382,6 +382,7 @@ int main(int argc, char *argv[])
     getline(ss2, line_value2, '}');
     seed_radius[i_phase] = stod(line_value2);
     volume_fraction[i_phase] = 0;
+    shield_dist[i_phase] = 0;
     spread[i_phase] = 0;
     }
 
@@ -428,6 +429,7 @@ int main(int argc, char *argv[])
     getline(ss2, line_value2, '}');
     seed_radius[i_phase] = stod(line_value2);
     volume_fraction[i_phase] = 0;
+    shield_dist[i_phase] = 0;
     spread[i_phase] = 0;
     }
 
@@ -468,18 +470,18 @@ int main(int argc, char *argv[])
     theta_y = theta_y*3.14159/180;
     theta_z = theta_z*3.14159/180;
 
-    if (ELASTICITY = 0)
+    if (ELASTICITY == 0)
     {
-        if (GRAIN_GROWTH = 0)
+        if (GRAIN_GROWTH == 0)
         {
             swch = 0;
         }
-        else if (GRAIN_GROWTH = 1)
+        else if (GRAIN_GROWTH == 1)
         {
             swch = 1;
         }
     }
-    else if (ELASTICITY = 1)
+    else if (ELASTICITY == 1)
     {
         swch = 2;
     }

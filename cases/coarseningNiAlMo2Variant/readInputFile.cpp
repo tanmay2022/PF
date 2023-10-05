@@ -10,12 +10,13 @@ int main(int argc, char *argv[])
 {
     
     int DIMENSION, MESH_X, MESH_Y, MESH_Z, NUMPHASES, NUMCOMPONENTS, i_phase, Function_anisotropy;
+    int ELASTICITY = 0, GRAIN_GROWTH = 0, swch; 
     double DELTA_X, DELTA_t, NTIMESTEPS, SAVET, STARTTIME, DIFFUSIVITY00, DIFFUSIVITY01;
     double GAMMA1, GAMMA2, GAMMA3, GAMMA4, V, DIFFUSIVITY[2], EIGEN_STRAIN[4][6];
     double VOIGT[4][6], T, epsilon;
-    double DIFFUSIVITY10, DIFFUSIVITY11, dab, Amp_Noise_Phase, Equilibrium_temperature, Filling_temperature;
-    double theta_x, theta_y, theta_z, center_x[3], center_y[3], center_z[3], seed_radius[3], volume_fraction[3], spread[3];
-    double DIFFUSIVITY20, DIFFUSIVITY21, DIFFUSIVITY30, DIFFUSIVITY31;
+    double DIFFUSIVITYl0, DIFFUSIVITYl1, dab, Amp_Noise_Phase, Equilibrium_temperature, Filling_temperature;
+    double theta_x, theta_y, theta_z, center_x[3], center_y[3], center_z[3], seed_radius[3], volume_fraction[3], shield_dist[3], spread[3];
+    double DIFFUSIVITY10 = 0, DIFFUSIVITY11 = 0, DIFFUSIVITY20 = 0, DIFFUSIVITY21 = 0;
     
     //ifstream inpf("Input_tdb_new.in");
     ifstream inpf(argv[1]);
@@ -195,14 +196,43 @@ int main(int argc, char *argv[])
     
     else if (i_phase == (NUMPHASES-1))
     {
+    DIFFUSIVITYl0 = DIFFUSIVITY[0];
+    DIFFUSIVITYl1 = DIFFUSIVITY[1];
+    }
+
+    if (NUMPHASES > 2)
+    {
+    if (i_phase == 1)
+    {
     DIFFUSIVITY10 = DIFFUSIVITY[0];
     DIFFUSIVITY11 = DIFFUSIVITY[1];
     }
+    }
+
+    if (NUMPHASES > 3)
+    {
+    if (i_phase == 2)
+    {
+    DIFFUSIVITY20 = DIFFUSIVITY[0];
+    DIFFUSIVITY21 = DIFFUSIVITY[1];
+    }
+    }
+
     }
     
     else if (line_value1 == "V")
     {
     V = stod(line_value2);
+    }
+
+    else if (line_value1 == "ELASTICITY")
+    {
+    ELASTICITY = stoi(line_value2);
+    }
+
+    else if (line_value1 == "GRAIN_GROWTH")
+    {
+    GRAIN_GROWTH = stoi(line_value2);
     }
     
     else if (line_value1 == "EIGEN_STRAIN")
@@ -352,6 +382,7 @@ int main(int argc, char *argv[])
     getline(ss2, line_value2, '}');
     seed_radius[i_phase] = stod(line_value2);
     volume_fraction[i_phase] = 0;
+    shield_dist[i_phase] = 0;
     spread[i_phase] = 0;
     }
 
@@ -373,6 +404,7 @@ int main(int argc, char *argv[])
     center_z[i_phase] = 0;
 
     getline(ss2, line_value2, ',');
+    shield_dist[i_phase] = stod(line_value2);
 
     getline(ss2, line_value2, '}');
     spread[i_phase] = stod(line_value2);
@@ -397,6 +429,7 @@ int main(int argc, char *argv[])
     getline(ss2, line_value2, '}');
     seed_radius[i_phase] = stod(line_value2);
     volume_fraction[i_phase] = 0;
+    shield_dist[i_phase] = 0;
     spread[i_phase] = 0;
     }
 
@@ -418,6 +451,7 @@ int main(int argc, char *argv[])
     center_z[i_phase] = 0;
 
     getline(ss2, line_value2, ',');
+    shield_dist[i_phase] = stod(line_value2);
 
     getline(ss2, line_value2, '}');
     spread[i_phase] = stod(line_value2);
@@ -435,6 +469,22 @@ int main(int argc, char *argv[])
     theta_x = theta_x*3.14159/180;
     theta_y = theta_y*3.14159/180;
     theta_z = theta_z*3.14159/180;
+
+    if (ELASTICITY == 0)
+    {
+        if (GRAIN_GROWTH == 0)
+        {
+            swch = 0;
+        }
+        else if (GRAIN_GROWTH == 1)
+        {
+            swch = 1;
+        }
+    }
+    else if (ELASTICITY == 1)
+    {
+        swch = 2;
+    }
 
 	//writing to include in openfoam dictionaries
     outpf.precision(15);
@@ -470,9 +520,15 @@ int main(int argc, char *argv[])
     outpf << "DIFFUSIVITY01 " << DIFFUSIVITY01 << ";" << endl;
     outpf << "DIFFUSIVITY10 " << DIFFUSIVITY10 << ";" << endl;
     outpf << "DIFFUSIVITY11 " << DIFFUSIVITY11 << ";" << endl;
+    outpf << "DIFFUSIVITY20 " << DIFFUSIVITY20 << ";" << endl;
+    outpf << "DIFFUSIVITY21 " << DIFFUSIVITY21 << ";" << endl;
+    outpf << "DIFFUSIVITYl0 " << DIFFUSIVITYl0 << ";" << endl;
+    outpf << "DIFFUSIVITYl1 " << DIFFUSIVITYl1 << ";" << endl;
 
     outpft << "initial " << Filling_temperature << ";" << endl;    
     outpft << "T0 " << Equilibrium_temperature << ";" << endl;
+
+    outpf << "swch " << swch << ";" << endl;
     
     outpf << "EIGEN_STRAIN1 (" << EIGEN_STRAIN[0][0] << " " << EIGEN_STRAIN[0][5] << " " << EIGEN_STRAIN[0][4] <<
     " " << EIGEN_STRAIN[0][1] << " " << EIGEN_STRAIN[0][3] << " " << EIGEN_STRAIN[0][2] << ");" << endl;
@@ -512,6 +568,7 @@ int main(int argc, char *argv[])
     outpf << "centerZ[" << i_phase << "] " << DELTA_X*center_z[i_phase] << ";" << endl;
     outpf << "seedRadius[" << i_phase << "] " << DELTA_X*seed_radius[i_phase] << ";" << endl;
     outpf << "volumeFraction[" << i_phase << "] " << volume_fraction[i_phase] << ";" << endl;
+    outpf << "shieldDist[" << i_phase << "] " << DELTA_X*shield_dist[i_phase] << ";" << endl;
     outpf << "spread[" << i_phase << "] " << spread[i_phase] << ";" << endl;
     }
 

@@ -28,7 +28,7 @@ components $NUMCOMPONENTS; //Number of components
 gamma       gamma [0 0 0 0 0 0 0] $GAMMA; //0.1; //Surface Energy
 epsilon     epsilon [0 0 0 0 0 0 0] $epsilon; //4.0e-8; //Interface Width
 diff_Sol    diff_Sol [0 0 0 0 0 0 0] $DIFFUSIVITY00; //0; //Diffusivity in solid
-diff_Liq    diff_Liq [0 0 0 0 0 0 0] $DIFFUSIVITY10; //1.0e-9; //Diffusivity in liquid
+diff_Liq    diff_Liq [0 0 0 0 0 0 0] $DIFFUSIVITYl0; //1.0e-9; //Diffusivity in liquid
 anti_trap   anti_trap [0 0 0 0 0 0 0] 0.35355; //Antitrapping coefficient
 G           G [0 0 0 0 0 0 0] 0.0; //Thermal gradient
 v           v [0 0 0 0 0 0 0] 0.0; //Velocity
@@ -53,20 +53,8 @@ swcool 0;
 
 //Switch = 1 to enable orientaton field, 2 to model precipitate growth,
 //else 0 for single dendrite solidification
-swch 0;
 
 M_Scale 0.4;
-
-seedRadius $seed_radius;
-
-volume_fraction $volume_fraction;
-
-spread $spread;
-
-//center coordinate only for single seed
-centerX $center_x;
-centerY $center_y;
-centerZ $center_z;
 
 numSeeds 4; //Maximum number depending on probability of nucleation
 

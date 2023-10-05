@@ -171,13 +171,21 @@
         
         if (components == 3)
     	{
-    	if (phases == 3)
-    	{
         diff_ter[0][0]   = readScalar(transportProperties.lookup("D_a1[0][0]"));      
         diff_ter[0][1]   = readScalar(transportProperties.lookup("D_a1[0][1]"));
         diff_ter[1][0]   = readScalar(transportProperties.lookup("D_a1[1][0]"));
         diff_ter[1][1]   = readScalar(transportProperties.lookup("D_a1[1][1]"));
         
+        if (phases == 2)
+    	{
+    	diff_ter[2][0]   = readScalar(transportProperties.lookup("D_l[0][0]"));      
+        diff_ter[2][1]   = readScalar(transportProperties.lookup("D_l[0][1]"));
+        diff_ter[3][0]   = readScalar(transportProperties.lookup("D_l[1][0]"));
+        diff_ter[3][1]   = readScalar(transportProperties.lookup("D_l[1][1]"));
+    	}
+        
+    	if (phases == 3)
+    	{
         diff_ter[2][0]   = readScalar(transportProperties.lookup("D_a2[0][0]"));      
         diff_ter[2][1]   = readScalar(transportProperties.lookup("D_a2[0][1]"));
         diff_ter[3][0]   = readScalar(transportProperties.lookup("D_a2[1][0]"));
@@ -190,12 +198,7 @@
         }
         
         if (phases == 4)
-    	{
-        diff_ter[0][0]   = readScalar(transportProperties.lookup("D_a1[0][0]"));      
-        diff_ter[0][1]   = readScalar(transportProperties.lookup("D_a1[0][1]"));
-        diff_ter[1][0]   = readScalar(transportProperties.lookup("D_a1[1][0]"));
-        diff_ter[1][1]   = readScalar(transportProperties.lookup("D_a1[1][1]"));
-        
+    	{        
         diff_ter[2][0]   = readScalar(transportProperties.lookup("D_a2[0][0]"));      
         diff_ter[2][1]   = readScalar(transportProperties.lookup("D_a2[0][1]"));
         diff_ter[3][0]   = readScalar(transportProperties.lookup("D_a2[1][0]"));

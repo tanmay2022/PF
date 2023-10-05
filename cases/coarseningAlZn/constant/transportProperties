@@ -59,7 +59,7 @@ swcool 0;
 
 M_Scale 0.4;
 
-numSeeds 4; //Maximum number depending on probability of nucleation
+numSeeds 1; //Maximum number depending on probability of nucleation
 
 dt_0 3.0;
 dt_s 1.0; // Temperature parameters in probability of nucleation

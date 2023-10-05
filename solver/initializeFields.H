@@ -78,7 +78,7 @@ if (swch == 2)
     dimensionedScalar prob = Foam::exp(-0.5*(log(T0-initial)/0.5)*(log(T0-initial)/0.5))/(0.5*Foam::sqrt(2*pi)*(T0-initial));
     Info << "Probability of nucleation: " << prob.value() << endl;*/
 //curvol[0] = 0;
-
+if (numSeeds != 1){
 maxvol[0] = volumeFraction[0][0]*xMax*yMax;
 numSeeds = int(maxvol[0]/(pi.value()*seedRadius[0][0]*seedRadius[0][0]));
 
@@ -117,7 +117,7 @@ for (int i=1; i<numSeeds; i++)
     }
 }
 
-if (numSeeds != 1){
+
 for(int i=0; i<numSeeds; i++){
 //while((curvol[0]+curvol[1]+curvol[2]) <= (maxvol[0]+maxvol[1]+maxvol[2])){
     //Info<< "creating a new seed" << endl;
@@ -245,6 +245,7 @@ if (swch == 2)
 
 //numSeeds = 0;
 //for (int i_phase = 0; i_phase < (phases-1); i_phase++){   
+if (numSeeds != 1){
 maxvol[0] = volumeFraction[i_phase][0]*xMax*yMax*zMax;
 //curvol[i_phase] = 0;
 numSeeds = int(maxvol[0]/(pi.value()*(4/3)*seedRadius[0][0]*seedRadius[0][0]*seedRadius[0][0]));
@@ -291,7 +292,6 @@ for (int i=1; i<numSeeds; i++)
 
 
 
-if (numSeeds != 1){
 for(int i=0; i<numSeeds; i++){
 //while(curvol[0] <= maxvol[0]){
     //Info<< "creating a new seed" << endl;

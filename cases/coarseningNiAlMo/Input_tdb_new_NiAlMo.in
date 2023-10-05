@@ -7,7 +7,7 @@ MESH_Z = 1;
 DELTA_X = 4e-11;
 DELTA_Y = 4e-11;
 DELTA_Z = 4e-11;
-DELTA_t = 7.5e-9;
+DELTA_t = 1.5e-9;
 ##Number of phases and composition
 NUMPHASES = 2;
 NUMCOMPONENTS = 3;
